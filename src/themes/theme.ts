@@ -1,4 +1,16 @@
-import { Theme, createTheme, responsiveFontSizes } from "@mui/material/styles";
+import { PaletteColor, Theme, createTheme, responsiveFontSizes } from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    tertiary: PaletteColor;
+  }
+  interface PaletteOptions {
+    tertiary: PaletteColor;
+  }
+}
+
+const { palette } = createTheme();
+const { augmentColor } = palette;
 
 let theme: Theme = createTheme({
   palette: {
@@ -9,6 +21,7 @@ let theme: Theme = createTheme({
     secondary: {
       main: "#6EAAD4",
     },
+    tertiary: augmentColor({ color: { main: "#eae2f1" } }),
   },
   typography: {
     fontSize: 16,
@@ -97,7 +110,7 @@ let theme: Theme = createTheme({
           props: {},
           style: {
             borderRadius: "8px",
-            padding:'12px 16px 4px 16px',
+            padding: "12px 16px 4px 16px",
             backgroundColor: "#F4F4F4",
           },
         },
