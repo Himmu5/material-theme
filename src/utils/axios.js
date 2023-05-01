@@ -5,4 +5,4 @@ const API_URL = import.meta.env.VITE_REACT_BACKEND_BASE_URL;
 
 const axiosInstance = axios.create({ baseURL: API_URL, headers: authHeader() });
 
-export default axiosInstance;
+export default axiosInstance ;

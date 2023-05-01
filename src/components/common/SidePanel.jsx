@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Box, List, ListItemButton, Typography,
 } from '@mui/material';
@@ -6,11 +7,13 @@ import { FaUser } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
 import { HiTicket } from 'react-icons/hi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import textLogo from '../../../assets/text_logo.svg';
 
-function ListItem({ isActive = false, children }) {
+function ListItem({ isActive = false, children, ...props }) {
   return (
     <ListItemButton
+      {...props}
       sx={{
         py: isActive ? 1.5 : 1,
         my: 1,
@@ -21,7 +24,7 @@ function ListItem({ isActive = false, children }) {
         color: isActive ? 'primary.main' : '#ffffff',
         transition: 'all 0.3s ease-in-out',
         '&:hover': {
-          bgcolor: isActive ? 'secondary.light' : 'primary.light',
+          bgcolor: isActive ? 'rgba(255,255,255,0.85)' : 'primary.light',
           color: isActive ? 'primary.dark' : '#ffffff',
         },
       }}
@@ -41,7 +44,17 @@ function ListItem({ isActive = false, children }) {
   );
 }
 
+const pages = [
+  { icon: <FaUser />, name: 'Users', path: 'users' },
+  { name: 'Courses', icon: <GiOpenBook />, path: 'courses' },
+  { name: 'Scheduled Slots', icon: <IoCalendarNumberSharp />, path: 'scheduled-slots' },
+  { icon: <HiTicket />, name: 'Vouchers', path: 'vouchers' },
+];
+
 function SidePanel() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <Box
       sx={{
@@ -70,24 +83,17 @@ function SidePanel() {
 
       <Box sx={{ pl: 'min(24px,5vw)', py: 3 }}>
         <List>
-          <ListItem isActive>
-            <FaUser />
-            Users
-          </ListItem>
-          <ListItem>
-            <GiOpenBook />
-            Courses
-          </ListItem>
-
-          <ListItem>
-            <IoCalendarNumberSharp />
-            Scheduled Slots
-          </ListItem>
-
-          <ListItem>
-            <HiTicket />
-            Vouchers
-          </ListItem>
+          {pages.length > 0
+            && pages.map((page) => (
+              <ListItem
+                key={page.name}
+                onClick={() => navigate(`/dashboard/${page.path}`)}
+                isActive={location.pathname.includes(`/dashboard/${page.path}`)}
+              >
+                {page.icon}
+                {page.name}
+              </ListItem>
+            ))}
         </List>
       </Box>
     </Box>

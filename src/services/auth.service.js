@@ -21,8 +21,9 @@ const adminLogin = (email, password) => axios
     password,
   })
   .then((response) => {
-    if (response.data.token) {
-      localStorage.setItem('admin', JSON.stringify({ token: response.data.token }));
+    console.log(response);
+    if (response.data.data.token) {
+      localStorage.setItem('admin', JSON.stringify({ token: response.data.data.token }));
     }
 
     return response.data;

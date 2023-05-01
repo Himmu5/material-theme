@@ -17,7 +17,7 @@ import './table.css';
 //   },
 // }));
 
-function UsersListTable({ rows = [] }) {
+function UsersListTable({ rows = [], page }) {
   return (
     <TableContainer sx={{ width: '100%' }}>
       <Table style={{ width: '100%', borderSpacing: '0 12px' }}>
@@ -25,12 +25,20 @@ function UsersListTable({ rows = [] }) {
           <TableRow sx={{ color: '#5c5c5c' }}>
             <TableCell sx={{ color: 'inherit' }}>SI no.</TableCell>
             <TableCell sx={{ color: 'inherit' }}>Name</TableCell>
-            <TableCell sx={{ color: 'inherit' }}>Phone</TableCell>
+            {page === 'users' ? (
+              <TableCell sx={{ color: 'inherit' }}>Phone</TableCell>
+            ) : (
+              <TableCell sx={{ color: 'inherit' }}>Type of Degree</TableCell>
+            )}
             <TableCell sx={{ color: 'inherit' }}>Location</TableCell>
-            <TableCell sx={{ color: 'inherit' }}>Education</TableCell>
+            {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Education</TableCell>}
             <TableCell sx={{ color: 'inherit' }}>Course</TableCell>
             <TableCell sx={{ color: 'inherit' }}>Progress</TableCell>
-            <TableCell sx={{ color: 'inherit' }}>Purchased</TableCell>
+            {page === 'users' ? (
+              <TableCell sx={{ color: 'inherit' }}>Purchased</TableCell>
+            ) : (
+              <TableCell sx={{ color: 'inherit' }}>MCQ score</TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>

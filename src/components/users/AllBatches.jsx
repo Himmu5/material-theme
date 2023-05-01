@@ -4,7 +4,7 @@ import BatchesNav from './BatchesNav';
 import NewBatch from './NewBatch';
 import UsersList from './UsersList';
 
-function AllBatches() {
+function AllBatches({ page = 'users' }) {
   return (
     <Box
       component={Paper}
@@ -19,7 +19,7 @@ function AllBatches() {
       }}
     >
       <Typography typography="h3" fontWeight={600}>
-        All Batches
+        {page === 'users' ? 'All Batches' : 'Registered Students and Progress'}
       </Typography>
       <Box
         sx={{
@@ -34,7 +34,7 @@ function AllBatches() {
         <NewBatch />
       </Box>
 
-      <UsersList />
+      <UsersList page={page} />
     </Box>
   );
 }

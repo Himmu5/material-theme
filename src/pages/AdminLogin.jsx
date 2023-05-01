@@ -32,7 +32,7 @@ export default function AdminLogin() {
       .unwrap()
       .then(() => {
         navigate('/');
-        // window.location.reload();
+        window.location.reload();
         // toast.success('Succesfully logged in');
         setLoading(false);
         console.log('logged in!');
