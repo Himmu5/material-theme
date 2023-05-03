@@ -26,7 +26,7 @@ function Users() {
         }}
       >
         <Signups />
-        <Purchases />
+        {/* <Purchases /> */}
       </Box>
 
       <AllBatches />

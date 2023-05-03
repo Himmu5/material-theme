@@ -43,17 +43,17 @@ function UsersListTable({ rows = [], page }) {
         </TableHead>
         <TableBody>
           {rows.length > 0
-            && rows.map((row) => (
+            && rows.map((row, index) => (
               <TableRow key={row.name} sx={{ color: '#707070' }}>
-                <TableCell sx={{ color: 'inherit' }}>{row.si_no}</TableCell>
+                <TableCell sx={{ color: 'inherit' }}>{index + 1}</TableCell>
                 <TableCell sx={{ color: 'inherit' }}>
                   <div style={{ color: 'black' }}>{row.name}</div>
                   <div>{row.email}</div>
                 </TableCell>
                 <TableCell sx={{ color: 'inherit' }}>{row.phone}</TableCell>
                 <TableCell sx={{ color: 'inherit' }}>{row.location}</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>{row.education}</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>{row.course}</TableCell>
+                <TableCell sx={{ color: 'inherit' }}>{row.highestQualification}</TableCell>
+                <TableCell sx={{ color: 'inherit' }}>{row.coursesRegistered.join(', ')}</TableCell>
                 <TableCell sx={{ color: 'inherit' }}>{row.progress}</TableCell>
                 <TableCell sx={{ color: 'inherit' }}>{row.purchased}</TableCell>
               </TableRow>

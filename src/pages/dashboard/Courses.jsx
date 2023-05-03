@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import React from 'react';
 import AllBatches from '../../components/users/AllBatches';
+import CoursesInfoCard from '../../components/courses/CoursesInfoCard';
 
 function Courses() {
   return (
@@ -13,6 +14,7 @@ function Courses() {
         flexDirection: 'column',
         height: '100vh',
         gap: 3,
+
       }}
     >
       <Box
@@ -23,8 +25,7 @@ function Courses() {
           gap: 3,
         }}
       >
-        {/* <Signups />
-        <Purchases /> */}
+        <CoursesInfoCard />
       </Box>
 
       <AllBatches page="courses" />

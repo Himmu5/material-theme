@@ -5,7 +5,7 @@ import SidePanel from '../../components/common/SidePanel';
 
 function Dashboard() {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', bgcolor: '#e8edf4' }}>
       <SidePanel />
       <Outlet />
     </Box>

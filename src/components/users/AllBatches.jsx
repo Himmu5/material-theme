@@ -31,7 +31,7 @@ function AllBatches({ page = 'users' }) {
         }}
       >
         <BatchesNav />
-        <NewBatch />
+        {page === 'users' && <NewBatch />}
       </Box>
 
       <UsersList page={page} />

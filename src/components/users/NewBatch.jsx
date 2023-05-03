@@ -15,6 +15,8 @@ import AddIcon from '@mui/icons-material/Add';
 import React from 'react';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -23,7 +25,22 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function NewBatch() {
+const initialValues = {
+  batchName: '',
+  courseName: '',
+  startDate: '',
+  endDate: '',
+  durationInDays: '',
+  purchaseAvailability: '',
+  studentsEnrolled: [],
+};
+
+// const validationSchema = Yup.object().shape({
+//   email: Yup.string().email('Enter a valid email!').required('This field is required!'),
+//   password: Yup.string().required('This field is required!'),
+// });
+
+function NewBatch({ loading = false }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -33,6 +50,14 @@ function NewBatch() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const formik = useFormik({
+    initialValues,
+    // validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
     <>
@@ -77,21 +102,26 @@ function NewBatch() {
           }}
         >
           <FormControl fullWidth>
-            <Typography variant="body1" color="text.secondary" component="label" htmlFor="name">
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              component="label"
+              htmlFor="batchName"
+            >
               Enter Batch Name
             </Typography>
             <InputBase
-              id="name"
-              name="name"
+              id="batchName"
+              batchName="batchName"
               size="small"
               sx={{ mt: 1 }}
               fullWidth
               color="secondary"
-              // disabled={loading}
-              // value={formik.values.name}
-              // onChange={formik.handleChange}
-              // error={formik.touched.name && Boolean(formik.errors.name)}
-              // helperText={formik.touched.name && formik.errors.name}
+              disabled={loading}
+              value={formik.values.batchName}
+              onChange={formik.handleChange}
+              error={formik.touched.batchName && Boolean(formik.errors.batchName)}
+              helperText={formik.touched.batchName && formik.errors.batchName}
             />
           </FormControl>
 
@@ -102,7 +132,7 @@ function NewBatch() {
               component="label"
               htmlFor="no_of_intakes"
             >
-              Enter the No.of Intakes
+              Enter the No. of Intakes
             </Typography>
             <InputBase
               id="no_of_intakes"
@@ -125,23 +155,23 @@ function NewBatch() {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="start_date"
+                htmlFor="startDate"
               >
                 Start Date
               </Typography>
               <InputBase
                 type="date"
-                id="start_date"
-                name="start_date"
+                id="startDate"
+                name="startDate"
                 size="small"
                 sx={{ mt: 0.5 }}
                 fullWidth
                 color="secondary"
-                // disabled={loading}
-                // value={formik.values.start_date}
-                // onChange={formik.handleChange}
-                // error={formik.touched.start_date && Boolean(formik.errors.start_date)}
-                // helperText={formik.touched.start_date && formik.errors.start_date}
+                disabled={loading}
+                value={formik.values.startDate}
+                onChange={formik.handleChange}
+                error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                helperText={formik.touched.startDate && formik.errors.startDate}
               />
             </FormControl>
 
@@ -150,23 +180,23 @@ function NewBatch() {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="end_date"
+                htmlFor="endDate"
               >
                 End Date
               </Typography>
               <InputBase
                 type="date"
-                id="end_date"
-                name="end_date"
+                id="endDate"
+                name="endDate"
                 size="small"
                 sx={{ mt: 0.5 }}
                 fullWidth
                 color="secondary"
-                // disabled={loading}
-                // value={formik.values.end_date}
-                // onChange={formik.handleChange}
-                // error={formik.touched.end_date && Boolean(formik.errors.end_date)}
-                // helperText={formik.touched.end_date && formik.errors.end_date}
+                disabled={loading}
+                value={formik.values.endDate}
+                onChange={formik.handleChange}
+                error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                helperText={formik.touched.endDate && formik.errors.endDate}
               />
             </FormControl>
           </Box>
@@ -176,23 +206,25 @@ function NewBatch() {
               variant="body1"
               color="text.secondary"
               component="label"
-              htmlFor="availibility"
+              htmlFor="purchaseAvailibility"
             >
               Set Purchase Availibility
             </Typography>
             <InputBase
               type="date"
-              id="availibility"
-              name="availibility"
+              id="purchaseAvailibility"
+              name="purchaseAvailibility"
               size="small"
               sx={{ mt: 1 }}
               fullWidth
               color="secondary"
-              // disabled={loading}
-              // value={formik.values.availibility}
-              // onChange={formik.handleChange}
-              // error={formik.touched.availibility && Boolean(formik.errors.availibility)}
-              // helperText={formik.touched.availibility && formik.errors.availibility}
+              disabled={loading}
+              value={formik.values.purchaseAvailibility}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.purchaseAvailibility && Boolean(formik.errors.purchaseAvailibility)
+              }
+              helperText={formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility}
             />
           </FormControl>
         </DialogContent>
