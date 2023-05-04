@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { motion } from 'framer-motion';
 import Signups from '../../components/users/Signups';
-import Purchases from '../../components/users/Purchases';
 import AllBatches from '../../components/users/AllBatches';
 
 function Users() {
@@ -24,6 +24,12 @@ function Users() {
           justifyContent: 'start',
           gap: 3,
         }}
+        component={motion.div}
+        initial={{ opacity: 0, y: 100 }}
+        transition={{ type: 'tween' }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ scale: 0, opacity: 0 }}
+        viewport={{ once: true }}
       >
         <Signups />
         {/* <Purchases /> */}

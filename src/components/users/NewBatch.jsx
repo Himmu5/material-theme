@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Dialog as MuiDialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -16,7 +15,8 @@ import React from 'react';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
+import api from '../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -28,9 +28,9 @@ const Dialog = styled(MuiDialog)(() => ({
 const initialValues = {
   batchName: '',
   courseName: '',
+  numberOfIntakes: 30,
   startDate: '',
   endDate: '',
-  durationInDays: '',
   purchaseAvailability: '',
   studentsEnrolled: [],
 };
@@ -51,11 +51,24 @@ function NewBatch({ loading = false }) {
     setOpen(false);
   };
 
+  const submitBatch = (formData) => {
+    api.batch
+      .createBatch(formData)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const formik = useFormik({
     initialValues,
     // validationSchema,
     onSubmit: (values) => {
       console.log(values);
+      submitBatch(values);
+      formik.resetForm();
     },
   });
 
@@ -92,150 +105,186 @@ function NewBatch({ loading = false }) {
             Create a New Batch
           </Typography>
         </DialogTitle>
-        <DialogContent
-          sx={{
-            mt: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5,
-            width: '550px',
-          }}
-        >
-          <FormControl fullWidth>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              component="label"
-              htmlFor="batchName"
-            >
-              Enter Batch Name
-            </Typography>
-            <InputBase
-              id="batchName"
-              batchName="batchName"
-              size="small"
-              sx={{ mt: 1 }}
-              fullWidth
-              color="secondary"
-              disabled={loading}
-              value={formik.values.batchName}
-              onChange={formik.handleChange}
-              error={formik.touched.batchName && Boolean(formik.errors.batchName)}
-              helperText={formik.touched.batchName && formik.errors.batchName}
-            />
-          </FormControl>
-
-          <FormControl fullWidth>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              component="label"
-              htmlFor="no_of_intakes"
-            >
-              Enter the No. of Intakes
-            </Typography>
-            <InputBase
-              id="no_of_intakes"
-              name="no_of_intakes"
-              size="small"
-              sx={{ mt: 1 }}
-              fullWidth
-              color="secondary"
-              // disabled={loading}
-              // value={formik.values.no_of_intakes}
-              // onChange={formik.handleChange}
-              // error={formik.touched.no_of_intakes && Boolean(formik.errors.no_of_intakes)}
-              // helperText={formik.touched.no_of_intakes && formik.errors.no_of_intakes}
-            />
-          </FormControl>
-
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
+        <DialogContent>
+          <form
+            onSubmit={formik.handleSubmit}
+            style={{
+              marginTop: '0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.8rem',
+              width: '550px',
+            }}
+          >
             <FormControl fullWidth>
               <Typography
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="startDate"
+                htmlFor="batchName"
               >
-                Start Date
+                Enter Batch Name
               </Typography>
               <InputBase
-                type="date"
-                id="startDate"
-                name="startDate"
+                id="batchName"
+                name="batchName"
                 size="small"
-                sx={{ mt: 0.5 }}
+                sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.startDate}
+                value={formik.values.batchName}
                 onChange={formik.handleChange}
-                error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                helperText={formik.touched.startDate && formik.errors.startDate}
+                error={formik.touched.batchName && Boolean(formik.errors.batchName)}
+                helperText={formik.touched.batchName && formik.errors.batchName}
               />
             </FormControl>
+
+            {/* <FormControl fullWidth>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                component="label"
+                htmlFor="courseName"
+              >
+                Enter Course Name
+              </Typography>
+              <InputBase
+                id="courseName"
+                name="courseName"
+                size="small"
+                sx={{ mt: 1 }}
+                fullWidth
+                color="secondary"
+                disabled={loading}
+                value={formik.values.courseName}
+                onChange={formik.handleChange}
+                error={formik.touched.courseName && Boolean(formik.errors.courseName)}
+                helperText={formik.touched.courseName && formik.errors.courseName}
+              />
+            </FormControl> */}
 
             <FormControl fullWidth>
               <Typography
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="endDate"
+                htmlFor="numberOfIntakes"
               >
-                End Date
+                Enter the No. of Intakes
               </Typography>
               <InputBase
-                type="date"
-                id="endDate"
-                name="endDate"
+                id="numberOfIntakes"
+                name="numberOfIntakes"
                 size="small"
-                sx={{ mt: 0.5 }}
+                sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.endDate}
+                value={formik.values.numberOfIntakes}
                 onChange={formik.handleChange}
-                error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-                helperText={formik.touched.endDate && formik.errors.endDate}
+                error={formik.touched.numberOfIntakes && Boolean(formik.errors.numberOfIntakes)}
+                helperText={formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
               />
             </FormControl>
-          </Box>
 
-          <FormControl fullWidth>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              component="label"
-              htmlFor="purchaseAvailibility"
+            <Box sx={{ display: 'flex', gap: 1.5 }}>
+              <FormControl fullWidth>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  component="label"
+                  htmlFor="startDate"
+                >
+                  Start Date
+                </Typography>
+                <InputBase
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  size="small"
+                  sx={{ mt: 0.5 }}
+                  fullWidth
+                  color="secondary"
+                  disabled={loading}
+                  value={formik.values.startDate}
+                  onChange={formik.handleChange}
+                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                  helperText={formik.touched.startDate && formik.errors.startDate}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  component="label"
+                  htmlFor="endDate"
+                >
+                  End Date
+                </Typography>
+                <InputBase
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  size="small"
+                  sx={{ mt: 0.5 }}
+                  fullWidth
+                  color="secondary"
+                  disabled={loading}
+                  value={formik.values.endDate}
+                  onChange={formik.handleChange}
+                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                  helperText={formik.touched.endDate && formik.errors.endDate}
+                />
+              </FormControl>
+            </Box>
+
+            <FormControl fullWidth>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                component="label"
+                htmlFor="purchaseAvailibility"
+              >
+                Set Purchase Availibility
+              </Typography>
+              <InputBase
+                type="date"
+                id="purchaseAvailibility"
+                name="purchaseAvailibility"
+                size="small"
+                sx={{ mt: 1 }}
+                fullWidth
+                color="secondary"
+                disabled={loading}
+                value={formik.values.purchaseAvailibility}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.purchaseAvailibility && Boolean(formik.errors.purchaseAvailibility)
+                }
+                helperText={
+                  formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility
+                }
+              />
+            </FormControl>
+            <Box
+              sx={{
+                mb: 0,
+                mt: 3,
+                gap: 1.5,
+                display: 'flex',
+              }}
             >
-              Set Purchase Availibility
-            </Typography>
-            <InputBase
-              type="date"
-              id="purchaseAvailibility"
-              name="purchaseAvailibility"
-              size="small"
-              sx={{ mt: 1 }}
-              fullWidth
-              color="secondary"
-              disabled={loading}
-              value={formik.values.purchaseAvailibility}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.purchaseAvailibility && Boolean(formik.errors.purchaseAvailibility)
-              }
-              helperText={formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility}
-            />
-          </FormControl>
+              <Button onClick={handleClose} type="button" variant="outlined" fullWidth>
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" fullWidth>
+                Save
+              </Button>
+            </Box>
+          </form>
         </DialogContent>
-        <DialogActions sx={{ m: 2, mt: 0 }}>
-          <Button onClick={handleClose} variant="outlined" fullWidth>
-            Cancel
-          </Button>
-          <Button onClick={handleClose} variant="contained" fullWidth>
-            Save
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   );
