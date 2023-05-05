@@ -27,12 +27,11 @@ const Dialog = styled(MuiDialog)(() => ({
 
 const initialValues = {
   batchName: '',
-  courseName: '',
+  courseName: 'Civil Survey Course',
   numberOfIntakes: 30,
   startDate: '',
   endDate: '',
   purchaseAvailability: '',
-  studentsEnrolled: [],
 };
 
 // const validationSchema = Yup.object().shape({
@@ -56,6 +55,7 @@ function NewBatch({ loading = false }) {
       .createBatch(formData)
       .then((res) => {
         console.log(res);
+        setOpen(false);
       })
       .catch((err) => {
         console.log(err);

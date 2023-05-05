@@ -21,6 +21,12 @@ const api = {
       return axios.get(path).then((res) => res.data);
     },
   },
+  voucher: {
+    list: () => {
+      const path = '/admin/all-vouchers';
+      return axios.get(path).then((res) => res.data);
+    },
+  },
 };
 
 export default api;

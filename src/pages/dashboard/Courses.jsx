@@ -25,11 +25,12 @@ function Courses() {
           justifyContent: 'start',
           gap: 3,
           pr: 3,
+          transformOrigin: 'left top',
         }}
         component={motion.div}
-        initial={{ opacity: 0, scale: 0.5 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        exit={{ scale: 0.5, opacity: 0 }}
+        initial={{ opacity: 0, scaleY: 0.4, scaleX: 0.1 }}
+        whileInView={{ opacity: 1, scaleX: 1, scaleY: 1 }}
+        exit={{ scaleY: 0.4, scaleX: 0.1, opacity: 0 }}
         viewport={{ once: true }}
         transition={{ type: 'tween' }}
       >

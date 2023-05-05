@@ -83,7 +83,7 @@ const themeBefore = createTheme({
       lineHeight: 1.5,
     },
     overline: { fontSize: '16px', lineHeight: 1.5 },
-    button: { fontSize: '16px' },
+    button: { fontSize: '16px', fontWeight: 500 },
   },
   components: {
     MuiButton: {
