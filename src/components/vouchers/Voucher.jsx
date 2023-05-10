@@ -3,14 +3,15 @@ import './voucher.css';
 import { Box, Typography } from '@mui/material';
 import { TiTick } from 'react-icons/ti';
 
-function Voucher({ selectable, select }) {
+function Voucher({ selectable, select, voucher }) {
   return (
     <Box
       sx={{
-        width: 230,
+        width: 240,
         height: 115,
         px: 2.5,
         py: 1.5,
+        zIndex: 1,
         bgcolor: '#fff',
         position: 'relative',
         transition: 'all 0.3s ease-in-out',
@@ -43,11 +44,12 @@ function Voucher({ selectable, select }) {
       )}
 
       <Typography variant="body1" fontWeight={500} color="primary.main">
-        First500
+        {voucher?.code}
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'end', gap: 0.2 }}>
         <Typography variant="h1" fontWeight={700} color="#091931">
-          33%
+          {voucher?.discountPerCent}
+          %
         </Typography>
         <Typography variant="body1" sx={{ mb: 1.4 }} color="text.secondary" fontWeight={500}>
           OFF

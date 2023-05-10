@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Voucher from '../../components/vouchers/Voucher';
 import api from '../../utils/api';
 
@@ -29,12 +29,14 @@ const animationChild = {
 
 function Vouchers() {
   const [selectable, setSelectable] = useState(false);
+  const [vouchers, setVouchers] = useState([]);
 
   useEffect(() => {
     api.voucher
       .list()
       .then((res) => {
         console.log(res?.data[0]?.availableVoucherCodes);
+        setVouchers(res?.data[0]?.availableVoucherCodes);
       })
       .catch((err) => {
         console.log(err);
@@ -86,11 +88,11 @@ function Vouchers() {
         columnGap={4}
         component={motion.div}
         initial="hidden"
-        whileInView="show"
+        animate="show"
         variants={animationParent}
         viewport={{ once: true }}
       >
-        {[...new Array(16)].map(() => (
+        {/* {[...new Array(16)].map(() => (
           <Grid
             item
             xs="auto"
@@ -100,7 +102,25 @@ function Vouchers() {
           >
             <Voucher selectable={selectable} select={() => handleVoucherClick()} />
           </Grid>
-        ))}
+        ))} */}
+
+        {vouchers.length > 0
+          && vouchers.map((voucher) => (
+            <Grid
+              item
+              xs="auto"
+              component={motion.div}
+              variants={animationChild}
+              viewport={{ once: true }}
+              key={`vouch-${voucher._id}`}
+            >
+              <Voucher
+                selectable={selectable}
+                select={() => handleVoucherClick()}
+                voucher={voucher}
+              />
+            </Grid>
+          ))}
       </Grid>
     </Box>
   );
