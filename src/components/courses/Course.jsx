@@ -1,11 +1,15 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AllBatches from '../users/AllBatches';
-import CoursesInfoCard from './CoursesInfoCard';
+import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
+import api from '../../utils/api';
 
 function Course() {
+  useEffect(() => {
+    api.batch.list().then((res) => console.log(res));
+  }, []);
   return (
     <Box
       sx={{

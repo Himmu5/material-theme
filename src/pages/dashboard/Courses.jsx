@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../utils/api';
 import CourseCard from '../../components/courses/CourseCard';
@@ -43,8 +42,8 @@ function Courses() {
     <Box
       sx={{
         flexGrow: 1,
-        pt: 3,
-        pl: 3,
+        py: 3,
+        px: 5,
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
@@ -56,23 +55,23 @@ function Courses() {
       </Typography>
       <Grid
         container
-        sx={{ width: '100%', p: 2 }}
+        sx={{ width: '100%', py: 1 }}
         rowGap={3}
         columnGap={4}
-        // component={motion.div}
-        // initial="hidden"
-        // whileInView="show"
-        // variants={animationParent}
-        // viewport={{ once: true }}
+        component={motion.div}
+        initial="hidden"
+        animate="show"
+        variants={animationParent}
+        viewport={{ once: true }}
       >
         {courses.length > 0
           && courses.map((course) => (
             <Grid
               item
               xs="auto"
-              // component={motion.div}
-              // variants={animationChild}
-              // viewport={{ once: true }}
+              component={motion.div}
+              variants={animationChild}
+              viewport={{ once: true }}
             >
               <CourseCard course={course} />
             </Grid>

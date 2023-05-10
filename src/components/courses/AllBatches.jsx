@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import NewBatch from './NewBatch';
-import BatchesFilter from '../courses/BatchesFilter';
-import UsersListTable from '../courses/UsersListTable';
+import BatchesFilter from './BatchesFilter';
+import UsersListTable from '../common/UsersListTable';
 import { logout } from '../../slices/adminAuth';
 import api from '../../utils/api';
 
