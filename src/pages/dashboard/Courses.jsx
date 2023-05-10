@@ -1,11 +1,44 @@
-import { Box } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Box, Grid, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import AllBatches from '../../components/users/AllBatches';
-import CoursesInfoCard from '../../components/courses/CoursesInfoCard';
-import ScheduleCard from '../../components/courses/ScheduleCard';
+import api from '../../utils/api';
+import CourseCard from '../../components/courses/CourseCard';
+
+const animationParent = {
+  hidden: { opacity: 0, y: 10, x: 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    x: 0,
+    transition: { staggerChildren: 0.05, duration: 0.05 },
+  },
+};
+
+const animationChild = {
+  hidden: { opacity: 0, y: 10, x: 10 },
+  show: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+  },
+};
 
 function Courses() {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    api.course
+      .list()
+      .then((res) => {
+        console.log(res);
+        setCourses(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Box
       sx={{
@@ -15,30 +48,36 @@ function Courses() {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        gap: 3,
+        gap: 1,
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'start',
-          gap: 3,
-          pr: 3,
-          transformOrigin: 'left top',
-        }}
-        component={motion.div}
-        initial={{ opacity: 0, scaleY: 0.4, scaleX: 0.1 }}
-        whileInView={{ opacity: 1, scaleX: 1, scaleY: 1 }}
-        exit={{ scaleY: 0.4, scaleX: 0.1, opacity: 0 }}
-        viewport={{ once: true }}
-        transition={{ type: 'tween' }}
+      <Typography typography="h3" fontWeight={600}>
+        All Courses
+      </Typography>
+      <Grid
+        container
+        sx={{ width: '100%', p: 2 }}
+        rowGap={3}
+        columnGap={4}
+        // component={motion.div}
+        // initial="hidden"
+        // whileInView="show"
+        // variants={animationParent}
+        // viewport={{ once: true }}
       >
-        <CoursesInfoCard />
-        <ScheduleCard />
-      </Box>
-
-      <AllBatches page="courses" />
+        {courses.length > 0
+          && courses.map((course) => (
+            <Grid
+              item
+              xs="auto"
+              // component={motion.div}
+              // variants={animationChild}
+              // viewport={{ once: true }}
+            >
+              <CourseCard course={course} />
+            </Grid>
+          ))}
+      </Grid>
     </Box>
   );
 }

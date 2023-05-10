@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import dummy from '../../../assets/dummy.jpg';
 
-function CoursesInfoCard() {
+function CourseInfoCard() {
   return (
     <Box
       component={Paper}
@@ -84,4 +84,4 @@ function CoursesInfoCard() {
   );
 }
 
-export default CoursesInfoCard;
+export default CourseInfoCard;

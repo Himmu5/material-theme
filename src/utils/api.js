@@ -27,6 +27,12 @@ const api = {
       return axios.get(path).then((res) => res.data);
     },
   },
+  course: {
+    list: () => {
+      const path = '/admin/all-courses';
+      return axios.get(path).then((res) => res.data);
+    },
+  },
 };
 
 export default api;

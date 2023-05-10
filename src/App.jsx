@@ -7,6 +7,7 @@ import Courses from './pages/dashboard/Courses';
 import ScheduledSlots from './pages/dashboard/ScheduledSlots';
 import Vouchers from './pages/dashboard/Vouchers';
 import Initial from './pages/Initial';
+import Course from './components/courses/Course';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
@@ -66,6 +67,14 @@ function App() {
             element={(
               <WaitWhileLoad>
                 <Courses />
+              </WaitWhileLoad>
+            )}
+          />
+          <Route
+            path="courses/course/:id"
+            element={(
+              <WaitWhileLoad>
+                <Course />
               </WaitWhileLoad>
             )}
           />

@@ -76,7 +76,7 @@ function AllBatches({ page = 'users' }) {
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
         <Typography typography="h3" fontWeight={600}>
-          {page === 'users' ? 'All Batches' : 'Registered Students and Progress'}
+          {page === 'users' ? 'All Users' : 'Registered Students and Progress'}
         </Typography>
 
         {page === 'users' && <NewBatch />}

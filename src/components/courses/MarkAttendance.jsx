@@ -41,7 +41,7 @@ function MarkAttendance() {
 
   return (
     <>
-      <Button variant="contained" disableElevation onClick={handleClickOpen}>
+      <Button variant="text" size="small" disableElevation onClick={handleClickOpen}>
         Mark Attendance
       </Button>
 
@@ -78,11 +78,7 @@ function MarkAttendance() {
             </Typography>
 
             <FormControl sx={{ height: '3rem' }} size="small">
-              <Select
-                value={age}
-                displayEmpty
-                onChange={handleChange}
-              >
+              <Select value={age} displayEmpty onChange={handleChange}>
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
