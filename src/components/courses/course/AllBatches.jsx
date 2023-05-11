@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import NewBatch from './NewBatch';
 import BatchesFilter from './BatchesFilter';
-import UsersListTable from '../common/UsersListTable';
-import { logout } from '../../slices/adminAuth';
-import api from '../../utils/api';
+import UsersListTable from '../../common/UsersListTable';
+import { logout } from '../../../slices/adminAuth';
+import api from '../../../utils/api';
 
 function AllBatches() {
   const [users, setUsers] = useState([]);

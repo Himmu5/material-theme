@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Box, Chip, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import api from '../../utils/api';
+import api from '../../../utils/api';
 
 function BatchesFilter({ filter, changeFilter }) {
   const [batches, setBatches] = useState([]);

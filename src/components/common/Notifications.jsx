@@ -58,7 +58,7 @@ function Notifications() {
         onClick={handleClose}
         PaperProps={{
           elevation: 0,
-          style: { maxHeight: 300, width: 450 },
+          style: { maxHeight: 350, width: 450 },
           sx: {
             overflow: 'visible',
             borderRadius: 3,

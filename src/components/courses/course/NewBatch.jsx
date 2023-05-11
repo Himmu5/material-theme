@@ -16,7 +16,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
 // import * as Yup from 'yup';
-import api from '../../utils/api';
+import api from '../../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {

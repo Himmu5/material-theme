@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

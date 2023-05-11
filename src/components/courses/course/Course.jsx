@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import AllBatches from './AllBatches';
 import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
-import api from '../../utils/api';
+import api from '../../../utils/api';
 
 function Course() {
   useEffect(() => {

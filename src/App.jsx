@@ -1,24 +1,25 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import { CircularProgress } from '@mui/material';
-import Dashboard from './pages/dashboard/Dashboard';
-import Users from './pages/dashboard/Users';
-import Courses from './pages/dashboard/Courses';
-import ScheduledSlots from './pages/dashboard/ScheduledSlots';
-import Vouchers from './pages/dashboard/Vouchers';
-import Initial from './pages/Initial';
-import Course from './components/courses/Course';
+import Loading from './components/common/Loading';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
+const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
+const Users = React.lazy(() => import('./pages/dashboard/Users'));
+const Courses = React.lazy(() => import('./pages/dashboard/Courses'));
+const ScheduledSlots = React.lazy(() => import('./pages/dashboard/ScheduledSlots'));
+const Vouchers = React.lazy(() => import('./pages/dashboard/Vouchers'));
+const Initial = React.lazy(() => import('./pages/Initial'));
+const Course = React.lazy(() => import('./components/courses/Course'));
 
 function WaitWhileLoad({ children }) {
-  return <Suspense fallback={<CircularProgress size="small" />}>{children}</Suspense>;
+  return <Suspense fallback={<Loading />}>{children}</Suspense>;
 }
 
 function App() {
   return (
-    <Suspense fallback={<CircularProgress size="small" />}>
+    <Suspense fallback={<Loading />}>
       <Routes>
         <Route
           index

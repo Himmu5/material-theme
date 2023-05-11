@@ -1,6 +1,6 @@
 import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
-import dummy from '../../../assets/dummy.jpg';
+import dummy from '../../../../assets/dummy.jpg';
 
 function CourseInfoCard() {
   return (

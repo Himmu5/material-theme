@@ -13,6 +13,8 @@ import {
 } from '@mui/material';
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import AttendanceSearch from './AttendanceSearch';
+import StudentsList from './StudentsList';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -73,21 +75,31 @@ function MarkAttendance() {
           ) : null}
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h4" fontWeight={600}>
+            <Typography variant="h4" fontWeight={600} lineHeight={1}>
               Mark Attendance
             </Typography>
 
-            <FormControl sx={{ height: '3rem' }} size="small">
-              <Select value={age} displayEmpty onChange={handleChange}>
-                <MenuItem value="">
+            <FormControl size="small">
+              <Select
+                value={age}
+                displayEmpty
+                sx={{ borderRadius: 3 }}
+                onChange={handleChange}
+                size="small"
+              >
+                <MenuItem value="" disabled>
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value={10}>01/05/2023</MenuItem>
+                <MenuItem value={20}>02/05/2023</MenuItem>
+                <MenuItem value={30}>03/05/2023</MenuItem>
               </Select>
             </FormControl>
           </Box>
+
+          <AttendanceSearch />
+
+          <StudentsList />
         </DialogTitle>
         <DialogContent />
       </Dialog>
