@@ -5,7 +5,8 @@ import { Box, Chip, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import api from '../../../utils/api';
 
-function BatchesFilter({ filter, changeFilter }) {
+function BatchesFilter({ filter, changeFilter, courseId }) {
+  console.log(courseId);
   const [batches, setBatches] = useState([]);
   const [active, setActive] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,7 +14,7 @@ function BatchesFilter({ filter, changeFilter }) {
   useEffect(() => {
     setLoading(true);
     api.batch
-      .list()
+      .list(courseId)
       .then((res) => {
         setLoading(false);
         console.log(res.data);

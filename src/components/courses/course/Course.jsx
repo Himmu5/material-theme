@@ -6,7 +6,7 @@ import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
 import api from '../../../utils/api';
 
-function Course() {
+function Course({ course = null }) {
   useEffect(() => {
     api.batch.list().then((res) => console.log(res));
   }, []);
@@ -42,7 +42,7 @@ function Course() {
         <ScheduleCard />
       </Box>
 
-      <AllBatches page="courses" />
+      <AllBatches page="courses" course={course} />
     </Box>
   );
 }

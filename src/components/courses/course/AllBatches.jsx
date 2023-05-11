@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Box, Paper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -9,7 +10,7 @@ import UsersListTable from '../../common/UsersListTable';
 import { logout } from '../../../slices/adminAuth';
 import api from '../../../utils/api';
 
-function AllBatches() {
+function AllBatches({ course }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(null);
@@ -74,7 +75,11 @@ function AllBatches() {
           gap: 2,
         }}
       >
-        <BatchesFilter filter={filter} changeFilter={(batchId) => handleFilterChange(batchId)} />
+        <BatchesFilter
+          filter={filter}
+          changeFilter={(batchId) => handleFilterChange(batchId)}
+          courseId={course?._id}
+        />
       </Box>
 
       <UsersListTable page="course" rows={users} loading={loading} />
