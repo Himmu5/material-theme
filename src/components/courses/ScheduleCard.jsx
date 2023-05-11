@@ -25,7 +25,7 @@ function ScheduleCard() {
     >
       <div>
         <Typography variant="h6" color="text.secondary">
-          Today’s Schedule
+          Today&apos;s Schedule
         </Typography>
         <Typography variant="h3" fontWeight={600}>
           Marking and Excavation
@@ -33,7 +33,7 @@ function ScheduleCard() {
       </div>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box display="flex" alignItems="end" height="100%" gap={0.4}>
+        <Box display="flex" alignItems="center" height="100%" gap={0.4}>
           <Typography variant="h6" fontWeight={600}>
             03
           </Typography>

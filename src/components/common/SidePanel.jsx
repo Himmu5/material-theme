@@ -9,6 +9,7 @@ import { GiOpenBook } from 'react-icons/gi';
 import { HiTicket } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom';
 import textLogo from '../../../assets/text_logo.svg';
+import Notifications from './Notifications';
 
 function ListItem({ isActive = false, children, ...props }) {
   return (
@@ -75,6 +76,8 @@ function SidePanel() {
           py: 3,
           position: 'relative',
           bgcolor: 'primary.dark',
+          display: 'flex',
+          alignItems: 'start',
         }}
       >
         <img
@@ -82,6 +85,8 @@ function SidePanel() {
           alt="logo"
           style={{ objectFit: 'contain', width: '100%', height: '100%' }}
         />
+
+        <Notifications />
       </Box>
 
       <Box sx={{ pl: 'min(24px,5vw)', py: 3 }}>

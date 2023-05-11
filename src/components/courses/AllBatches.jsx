@@ -9,7 +9,7 @@ import UsersListTable from '../common/UsersListTable';
 import { logout } from '../../slices/adminAuth';
 import api from '../../utils/api';
 
-function AllBatches({ page = 'users' }) {
+function AllBatches() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(null);
@@ -34,33 +34,15 @@ function AllBatches({ page = 'users' }) {
             navigate('/admin-login');
           }
         });
-    } else {
-      api.users
-        .list()
-        .then((res) => {
-          setUsers(res.data);
-          console.log(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          if (err?.response?.status === 401) {
-            dispatch(logout());
-            navigate('/admin-login');
-          }
-        });
     }
   }, [filter]);
 
   const handleFilterChange = (batchId) => setFilter(batchId);
 
-  console.log(filter);
-
   return (
     <Paper
       component={motion.div}
-      initial={{ opacity: 0.6, y: page === 'users' ? 100 : -100 }}
+      initial={{ opacity: 0.6, y: -100 }}
       transition={{ type: 'tween' }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -76,28 +58,26 @@ function AllBatches({ page = 'users' }) {
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
         <Typography typography="h3" fontWeight={600}>
-          {page === 'users' ? 'All Users' : 'Registered Students and Progress'}
+          Registered Students and Progress
         </Typography>
 
-        {page === 'users' && <NewBatch />}
+        <NewBatch />
       </Box>
 
-      {page === 'courses' && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            mt: 1.5,
-            mb: 1,
-            gap: 2,
-          }}
-        >
-          <BatchesFilter filter={filter} changeFilter={(batchId) => handleFilterChange(batchId)} />
-        </Box>
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          mt: 1.5,
+          mb: 1,
+          gap: 2,
+        }}
+      >
+        <BatchesFilter filter={filter} changeFilter={(batchId) => handleFilterChange(batchId)} />
+      </Box>
 
-      <UsersListTable page={page} rows={users} loading={loading} />
+      <UsersListTable page="course" rows={users} loading={loading} />
     </Paper>
   );
 }

@@ -1,8 +1,9 @@
 import {
-  Box, Paper, Typography,
+  Box, IconButton, Paper, Typography,
 } from '@mui/material';
 import React from 'react';
 import { FaUserCheck } from 'react-icons/fa';
+import { SiMicrosoftexcel } from 'react-icons/si';
 
 function Signups() {
   return (
@@ -13,7 +14,7 @@ function Signups() {
         bgcolor: 'primary.main',
         display: 'flex',
         p: 2.5,
-        pr: 8,
+        pr: 5,
         gap: 2,
         alignItems: 'center',
         borderRadius: 4,
@@ -62,6 +63,11 @@ function Signups() {
             Not purchased
           </Typography>
         </Box>
+      </Box>
+      <Box sx={{ display: 'flex', alignSelf: 'end', height: '100%' }}>
+        <IconButton sx={{ color: '#5DDC21', width: 40, height: 40 }}>
+          <SiMicrosoftexcel />
+        </IconButton>
       </Box>
     </Box>
   );

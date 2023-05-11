@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import React from 'react';
 import { motion } from 'framer-motion';
 import Signups from '../../components/users/Signups';
-import AllBatches from '../../components/users/AllBatches';
+import AllUsers from '../../components/users/AllUsers';
 
 function Users() {
   return (
@@ -35,7 +35,7 @@ function Users() {
         {/* <Purchases /> */}
       </Box>
 
-      <AllBatches />
+      <AllUsers />
     </Box>
   );
 }

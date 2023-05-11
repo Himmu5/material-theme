@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import AllBatches from '../users/AllBatches';
+import AllBatches from './AllBatches';
 import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
 import api from '../../utils/api';

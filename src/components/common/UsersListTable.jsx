@@ -29,6 +29,7 @@ import colorFns from '../../utils/colorFunctions';
 // }));
 
 function UsersListTable({ rows = [], page, loading }) {
+  console.log(rows);
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
@@ -39,14 +40,14 @@ function UsersListTable({ rows = [], page, loading }) {
               <TableCell sx={{ color: 'inherit' }}>Name</TableCell>
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Phone</TableCell>}
               <TableCell sx={{ color: 'inherit' }}>Location</TableCell>
-              {page === 'courses' && (
+              {page === 'course' && (
                 <TableCell sx={{ color: 'inherit' }}>Type of Degree</TableCell>
               )}
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Education</TableCell>}
               <TableCell sx={{ color: 'inherit' }}>Course</TableCell>
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Batch</TableCell>}
               <TableCell sx={{ color: 'inherit' }}>Progress</TableCell>
-              {page === 'courses' && <TableCell sx={{ color: 'inherit' }}>MCQ score</TableCell>}
+              {page === 'course' && <TableCell sx={{ color: 'inherit' }}>MCQ score</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -110,7 +111,7 @@ function UsersListTable({ rows = [], page, loading }) {
                         </span>
                       )}
                     </TableCell>
-                    {page === 'courses' && <TableCell sx={{ color: 'inherit' }}>9.5</TableCell>}
+                    {page === 'course' && <TableCell sx={{ color: 'inherit' }}>9.5</TableCell>}
                   </TableRow>
                 ))}
             </AnimatePresence>

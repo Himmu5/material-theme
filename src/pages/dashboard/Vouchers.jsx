@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import {
-  Box, Button, Grid, Paper, Typography,
+  Box, Button, Grid, LinearProgress, Paper, Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,16 +30,20 @@ const animationChild = {
 function Vouchers() {
   const [selectable, setSelectable] = useState(false);
   const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     api.voucher
       .list()
       .then((res) => {
         console.log(res?.data[0]?.availableVoucherCodes);
+        setLoading(false);
         setVouchers(res?.data[0]?.availableVoucherCodes);
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
       });
   }, []);
 
@@ -53,12 +57,6 @@ function Vouchers() {
         sx={{
           bgcolor: '#fff',
           ml: -4,
-          px: 6,
-          pl: 10,
-          py: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
         }}
         elevation={3}
         component={motion.div}
@@ -66,19 +64,31 @@ function Vouchers() {
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ scale: 0.5, y: -50 }}
       >
-        <Typography variant="h3" fontWeight={600}>
-          Vouchers Data
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 6,
+            pl: 10,
+            py: 2,
+          }}
+        >
+          <Typography variant="h3" fontWeight={600}>
+            Vouchers Data
+          </Typography>
+          {selectable ? (
+            <Button variant="outlined" color="error" startIcon={<DeleteIcon />} disableElevation>
+              Delete
+            </Button>
+          ) : (
+            <Button variant="contained" startIcon={<AddIcon />} disableElevation>
+              Add Voucher
+            </Button>
+          )}
+        </Box>
 
-        {selectable ? (
-          <Button variant="outlined" color="error" startIcon={<DeleteIcon />} disableElevation>
-            Delete
-          </Button>
-        ) : (
-          <Button variant="contained" startIcon={<AddIcon />} disableElevation>
-            Add Voucher
-          </Button>
-        )}
+        {loading && <LinearProgress />}
       </Paper>
 
       <Grid

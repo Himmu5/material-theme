@@ -18,8 +18,8 @@ function BatchesFilter({ filter, changeFilter }) {
         setLoading(false);
         console.log(res.data);
         setBatches(res.data);
-        // changeFilter(res?.data && res.data.length > 0 ? res.data[0]._id : null);
-        // setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
+        changeFilter(res?.data && res.data.length > 0 ? res.data[0]._id : null);
+        setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
       })
       .catch((err) => {
         console.log(err);

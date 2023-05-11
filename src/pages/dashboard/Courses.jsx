@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import {
+  Box, CircularProgress, Grid, Paper, Typography,
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import api from '../../utils/api';
 import CourseCard from '../../components/courses/CourseCard';
@@ -25,15 +27,20 @@ const animationChild = {
 
 function Courses() {
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     api.course
       .list()
       .then((res) => {
         console.log(res);
+        setLoading(false);
         setCourses(res.data);
       })
       .catch((err) => {
+        setLoading(false);
+
         console.log(err);
       });
   }, []);
@@ -53,6 +60,20 @@ function Courses() {
       <Typography typography="h3" fontWeight={600}>
         All Courses
       </Typography>
+      {loading && (
+        <Paper
+          sx={{
+            borderRadius: '50%',
+            bgcolor: '#fff',
+            width: '2rem',
+            mx: 'auto',
+            height: '2rem',
+            p: 0.8,
+          }}
+        >
+          <CircularProgress color="primary" size="small" sx={{ width: '100%' }} />
+        </Paper>
+      )}
       <Grid
         container
         sx={{ width: '100%', py: 1 }}
