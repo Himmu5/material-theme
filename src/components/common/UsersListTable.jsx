@@ -40,9 +40,7 @@ function UsersListTable({ rows = [], page, loading }) {
               <TableCell sx={{ color: 'inherit' }}>Name</TableCell>
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Phone</TableCell>}
               <TableCell sx={{ color: 'inherit' }}>Location</TableCell>
-              {page === 'course' && (
-                <TableCell sx={{ color: 'inherit' }}>Type of Degree</TableCell>
-              )}
+              {page === 'course' && <TableCell sx={{ color: 'inherit' }}>Type of Degree</TableCell>}
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Education</TableCell>}
               <TableCell sx={{ color: 'inherit' }}>Course</TableCell>
               {page === 'users' && <TableCell sx={{ color: 'inherit' }}>Batch</TableCell>}
@@ -70,7 +68,7 @@ function UsersListTable({ rows = [], page, loading }) {
                       <div>{row.email}</div>
                     </TableCell>
                     {page === 'users' && (
-                      <TableCell sx={{ color: 'inherit' }}>{row.phone.number}</TableCell>
+                      <TableCell sx={{ color: 'inherit' }}>{row?.phone?.number}</TableCell>
                     )}
 
                     <TableCell sx={{ color: 'inherit' }}>{row.location}</TableCell>
@@ -100,8 +98,7 @@ function UsersListTable({ rows = [], page, loading }) {
                             width: '5rem',
                           }}
                         >
-                          {row.coursesRegistered[0].activity.progress}
-                          %
+                          0%
                         </Box>
                       ) : (
                         <span

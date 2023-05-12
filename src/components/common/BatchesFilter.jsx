@@ -3,7 +3,8 @@
 /* eslint-disable no-underscore-dangle */
 import { Box, Chip, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import api from '../../../utils/api';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import api from '../../utils/api';
 
 function BatchesFilter({ filter, changeFilter, courseId }) {
   console.log(courseId);
@@ -42,8 +43,8 @@ function BatchesFilter({ filter, changeFilter, courseId }) {
         overflowX: 'auto',
       }}
     >
-      {batches.length > 0 && !loading
-        ? batches.map((batch) => (
+      {batches.length > 0 && !loading ? (
+        batches.map((batch) => (
           <Chip
             key={batch?._id}
             label={batch?.name}
@@ -53,18 +54,28 @@ function BatchesFilter({ filter, changeFilter, courseId }) {
             sx={{ transition: 'all 0.3s ease-in-out' }}
           />
         ))
-        : loading
-          ? [...new Array(3)].map((skel, index) => (
-            <Skeleton
-              key={`skeleton-${skel}-${index}`}
-              variant="rounded"
-              animation="wave"
-              sx={{ borderRadius: '20px' }}
-              width={150}
-              height={30}
-            />
-          ))
-          : null}
+      ) : loading ? (
+        [...new Array(3)].map((skel, index) => (
+          <Skeleton
+            key={`skeleton-${skel}-${index}`}
+            variant="rounded"
+            animation="wave"
+            sx={{ borderRadius: '20px' }}
+            width={150}
+            height={30}
+          />
+        ))
+      ) : batches.length === 0 ? (
+        <Chip
+          color="warning"
+          variant="outlined"
+          // size="small"
+          label="No batches found for this course"
+          icon={<ErrorOutlineIcon />}
+        />
+      ) : (
+        0
+      )}
     </Box>
   );
 }

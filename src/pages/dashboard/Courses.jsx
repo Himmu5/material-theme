@@ -1,6 +1,13 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import {
-  Box, CircularProgress, Grid, Paper, Typography,
+  Box,
+  CircularProgress,
+  Grid,
+  LinearProgress,
+  Paper,
+  Skeleton,
+  Typography,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import api from '../../utils/api';
@@ -49,55 +56,78 @@ function Courses() {
     <Box
       sx={{
         flexGrow: 1,
-        py: 3,
-        px: 5,
-        display: 'flex',
-        flexDirection: 'column',
         height: '100vh',
-        gap: 1,
       }}
     >
-      <Typography typography="h3" fontWeight={600}>
-        All Courses
-      </Typography>
-      {loading && (
-        <Paper
-          sx={{
-            borderRadius: '50%',
-            bgcolor: '#fff',
-            width: '2rem',
-            mx: 'auto',
-            height: '2rem',
-            p: 0.8,
-          }}
-        >
-          <CircularProgress color="primary" size="small" sx={{ width: '100%' }} />
-        </Paper>
-      )}
-      <Grid
-        container
-        sx={{ width: '100%', py: 1 }}
-        rowGap={3}
-        columnGap={4}
-        component={motion.div}
-        initial="hidden"
-        animate="show"
-        variants={animationParent}
-        viewport={{ once: true }}
+      {loading && <LinearProgress sx={{ ml: -4 }} color="primary" />}
+      <Box
+        sx={{
+          py: 3,
+          px: 5,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          gap: 1,
+        }}
       >
-        {courses.length > 0
-          && courses.map((course) => (
-            <Grid
-              item
-              xs="auto"
-              component={motion.div}
-              variants={animationChild}
-              viewport={{ once: true }}
-            >
-              <CourseCard course={course} />
-            </Grid>
-          ))}
-      </Grid>
+        <Typography typography="h3" fontWeight={600}>
+          All Courses
+        </Typography>
+
+        {loading && courses.length === 0 && (
+          <Grid
+            container
+            sx={{ width: '100%', py: 1 }}
+            rowGap={3}
+            columnGap={4}
+            component={motion.div}
+            initial="hidden"
+            animate="show"
+            exit={{ opacity: 0, y: -10, x: -10 }}
+            variants={animationParent}
+            viewport={{ once: true }}
+          >
+            {[...new Array(3)].map((course) => (
+              <Grid
+                item
+                xs="auto"
+                key={course?._id}
+                component={motion.div}
+                variants={animationChild}
+                viewport={{ once: true }}
+              >
+                <Skeleton width={270} height={350} sx={{ borderRadius: 4 }} variant="rounded" />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+
+        <Grid
+          container
+          sx={{ width: '100%', py: 1 }}
+          rowGap={3}
+          columnGap={4}
+          component={motion.div}
+          initial="hidden"
+          animate="show"
+          variants={animationParent}
+          viewport={{ once: true }}
+        >
+          {courses.length > 0
+            && courses.map((course) => (
+              <Grid
+                item
+                xs="auto"
+                key={course?._id}
+                component={motion.div}
+                variants={animationChild}
+                viewport={{ once: true }}
+              >
+                <CourseCard course={course} />
+              </Grid>
+            ))}
+        </Grid>
+      </Box>
     </Box>
   );
 }

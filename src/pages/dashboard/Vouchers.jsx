@@ -1,10 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 import AddIcon from '@mui/icons-material/Add';
 import {
-  Box, Button, Grid, LinearProgress, Paper, Typography,
+  Box, Button, Grid, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Voucher from '../../components/vouchers/Voucher';
 import api from '../../utils/api';
 
@@ -91,6 +92,32 @@ function Vouchers() {
         {loading && <LinearProgress />}
       </Paper>
 
+      {loading && vouchers.length === 0 ? (
+        <Grid
+          container
+          sx={{ width: '100%', p: 5 }}
+          rowGap={3}
+          columnGap={4}
+          component={motion.div}
+          initial="hidden"
+          animate="show"
+          variants={animationParent}
+          viewport={{ once: true }}
+        >
+          {[...new Array(5)].map(() => (
+            <Grid
+              item
+              xs="auto"
+              component={motion.div}
+              variants={animationChild}
+              viewport={{ once: true }}
+            >
+              <Skeleton variant="rectangular" width={240} height={115} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : null}
+
       <Grid
         container
         sx={{ width: '100%', p: 5 }}
@@ -102,18 +129,6 @@ function Vouchers() {
         variants={animationParent}
         viewport={{ once: true }}
       >
-        {/* {[...new Array(16)].map(() => (
-          <Grid
-            item
-            xs="auto"
-            component={motion.div}
-            variants={animationChild}
-            viewport={{ once: true }}
-          >
-            <Voucher selectable={selectable} select={() => handleVoucherClick()} />
-          </Grid>
-        ))} */}
-
         {vouchers.length > 0
           && vouchers.map((voucher) => (
             <Grid

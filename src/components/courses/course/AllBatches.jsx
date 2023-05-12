@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import NewBatch from './NewBatch';
-import BatchesFilter from './BatchesFilter';
+import BatchesFilter from '../../common/BatchesFilter';
 import UsersListTable from '../../common/UsersListTable';
 import { logout } from '../../../slices/adminAuth';
 import api from '../../../utils/api';
@@ -18,8 +18,8 @@ function AllBatches({ course }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
     if (filter) {
+      setLoading(true);
       api.batch
         .getByBatch(filter)
         .then((res) => {
