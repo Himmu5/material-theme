@@ -68,9 +68,9 @@ function CourseCard({ course }) {
             </Typography>
           </Box>
           <Box display="flex" alignItems="end" color="text.primary" gap={0.3}>
-            <Typography variant="h6">30</Typography>
+            <Typography variant="h6">{course?.durationInMonths}</Typography>
             <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Days
+              {course?.durationInMonths <= 1 ? 'Month' : 'Months'}
             </Typography>
           </Box>
         </Box>

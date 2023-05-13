@@ -1,21 +1,22 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import textLogo from '../../assets/text_logo.svg';
 import LoginForm from '../components/admin-login/LoginForm';
 import { login } from '../slices/adminAuth';
+import construction from '../../assets/construction.svg';
 
 const initialValues = {
   email: '',
   password: '',
 };
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Enter a valid email!').required('This field is required!'),
-  password: Yup.string().required('This field is required!'),
+const validationSchema = yup.object().shape({
+  email: yup.string().email('Enter a valid email!').required('Email is required!'),
+  password: yup.string().required('Password is required!'),
 });
 
 export default function AdminLogin() {
@@ -61,7 +62,27 @@ export default function AdminLogin() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
-      <Box sx={{ flex: '0 0 50%', bgcolor: 'primary.main' }} />
+      <Box
+        sx={{
+          flex: '0 0 50%',
+          bgcolor: 'primary.main',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            width: 'min(45vw,45rem)',
+          }}
+        >
+          <img
+            alt="construction"
+            src={construction}
+            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+          />
+        </Box>
+      </Box>
       <Box
         sx={{
           flex: '0 0 50%',
@@ -92,7 +113,7 @@ export default function AdminLogin() {
             <img
               src={textLogo}
               alt="logo"
-              style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+              style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
             />
           </Box>
 

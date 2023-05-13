@@ -9,13 +9,14 @@ import {
   InputBase,
   Typography,
   styled,
+  FormHelperText,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import React from 'react';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
-// import * as Yup from 'yup';
+import * as yup from 'yup';
 import api from '../../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
@@ -27,17 +28,18 @@ const Dialog = styled(MuiDialog)(() => ({
 
 const initialValues = {
   batchName: '',
-  courseName: 'Civil Survey Course',
+  courseID: '64523e36119d9d4ff40c4501',
   numberOfIntakes: 30,
   startDate: '',
   endDate: '',
   purchaseAvailability: '',
 };
 
-// const validationSchema = Yup.object().shape({
-//   email: Yup.string().email('Enter a valid email!').required('This field is required!'),
-//   password: Yup.string().required('This field is required!'),
-// });
+const validationSchema = yup.object({
+  batchName: yup.string().required('Batch name is required!'),
+  numberOfIntakes: yup.number('Enter a number'),
+  startDate: yup.date('Invalid date'),
+});
 
 function NewBatch({ loading = false }) {
   const [open, setOpen] = React.useState(false);
@@ -64,7 +66,7 @@ function NewBatch({ loading = false }) {
 
   const formik = useFormik({
     initialValues,
-    // validationSchema,
+    validationSchema,
     onSubmit: (values) => {
       console.log(values);
       submitBatch(values);
@@ -136,8 +138,8 @@ function NewBatch({ loading = false }) {
                 value={formik.values.batchName}
                 onChange={formik.handleChange}
                 error={formik.touched.batchName && Boolean(formik.errors.batchName)}
-                helperText={formik.touched.batchName && formik.errors.batchName}
               />
+              <FormHelperText>{formik.touched.batchName && formik.errors.batchName}</FormHelperText>
             </FormControl>
 
             {/* <FormControl fullWidth>
@@ -178,14 +180,17 @@ function NewBatch({ loading = false }) {
                 name="numberOfIntakes"
                 size="small"
                 sx={{ mt: 1 }}
+                type="number"
                 fullWidth
                 color="secondary"
                 disabled={loading}
                 value={formik.values.numberOfIntakes}
                 onChange={formik.handleChange}
                 error={formik.touched.numberOfIntakes && Boolean(formik.errors.numberOfIntakes)}
-                helperText={formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
               />
+              <FormHelperText>
+                {formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
+              </FormHelperText>
             </FormControl>
 
             <Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -210,8 +215,10 @@ function NewBatch({ loading = false }) {
                   value={formik.values.startDate}
                   onChange={formik.handleChange}
                   error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                  helperText={formik.touched.startDate && formik.errors.startDate}
                 />
+                <FormHelperText>
+                  {formik.touched.startDate && formik.errors.startDate}
+                </FormHelperText>
               </FormControl>
 
               <FormControl fullWidth>
@@ -235,8 +242,8 @@ function NewBatch({ loading = false }) {
                   value={formik.values.endDate}
                   onChange={formik.handleChange}
                   error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-                  helperText={formik.touched.endDate && formik.errors.endDate}
                 />
+                <FormHelperText>{formik.touched.endDate && formik.errors.endDate}</FormHelperText>
               </FormControl>
             </Box>
 
@@ -263,10 +270,10 @@ function NewBatch({ loading = false }) {
                 error={
                   formik.touched.purchaseAvailibility && Boolean(formik.errors.purchaseAvailibility)
                 }
-                helperText={
-                  formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility
-                }
               />
+              <FormHelperText>
+                {formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility}
+              </FormHelperText>
             </FormControl>
             <Box
               sx={{
