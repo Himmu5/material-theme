@@ -12,8 +12,8 @@ const api = {
       const path = 'admin/add-batch';
       return axios.post(path, batchData).then((res) => res.data);
     },
-    list: () => {
-      const path = '/admin/all-batches';
+    list: (id) => {
+      const path = `/admin/all-batches/?courseID=${id}`;
       return axios.get(path).then((res) => res.data);
     },
     getByBatch: (id) => {
@@ -30,6 +30,10 @@ const api = {
   course: {
     list: () => {
       const path = '/admin/all-courses';
+      return axios.get(path).then((res) => res.data);
+    },
+    getById: (id) => {
+      const path = `/admin/all-courses/${id}`;
       return axios.get(path).then((res) => res.data);
     },
   },

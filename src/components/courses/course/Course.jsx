@@ -1,15 +1,27 @@
 import { Box } from '@mui/material';
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useParams } from 'react-router-dom';
 import AllBatches from './AllBatches';
 import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
 import api from '../../../utils/api';
 
-function Course({ course = null }) {
+function Course() {
+  const params = useParams();
+  const courseId = params?.id ? params.id : null;
+
   useEffect(() => {
-    api.batch.list().then((res) => console.log(res));
+    api.course
+      .getById('64523e36119d9d4ff40c4501')
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
+
   return (
     <Box
       sx={{
@@ -42,7 +54,7 @@ function Course({ course = null }) {
         <ScheduleCard />
       </Box>
 
-      <AllBatches page="courses" course={course} />
+      <AllBatches courseId={courseId} />
     </Box>
   );
 }

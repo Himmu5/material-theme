@@ -10,7 +10,7 @@ import UsersListTable from '../../common/UsersListTable';
 import { logout } from '../../../slices/adminAuth';
 import api from '../../../utils/api';
 
-function AllBatches({ course }) {
+function AllBatches({ courseId }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(null);
@@ -78,7 +78,7 @@ function AllBatches({ course }) {
         <BatchesFilter
           filter={filter}
           changeFilter={(batchId) => handleFilterChange(batchId)}
-          courseId={course?._id}
+          courseId={courseId}
         />
       </Box>
 

@@ -1,6 +1,8 @@
 import {
   Box,
+  Button,
   CircularProgress,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -11,30 +13,18 @@ import {
   Typography,
 } from '@mui/material';
 import React, { memo } from 'react';
-import '../../common/table.css';
+import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
-
-// const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
-//   '&.MuiTableRow-head': {
-//     backgroundColor: '#ECECEC',
-//     borderRadius: '16px',
-//   },
-
-//   '&.MuiTableRow-root': {
-//     border: 0,
-//     margin: '0.5rem 0',
-//     borderRadius: '16px',
-//   },
-// }));
+import { TiTick } from 'react-icons/ti';
 
 function StudentsList({ rows = [], page, loading }) {
   console.log(rows);
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
-        <Table style={{ width: '100%', borderSpacing: '0 12px' }}>
+        <Table style={{ width: '100%', borderSpacing: '0 12px' }} className="attendance-list">
           <TableHead>
-            <TableRow sx={{ color: '#5c5c5c' }}>
+            <TableRow sx={{ color: '#5c5c5c' }} className="attendance-list-head">
               <TableCell sx={{ color: 'inherit' }}>SI no.</TableCell>
               <TableCell sx={{ color: 'inherit' }}>Name</TableCell>
               <TableCell sx={{ color: 'inherit' }}>Email</TableCell>
@@ -43,46 +33,60 @@ function StudentsList({ rows = [], page, loading }) {
           </TableHead>
           <TableBody>
             <AnimatePresence>
-              {rows.length > 0
-                && rows.map((row, index) => (
-                  <TableRow
-                    component={motion.tr}
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
-                    transition={{ type: 'tween' }}
-                    viewport={{ once: true }}
-                    key={row.name}
-                    sx={{ color: '#707070' }}
+              {/* {rows.length > 0
+                && rows.map((row, index) => ( */}
+              <TableRow
+                component={motion.tr}
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -10, opacity: 0 }}
+                transition={{ type: 'tween' }}
+                viewport={{ once: true }}
+                // key={row.name}
+                sx={{ color: '#707070' }}
+              >
+                <TableCell sx={{ color: 'inherit' }}>1</TableCell>
+                <TableCell sx={{ color: 'inherit' }}>Mark spectre</TableCell>
+                <TableCell sx={{ color: 'inherit' }}>Markspc@gmail.com</TableCell>
+                <TableCell
+                  sx={{
+                    color: 'inherit',
+                  }}
+                >
+                  <Button
+                    size="small"
+                    sx={{
+                      justifyContent: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      height: 24,
+                    }}
                   >
-                    <TableCell sx={{ color: 'inherit' }}>{index + 1}</TableCell>
-                    <TableCell sx={{ color: 'inherit' }}>
-                      <div style={{ color: 'black' }}>{row.name}</div>
-                      <div>{row.email}</div>
-                    </TableCell>
-                    {page === 'users' && (
-                      <TableCell sx={{ color: 'inherit' }}>{row.phone.number}</TableCell>
-                    )}
-
-                    <TableCell sx={{ color: 'inherit' }}>{row.location}</TableCell>
-
-                    <TableCell sx={{ color: 'inherit' }}>{row.degree}</TableCell>
-                    <TableCell sx={{ color: 'inherit' }}>
-                      {row?.coursesRegistered && row.coursesRegistered.length > 0
-                        ? row.coursesRegistered[0].course.name
-                        : null}
-                    </TableCell>
-                    {page === 'users' && (
-                      <TableCell sx={{ color: 'inherit' }}>
-                        {row?.coursesRegistered && row.coursesRegistered.length > 0
-                          ? row.coursesRegistered[0].batch.name
-                          : null}
-                      </TableCell>
-                    )}
-
-                    {page === 'course' && <TableCell sx={{ color: 'inherit' }}>9.5</TableCell>}
-                  </TableRow>
-                ))}
+                    Mark
+                    <Box
+                      sx={{
+                        width: 14,
+                        height: 14,
+                        bgcolor: '#fff',
+                        borderRadius: '50%',
+                        transition: 'all 0.3s ease-in-out',
+                        fontSize: 18,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'primary.light',
+                        borderColor: '#808080',
+                        border: 1.5,
+                        mr: 0.7,
+                      }}
+                    >
+                      <TiTick />
+                    </Box>
+                  </Button>
+                </TableCell>
+              </TableRow>
+              {/* ))} */}
             </AnimatePresence>
           </TableBody>
         </Table>

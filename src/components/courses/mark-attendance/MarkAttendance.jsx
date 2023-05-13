@@ -15,6 +15,7 @@ import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import AttendanceSearch from './AttendanceSearch';
 import StudentsList from './StudentsList';
+import './select.css';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -81,6 +82,7 @@ function MarkAttendance() {
 
             <FormControl size="small">
               <Select
+                className="date-select"
                 value={age}
                 displayEmpty
                 sx={{ borderRadius: 3 }}
