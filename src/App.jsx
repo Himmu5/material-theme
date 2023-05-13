@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import { CircularProgress } from '@mui/material';
 import Loading from './components/common/Loading';
 
 // pages for lazy load
