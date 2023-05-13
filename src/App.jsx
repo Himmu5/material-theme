@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import { CircularProgress } from '@mui/material';
 import Loading from './components/common/Loading';
 
 // pages for lazy load
@@ -11,7 +10,7 @@ const Courses = React.lazy(() => import('./pages/dashboard/Courses'));
 const ScheduledSlots = React.lazy(() => import('./pages/dashboard/ScheduledSlots'));
 const Vouchers = React.lazy(() => import('./pages/dashboard/Vouchers'));
 const Initial = React.lazy(() => import('./pages/Initial'));
-const Course = React.lazy(() => import('./components/courses/Course'));
+const Course = React.lazy(() => import('./components/courses/course/Course'));
 
 function WaitWhileLoad({ children }) {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
