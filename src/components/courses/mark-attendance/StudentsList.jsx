@@ -1,8 +1,6 @@
 import {
   Box,
-  Button,
   CircularProgress,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -12,13 +10,14 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TiTick } from 'react-icons/ti';
 
-function StudentsList({ rows = [], page, loading }) {
-  console.log(rows);
+function StudentsList({ rows = [], loading }) {
+  const [marked, setMarked] = useState(false);
+
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
@@ -36,6 +35,7 @@ function StudentsList({ rows = [], page, loading }) {
               {/* {rows.length > 0
                 && rows.map((row, index) => ( */}
               <TableRow
+                hover
                 component={motion.tr}
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -43,47 +43,68 @@ function StudentsList({ rows = [], page, loading }) {
                 transition={{ type: 'tween' }}
                 viewport={{ once: true }}
                 // key={row.name}
-                sx={{ color: '#707070' }}
+                sx={{
+                  color: marked ? '#fff' : '#707070',
+                }}
+                onClick={() => setMarked((prev) => !prev)}
               >
-                <TableCell sx={{ color: 'inherit' }}>1</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>Mark spectre</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>Markspc@gmail.com</TableCell>
                 <TableCell
                   sx={{
                     color: 'inherit',
+                    bgcolor: marked ? '#19488C !important' : 'transparent',
+                    transition: 'all 0.2s ease-in-out',
                   }}
                 >
-                  <Button
-                    size="small"
+                  1
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: 'inherit',
+                    bgcolor: marked ? '#19488C !important' : 'transparent',
+                    transition: 'all 0.2s ease-in-out',
+                  }}
+                >
+                  Mark spectre
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: 'inherit',
+                    bgcolor: marked ? '#19488C !important' : 'transparent',
+                    transition: 'all 0.2s ease-in-out',
+                  }}
+                >
+                  Markspc@gmail.com
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: 'inherit',
+                    bgcolor: marked ? '#19488C !important' : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    transition: 'all 0.2s ease-in-out',
+                    gap: 0.5,
+                  }}
+                >
+                  {marked ? 'Marked' : 'Mark'}
+                  <Box
                     sx={{
-                      justifyContent: 'center',
+                      width: 14,
+                      height: 14,
+                      bgcolor: '#fff',
+                      borderRadius: '50%',
+                      transition: 'all 0.2s ease-in-out',
+                      fontSize: 18,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 0.5,
-                      height: 24,
+                      justifyContent: 'center',
+                      color: 'primary.light',
+                      border: 1.5,
+                      borderColor: '#808080',
+                      mr: 0.7,
                     }}
                   >
-                    Mark
-                    <Box
-                      sx={{
-                        width: 14,
-                        height: 14,
-                        bgcolor: '#fff',
-                        borderRadius: '50%',
-                        transition: 'all 0.3s ease-in-out',
-                        fontSize: 18,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'primary.light',
-                        borderColor: '#808080',
-                        border: 1.5,
-                        mr: 0.7,
-                      }}
-                    >
-                      <TiTick />
-                    </Box>
-                  </Button>
+                    {marked && <TiTick />}
+                  </Box>
                 </TableCell>
               </TableRow>
               {/* ))} */}

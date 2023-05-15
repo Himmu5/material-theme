@@ -34,7 +34,7 @@
 }
 
 .attendance-list > tbody > tr > td {
-  padding: 0.6rem 0.7rem !important;
+  padding: 0.6rem 1rem !important;
   border-top: 1px solid #c1c5c8;
   border-bottom: 1px solid #c1c5c8;
 }

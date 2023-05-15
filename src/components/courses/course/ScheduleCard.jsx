@@ -1,6 +1,4 @@
-import {
-  Box, Paper, Typography,
-} from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import MarkAttendance from '../mark-attendance/MarkAttendance';
 
@@ -37,16 +35,14 @@ function ScheduleCard() {
           <Typography variant="h6" fontWeight={600}>
             03
           </Typography>
-          <Typography variant="body2" sx={{ mb: 0.2 }}>
-            Apr,
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mr: 1, mb: 0.2 }}>
+          <Typography variant="body2">Apr,</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
             2023
           </Typography>
           <Typography variant="h6" fontWeight={600}>
             06
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.2 }}>
+          <Typography variant="body2" color="text.secondary">
             bookings
           </Typography>
         </Box>

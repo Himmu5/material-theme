@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import dummy from '../../../../assets/dummy.jpg';
 
-function CourseInfoCard() {
+function CourseInfoCard({ course }) {
   return (
     <Box
       component={Paper}
@@ -19,8 +19,8 @@ function CourseInfoCard() {
     >
       <Box sx={{ width: 'min(16rem,30vw)', height: 'min(14rem,25vw)', position: 'relative' }}>
         <img
-          src={dummy}
-          alt="thumb"
+          src={course?.coverPicture}
+          alt={course?.name}
           style={{
             width: '100%',
             height: '100%',
@@ -57,9 +57,9 @@ function CourseInfoCard() {
             </Typography>
           </Box>
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            <Typography variant="h6">30</Typography>
+            <Typography variant="h6">{course?.durationInMonths}</Typography>
             <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Days
+              {course?.durationInMonths <= 1 ? 'Month' : 'Months'}
             </Typography>
           </Box>
         </Box>
@@ -74,7 +74,7 @@ function CourseInfoCard() {
         }}
       >
         <Typography variant="h3" fontWeight={700} sx={{ mb: 2 }}>
-          Getting started with Civil Engineering
+          {course?.name}
         </Typography>
         <Typography>
           Lorem ipsum dolor sit amet consectetur. Elementum sit tincidunt tempus at ac.r.

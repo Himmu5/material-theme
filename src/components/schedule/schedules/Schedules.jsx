@@ -8,7 +8,13 @@ function Schedules() {
   const [expandedSchedule, setExpandedSchedule] = useState(null);
 
   return (
-    <Box sx={{ pl: 3, height: '100%' }}>
+    <Box
+      sx={{
+        pl: 3,
+        height: '100%',
+        flexGrow: 1,
+      }}
+    >
       <Paper
         component={motion.div}
         initial={{ opacity: 0.6, y: 100 }}

@@ -20,15 +20,10 @@ function ScheduledSlots() {
         Scheduled Slots
       </Typography>
 
-      <Grid container sx={{ flexGrow: 1 }}>
-        <Grid item xs={5}>
-          <Courses />
-        </Grid>
-
-        <Grid item xs={7}>
-          <Schedules />
-        </Grid>
-      </Grid>
+      <Box sx={{ display: 'flex' }}>
+        <Courses />
+        <Schedules />
+      </Box>
     </Box>
   );
 }

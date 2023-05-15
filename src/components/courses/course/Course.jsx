@@ -1,21 +1,25 @@
-import { Box } from '@mui/material';
-import React, { useEffect } from 'react';
+import { Box, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import AllBatches from './AllBatches';
 import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
 import api from '../../../utils/api';
 
 function Course() {
+  const [course, setCourse] = useState(null);
   const params = useParams();
   const courseId = params?.id ? params.id : null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.course
-      .getById('64523e36119d9d4ff40c4501')
+      .getById('')
       .then((res) => {
         console.log(res);
+        setCourse(res.data.length > 0 ? res.data[0] : null);
       })
       .catch((err) => {
         console.log(err);
@@ -31,9 +35,17 @@ function Course() {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        gap: 3,
+        gap: 1,
       }}
     >
+      <Button
+        startIcon={<ArrowBackIosNewIcon />}
+        size="small"
+        sx={{ alignSelf: 'start', mt: -2 }}
+        onClick={() => navigate('/dashboard/courses')}
+      >
+        Go Back
+      </Button>
       <Box
         sx={{
           display: 'flex',
@@ -41,6 +53,7 @@ function Course() {
           justifyContent: 'start',
           gap: 3,
           pr: 3,
+          mb: 2,
           transformOrigin: 'left top',
         }}
         component={motion.div}
@@ -50,7 +63,7 @@ function Course() {
         viewport={{ once: true }}
         transition={{ type: 'tween' }}
       >
-        <CoursesInfoCard />
+        <CoursesInfoCard course={course} />
         <ScheduleCard />
       </Box>
 

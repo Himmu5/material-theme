@@ -104,7 +104,7 @@ function Vouchers() {
           variants={animationParent}
           viewport={{ once: true }}
         >
-          {[...new Array(5)].map(() => (
+          {[...new Array(3)].map(() => (
             <Grid
               item
               xs="auto"
@@ -112,7 +112,7 @@ function Vouchers() {
               variants={animationChild}
               viewport={{ once: true }}
             >
-              <Skeleton variant="rectangular" width={240} height={115} />
+              <Skeleton variant="rectangular" width={240} height={115} animation="wave" />
             </Grid>
           ))}
         </Grid>
@@ -135,7 +135,10 @@ function Vouchers() {
               item
               xs="auto"
               component={motion.div}
-              variants={animationChild}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -10, opacity: 0 }}
+              transition={{ type: 'tween' }}
               viewport={{ once: true }}
               key={`vouch-${voucher._id}`}
             >

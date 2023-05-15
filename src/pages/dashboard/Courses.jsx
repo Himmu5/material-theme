@@ -9,7 +9,7 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import api from '../../utils/api';
 import CourseCard from '../../components/courses/CourseCard';
 
@@ -75,30 +75,27 @@ function Courses() {
         </Typography>
 
         {loading && courses.length === 0 && (
-          <Grid
-            container
-            sx={{ width: '100%', py: 1 }}
-            rowGap={3}
-            columnGap={4}
-            component={motion.div}
-            initial="hidden"
-            animate="show"
-            exit={{ opacity: 0, y: -10, x: -10 }}
-            variants={animationParent}
-            viewport={{ once: true }}
-          >
-            {[...new Array(3)].map((course) => (
-              <Grid
-                item
-                xs="auto"
-                key={course?._id}
-                component={motion.div}
-                variants={animationChild}
-                viewport={{ once: true }}
-              >
-                <Skeleton width={270} height={350} sx={{ borderRadius: 4 }} variant="rounded" />
-              </Grid>
-            ))}
+          <Grid container sx={{ width: '100%', py: 1 }} rowGap={3} columnGap={4}>
+            <AnimatePresence>
+              {[...new Array(3)].map((course) => (
+                <Grid
+                  item
+                  xs="auto"
+                  key={course?._id}
+                  component={motion.div}
+                  variants={animationChild}
+                  viewport={{ once: true }}
+                >
+                  <Skeleton
+                    width={270}
+                    height={350}
+                    sx={{ borderRadius: 4 }}
+                    variant="rounded"
+                    animation="wave"
+                  />
+                </Grid>
+              ))}
+            </AnimatePresence>
           </Grid>
         )}
 
