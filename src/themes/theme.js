@@ -94,6 +94,12 @@ const themeBefore = createTheme({
             borderRadius: '8px',
           },
         },
+        {
+          props: { variant: 'outlined' },
+          style: {
+            borderRadius: '8px',
+          },
+        },
       ],
     },
     MuiInputBase: {

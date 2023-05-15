@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import AddIcon from '@mui/icons-material/Add';
 import {
   Box, Button, Grid, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
@@ -8,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { motion } from 'framer-motion';
 import Voucher from '../../components/vouchers/Voucher';
 import api from '../../utils/api';
+import AddVoucher from '../../components/vouchers/AddVoucher';
 
 const animationParent = {
   hidden: { opacity: 0, y: 10, x: 10 },
@@ -83,9 +83,7 @@ function Vouchers() {
               Delete
             </Button>
           ) : (
-            <Button variant="contained" startIcon={<AddIcon />} disableElevation>
-              Add Voucher
-            </Button>
+           <AddVoucher />
           )}
         </Box>
 
