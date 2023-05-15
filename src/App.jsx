@@ -11,6 +11,7 @@ const ScheduledSlots = React.lazy(() => import('./pages/dashboard/ScheduledSlots
 const Vouchers = React.lazy(() => import('./pages/dashboard/Vouchers'));
 const Initial = React.lazy(() => import('./pages/Initial'));
 const Course = React.lazy(() => import('./components/courses/course/Course'));
+const E404 = React.lazy(() => import('./pages/E404'));
 
 function WaitWhileLoad({ children }) {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
@@ -94,7 +95,17 @@ function App() {
               </WaitWhileLoad>
             )}
           />
+          {/* <Route path="loading" element={<Loading />} /> */}
         </Route>
+
+        <Route
+          path="*"
+          element={(
+            <WaitWhileLoad>
+              <E404 />
+            </WaitWhileLoad>
+          )}
+        />
       </Routes>
     </Suspense>
   );

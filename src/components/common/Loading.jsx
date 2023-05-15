@@ -12,7 +12,9 @@ function Loading() {
         height: '100vh',
       }}
     >
-      <CircularProgress size="small" color="primary" />
+      <Box sx={{ width: '0.5rem', height: '0.5rem' }}>
+        <CircularProgress color="primary" />
+      </Box>
     </Box>
   );
 }
