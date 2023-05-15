@@ -7,7 +7,8 @@ import { useFormik } from 'formik';
 import textLogo from '../../assets/text_logo.svg';
 import LoginForm from '../components/admin-login/LoginForm';
 import { login } from '../slices/adminAuth';
-import construction from '../../assets/construction.svg';
+import loginSvg from '../../assets/login.svg';
+import loginVector from '../../assets/loginvector.svg';
 
 const initialValues = {
   email: '',
@@ -64,28 +65,63 @@ export default function AdminLogin() {
     <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
       <Box
         sx={{
-          flex: '0 0 50%',
+          width: '50vw',
           bgcolor: 'primary.main',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
         <Box
           sx={{
-            width: 'min(45vw,45rem)',
+            width: '40vw',
+            height: '43vw',
+            border: 2,
+            opacity: 0.7,
+            borderRadius: '50%',
+            borderColor: '#E8EDF4',
+            position: 'absolute',
+            left: '-10vw',
+            top: '-30vw',
+          }}
+        />
+        <Box
+          sx={{
+            width: 'min(30vw,450px)',
+            height: '12vw',
+            position: 'relative',
           }}
         >
           <img
-            alt="construction"
-            src={construction}
-            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+            src={textLogo}
+            alt="logo"
+            style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            width: '45vw',
+            height: '50vw',
+            position: 'absolute',
+            bottom: '-5vw',
+            right: '-4vw',
+            opacity: 0.8,
+          }}
+        >
+          <img
+            src={loginVector}
+            alt="shape"
+            style={{ objectFit: 'contain', width: '100%', height: '100%' }}
           />
         </Box>
       </Box>
+
       <Box
         sx={{
-          flex: '0 0 50%',
+          flexGrow: 1,
           p: 10,
           bgcolor: '#E8EDF4',
         }}
@@ -105,15 +141,18 @@ export default function AdminLogin() {
         >
           <Box
             sx={{
-              width: 'min(35vw,440px)',
-              height: 'min(15vw,180px)',
+              width: 'min(18vw,200px)',
+              display: 'flex',
+              justifyContent: 'center',
+              mb: 2,
+              height: 'min(18vw,200px)',
               position: 'relative',
             }}
           >
             <img
-              src={textLogo}
-              alt="logo"
-              style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
+              src={loginSvg}
+              alt="login"
+              style={{ objectFit: 'contain', width: 'auto', height: '100%' }}
             />
           </Box>
 
