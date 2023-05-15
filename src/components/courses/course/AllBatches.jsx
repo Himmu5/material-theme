@@ -12,7 +12,7 @@ import api from '../../../utils/api';
 
 function AllBatches({ courseId }) {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();

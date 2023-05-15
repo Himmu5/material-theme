@@ -96,19 +96,21 @@ function AddVoucher() {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'end',
-                mt: -1,
-                mr: -2,
+                justifyContent: 'space-between',
+    
               }}
             >
+              <Typography variant="h4" fontWeight={600} >
+                Mark Attendance
+              </Typography>
+
               <IconButton
                 aria-label="close"
                 onClick={handleClose}
                 size="small"
                 sx={{
-                  //   position: 'absolute',
-                  //   top: 8,
-                  //   right: 8,
+                  mt: -1,
+                  mr: -2,
                   color: (theme) => theme.palette.grey[500],
                 }}
               >
@@ -116,10 +118,6 @@ function AddVoucher() {
               </IconButton>
             </Box>
           ) : null}
-
-          <Typography variant="h4" fontWeight={600} lineHeight={1}>
-            Mark Attendance
-          </Typography>
         </DialogTitle>
         <DialogContent sx={{ width: 450 }}>
           <Box component="form" onSubmit={formik.handleSubmit}>

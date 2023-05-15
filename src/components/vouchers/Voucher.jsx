@@ -14,8 +14,8 @@ function Voucher({ selectable, select, voucher }) {
         zIndex: 1,
         bgcolor: '#fff',
         position: 'relative',
-        transition: 'all 0.3s ease-in-out',
-        '&:hover': { transform: 'scale(1.08)' },
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': { transform: 'scale(1.05)' },
       }}
       onClick={() => select()}
     >
@@ -31,7 +31,7 @@ function Voucher({ selectable, select, voucher }) {
             borderRadius: '50%',
             border: '1px solid #D9D9D9',
             transform: selectable ? 'scale(1)' : 'scale(0)',
-            transition: 'all 0.3s ease-in-out',
+            transition: 'all 0.2s ease-in-out',
             fontSize: 20,
             display: 'flex',
             alignItems: 'center',
