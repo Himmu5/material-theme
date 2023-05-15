@@ -65,9 +65,11 @@ function LoginForm({ formik, loading }) {
           variant="contained"
           type="submit"
           disabled={loading}
-          endIcon={loading ? <CircularProgress size="small" /> : undefined}
+          endIcon={
+            loading ? <CircularProgress size={14} /> : undefined
+          }
         >
-          Confirm
+          Login
         </Button>
       </Box>
     </Box>

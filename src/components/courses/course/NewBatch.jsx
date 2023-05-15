@@ -10,9 +10,10 @@ import {
   Typography,
   styled,
   FormHelperText,
+  CircularProgress,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import React from 'react';
+import React, { useState } from 'react';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
@@ -41,8 +42,9 @@ const validationSchema = yup.object({
   startDate: yup.date('Invalid date'),
 });
 
-function NewBatch({ loading = false }) {
+function NewBatch() {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,25 +54,26 @@ function NewBatch({ loading = false }) {
     setOpen(false);
   };
 
-  const submitBatch = (formData) => {
-    api.batch
-      .createBatch(formData)
-      .then((res) => {
-        console.log(res);
-        setOpen(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
+      setLoading(true);
       console.log(values);
-      submitBatch(values);
-      formik.resetForm();
+      submitBatch(values)
+        .then((res) => {
+          console.log(res);
+          setOpen(false);
+          formik.resetForm();
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          formik.resetForm();
+          setLoading(false);
+        });
     },
   });
 
@@ -283,11 +286,23 @@ function NewBatch({ loading = false }) {
                 display: 'flex',
               }}
             >
-              <Button onClick={handleClose} type="button" variant="outlined" fullWidth>
+              <Button
+                onClick={handleClose}
+                type="button"
+                variant="outlined"
+                fullWidth
+                disabled={loading}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="contained" fullWidth>
-                Save
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading}
+                endIcon={loading ? <CircularProgress size={14} /> : undefined}
+              >
+                {loading ? 'Saving...' : 'Save'}
               </Button>
             </Box>
           </form>

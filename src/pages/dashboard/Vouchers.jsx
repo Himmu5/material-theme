@@ -32,6 +32,7 @@ function Vouchers() {
   const [selectable, setSelectable] = useState(false);
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -46,7 +47,9 @@ function Vouchers() {
         console.log(err);
         setLoading(false);
       });
-  }, []);
+  }, [forceUpdate]);
+
+  const handlUpdateList = () => setForceUpdate((prev) => !prev);
 
   const handleVoucherClick = () => {
     setSelectable(true);
@@ -83,7 +86,7 @@ function Vouchers() {
               Delete
             </Button>
           ) : (
-           <AddVoucher />
+            <AddVoucher updateList={() => handlUpdateList()} />
           )}
         </Box>
 

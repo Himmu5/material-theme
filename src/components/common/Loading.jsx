@@ -13,7 +13,7 @@ function Loading() {
       }}
     >
       <Box sx={{ width: '0.5rem', height: '0.5rem' }}>
-        <CircularProgress color="primary" />
+        <CircularProgress size={20} />
       </Box>
     </Box>
   );

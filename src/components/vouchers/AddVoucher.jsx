@@ -10,8 +10,9 @@ import {
   InputBase,
   Typography,
   styled,
+  CircularProgress,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
@@ -40,8 +41,9 @@ const validationSchema = yup.object({
     .required('Discount percentage is required!'),
 });
 
-function AddVoucher() {
+function AddVoucher({ updateList }) {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,22 +63,27 @@ function AddVoucher() {
       },
     };
 
-    api.voucher
-      .add(voucher)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    return api.voucher.add(voucher).then((res) => res);
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      submitVoucher(values);
-      formik.resetForm();
+      setLoading(true);
+      submitVoucher(values)
+        .then((res) => {
+          console.log(res);
+          handleClose();
+          updateList();
+          formik.resetForm();
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          handleClose();
+          setLoading(false);
+        });
     },
   });
 
@@ -97,10 +104,9 @@ function AddVoucher() {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-    
               }}
             >
-              <Typography variant="h4" fontWeight={600} >
+              <Typography variant="h4" fontWeight={600}>
                 Mark Attendance
               </Typography>
 
@@ -132,7 +138,7 @@ function AddVoucher() {
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
-                //   disabled={loading}
+                disabled={loading}
                 value={formik.values.code}
                 onChange={formik.handleChange}
                 error={formik.touched.code && Boolean(formik.errors.code)}
@@ -155,7 +161,9 @@ function AddVoucher() {
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
-                color="secondary" // disabled={loading} value={formik.values.discountPerCent}
+                color="secondary"
+                disabled={loading}
+                value={formik.values.discountPerCent}
                 onChange={formik.handleChange}
                 error={formik.touched.discountPerCent && Boolean(formik.errors.discountPerCent)}
               />
@@ -172,11 +180,23 @@ function AddVoucher() {
                 display: 'flex',
               }}
             >
-              <Button onClick={handleClose} type="button" variant="outlined" fullWidth>
+              <Button
+                onClick={handleClose}
+                type="button"
+                variant="outlined"
+                fullWidth
+                disabled={loading}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="contained" fullWidth>
-                Save
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading}
+                endIcon={loading ? <CircularProgress size={14} /> : undefined}
+              >
+                {loading ? 'Saving...' : 'Save'}
               </Button>
             </Box>
           </Box>
