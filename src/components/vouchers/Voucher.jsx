@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './voucher.css';
 import { Box, Typography } from '@mui/material';
 import { TiTick } from 'react-icons/ti';
 
-function Voucher({ selectable, select, voucher }) {
+function Voucher({
+  selectable, select, voucher, checked = false,
+}) {
   return (
     <Box
       sx={{
@@ -39,7 +41,7 @@ function Voucher({ selectable, select, voucher }) {
             color: 'primary.dark',
           }}
         >
-          <TiTick />
+          {checked && <TiTick />}
         </Box>
       )}
 

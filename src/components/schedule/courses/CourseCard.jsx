@@ -2,9 +2,8 @@ import {
   Box, Card, CardActionArea, CardMedia, Typography,
 } from '@mui/material';
 import React from 'react';
-import dummy from '../../../../assets/dummy.jpg';
 
-function CourseCard({ active = false }) {
+function CourseCard({ active = false, course }) {
   return (
     <Card sx={{ borderRadius: 4, bgcolor: active ? 'primary.dark' : '#E8EDF4', height: 160 }}>
       <CardActionArea
@@ -18,8 +17,8 @@ function CourseCard({ active = false }) {
         <CardMedia
           component="img"
           sx={{ width: 160, height: 160, objectFit: 'cover' }}
-          image={dummy}
-          alt="Live from space album cover"
+          image={course?.coverPicture}
+          alt={course?.name}
         />
         <Box
           sx={{
@@ -35,7 +34,7 @@ function CourseCard({ active = false }) {
             lineHeight={1.1}
             color={active ? '#D9D9D9' : '#333333'}
           >
-            Getting started with Civil Engineering
+            {course?.name}
           </Typography>
           <Typography variant="body1" color={active ? '#B8C6DB' : '#808080'}>
             Lorem ipsum dolor sit amet Elementum sit consectetur.

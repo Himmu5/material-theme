@@ -29,10 +29,10 @@ const animationChild = {
 };
 
 function Vouchers() {
-  const [selectable, setSelectable] = useState(false);
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [selected, setSelected] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -51,8 +51,17 @@ function Vouchers() {
 
   const handlUpdateList = () => setForceUpdate((prev) => !prev);
 
-  const handleVoucherClick = () => {
-    setSelectable(true);
+  const handleSelect = (id) => {
+    let temp = [...selected];
+    const foundIndex = temp.indexOf(id);
+    console.log(temp, foundIndex);
+    if (foundIndex !== -1) {
+      temp.splice(foundIndex, 1);
+    } else {
+      console.log([...temp, id]);
+      temp = [...temp, id];
+    }
+    setSelected(temp);
   };
 
   return (
@@ -81,7 +90,7 @@ function Vouchers() {
           <Typography variant="h3" fontWeight={600}>
             Vouchers Data
           </Typography>
-          {selectable ? (
+          {selected.length > 0 ? (
             <Button variant="outlined" color="error" startIcon={<DeleteIcon />} disableElevation>
               Delete
             </Button>
@@ -144,8 +153,9 @@ function Vouchers() {
               key={`vouch-${voucher._id}`}
             >
               <Voucher
-                selectable={selectable}
-                select={() => handleVoucherClick()}
+                selectable={selected.length > 0}
+                select={() => handleSelect(voucher?._id)}
+                checked={selected.includes(voucher?._id)}
                 voucher={voucher}
               />
             </Grid>

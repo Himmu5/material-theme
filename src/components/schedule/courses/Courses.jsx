@@ -59,7 +59,9 @@ function Courses() {
         }}
       >
         {courses.length > 0
-          && courses.map((course, index) => <CourseCard active={index === activeCourse} />)}
+          && courses.map((course, index) => (
+            <CourseCard active={index === activeCourse} course={course} />
+          ))}
 
         {loading && courses.length === 0
           ? [...new Array(3)].map(() => (
