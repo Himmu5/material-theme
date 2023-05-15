@@ -9,7 +9,7 @@ const api = {
   },
   batch: {
     createBatch: (batchData) => {
-      const path = 'admin/add-batch';
+      const path = '/admin/add-batch';
       return axios.post(path, batchData).then((res) => res.data);
     },
     list: (id) => {
@@ -22,6 +22,10 @@ const api = {
     },
   },
   voucher: {
+    add: (voucher) => {
+      const path = '/admin/add-voucher';
+      return axios.post(path, voucher).then((res) => res.data);
+    },
     list: () => {
       const path = '/admin/all-vouchers';
       return axios.get(path).then((res) => res.data);

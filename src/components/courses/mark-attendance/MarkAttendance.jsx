@@ -27,6 +27,7 @@ const Dialog = styled(MuiDialog)(() => ({
 
 function MarkAttendance() {
   const [open, setOpen] = React.useState(false);
+  const [age, setAge] = React.useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,8 +36,6 @@ function MarkAttendance() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     setAge(event.target.value);
