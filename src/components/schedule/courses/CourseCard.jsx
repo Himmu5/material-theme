@@ -3,9 +3,12 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-function CourseCard({ active = false, course }) {
+function CourseCard({ active = false, course, makeActive }) {
   return (
-    <Card sx={{ borderRadius: 4, bgcolor: active ? 'primary.dark' : '#E8EDF4', height: 160 }}>
+    <Card
+      sx={{ borderRadius: 4, bgcolor: active ? 'primary.dark' : '#E8EDF4', height: 160 }}
+      onClick={() => makeActive()}
+    >
       <CardActionArea
         sx={{
           display: 'flex',

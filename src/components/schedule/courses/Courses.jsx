@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Box, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
@@ -6,9 +7,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../../../utils/api';
 import CourseCard from './CourseCard';
 
-function Courses() {
+function Courses({ activeCourse, changeActive }) {
   const [courses, setCourses] = useState([]);
-  const [activeCourse, setActiveCourse] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -19,10 +19,10 @@ function Courses() {
         console.log(res);
         setLoading(false);
         setCourses(res.data);
+        changeActive(res?.data && res.data.length > 0 ? res.data[0]._id : null);
       })
       .catch((err) => {
         setLoading(false);
-
         console.log(err);
       });
   }, []);
@@ -59,8 +59,12 @@ function Courses() {
         }}
       >
         {courses.length > 0
-          && courses.map((course, index) => (
-            <CourseCard active={index === activeCourse} course={course} />
+          && courses.map((course) => (
+            <CourseCard
+              active={course?._id === activeCourse}
+              course={course}
+              makeActive={() => changeActive(course?._id)}
+            />
           ))}
 
         {loading && courses.length === 0

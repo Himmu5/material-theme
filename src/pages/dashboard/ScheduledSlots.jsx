@@ -1,9 +1,13 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import Courses from '../../components/schedule/courses/Courses';
 import Schedules from '../../components/schedule/schedules/Schedules';
 
 function ScheduledSlots() {
+  const [activeCourse, setActiveCourse] = useState(null);
+
+  const changeActive = (id) => setActiveCourse(id);
+
   return (
     <Box
       sx={{
@@ -21,8 +25,8 @@ function ScheduledSlots() {
       </Typography>
 
       <Box sx={{ display: 'flex', height: '100vh' }}>
-        <Courses />
-        <Schedules />
+        <Courses activeCourse={activeCourse} changeActive={(id) => changeActive(id)} />
+        <Schedules activeCourse={activeCourse} />
       </Box>
     </Box>
   );

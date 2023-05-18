@@ -1,11 +1,40 @@
-import { Box, Paper, Typography } from '@mui/material';
+import {
+  Box, LinearProgress, Paper, Typography,
+} from '@mui/material';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BatchesFilter from '../../common/BatchesFilter';
 import Schedule from './Schedule';
+import api from '../../../utils/api';
 
-function Schedules() {
+function Schedules({ activeCourse }) {
   const [expandedSchedule, setExpandedSchedule] = useState(null);
+  const [filter, setFilter] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleFilterChange = (batchId) => setFilter(batchId);
+
+  useEffect(() => {
+    if (filter) {
+      setLoading(true);
+      api.batch
+        .getByBatch(filter)
+        .then((res) => {
+          console.log(res);
+          setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
+  }, [activeCourse, filter]);
+
+  useEffect(() => {
+    setLoading((prev) => (!prev ? !filter : prev));
+  }, [filter]);
 
   return (
     <Box
@@ -29,13 +58,21 @@ function Schedules() {
           height: '100%',
           px: 3,
           py: 2,
+          overflow: 'hidden',
         }}
       >
+        {loading && <LinearProgress sx={{ mx: -3, mt: -2, mb: 1.5 }} />}
+
         <Typography typography="h3" sx={{ mb: 1 }}>
           Schedules
         </Typography>
 
-        <BatchesFilter />
+        <BatchesFilter
+          filter={filter}
+          changeFilter={(batchId) => handleFilterChange(batchId)}
+          courseId={activeCourse}
+          width="min(95%,60vw)"
+        />
 
         <Box
           sx={{
@@ -46,12 +83,17 @@ function Schedules() {
             height: 'calc(100vh - 14rem)',
           }}
         >
-          {[...new Array(10)].map((schedule, index) => (
-            <Schedule
-              expanded={expandedSchedule !== null && expandedSchedule === index}
-              makeExpanded={(expand) => setExpandedSchedule(expand ? index : null)}
-            />
-          ))}
+          {slots.length > 0
+            && slots.map((slot, index) => (
+              <Schedule
+                slot={slot}
+                index={index}
+                key={slot}
+                courseId={activeCourse}
+                expanded={expandedSchedule !== null && expandedSchedule === index}
+                makeExpanded={(expand) => setExpandedSchedule(expand ? index : null)}
+              />
+            ))}
         </Box>
       </Paper>
     </Box>

@@ -8,13 +8,14 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { MdEditCalendar } from 'react-icons/md';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SlotList from './SlotList';
+import api from '../../../utils/api';
 
-const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(({ theme }) => ({
+const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
     display: 'none',
   },
@@ -42,13 +43,33 @@ const AccordionSummary = styled((props) => (
   },
 }));
 
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+const AccordionDetails = styled(MuiAccordionDetails)(() => ({
   padding: '1rem',
   paddingTop: 0,
   backgroundColor: '#E8EDF4',
 }));
 
-function Schedule({ expanded = false, makeExpanded }) {
+function Schedule({
+  expanded = false, makeExpanded, slot, index, courseId,
+}) {
+  const date = new Date(slot);
+  const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
+    -2,
+  )}-${`0${date.getDate()}`.slice(-2)}`;
+
+  useEffect(() => {
+    if (courseId) {
+      api.schedules
+        .students(courseId, dateString)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [courseId]);
+
   return (
     <Accordion expanded={expanded} onChange={() => makeExpanded(!expanded)}>
       <AccordionSummary>
@@ -62,7 +83,8 @@ function Schedule({ expanded = false, makeExpanded }) {
           >
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'end' }}>
               <Typography variant="h6" fontWeight={600}>
-                Day 1
+                Day
+                {index + 1}
               </Typography>
               <Typography fontWeight={600} sx={{ fontSize: 14, pb: 0.2 }} color="text.secondary">
                 Site visit

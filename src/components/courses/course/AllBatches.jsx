@@ -79,6 +79,7 @@ function AllBatches({ course }) {
           filter={filter}
           changeFilter={(batchId) => handleFilterChange(batchId)}
           courseId={course?._id}
+          width="calc(100vw - min(500px,35vw))"
         />
       </Box>
 

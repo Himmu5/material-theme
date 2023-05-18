@@ -6,6 +6,10 @@ const api = {
       const path = '/admin/all-students';
       return axios.get(path).then((res) => res.data);
     },
+    glance: () => {
+      const path = '/admin/students-glance';
+      return axios.get(path).then((res) => res.data);
+    },
   },
   batch: {
     createBatch: (batchData) => {
@@ -42,13 +46,8 @@ const api = {
     },
   },
   schedules: {
-    students: (id) => {
-      const today = new Date();
-      const dateString = `${today.getFullYear()}-${`0${today.getMonth() + 1}`.slice(
-        -2,
-      )}-${`0${today.getDate()}`.slice(-2)}`;
-      console.log(dateString);
-      const path = `/admin/students-scheduled/?id=${id}&date=${dateString}`;
+    students: (id, date) => {
+      const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
 
       return axios.get(path).then((res) => res.data);
     },

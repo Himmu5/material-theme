@@ -6,7 +6,9 @@ import React, { useEffect, useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import api from '../../utils/api';
 
-function BatchesFilter({ filter, changeFilter, courseId }) {
+function BatchesFilter({
+  filter = null, changeFilter, courseId, width,
+}) {
   console.log(courseId);
   const [batches, setBatches] = useState([]);
   const [active, setActive] = useState(null);
@@ -41,7 +43,8 @@ function BatchesFilter({ filter, changeFilter, courseId }) {
         flexGrow: 1,
         gap: 1.5,
         display: 'flex',
-        maxWidth: 'calc(100vw - min(500px,35vw))',
+        maxWidth: width,
+        width,
         overflowX: 'auto',
       }}
     >
