@@ -54,11 +54,9 @@ function Vouchers() {
   const handleSelect = (id) => {
     let temp = [...selected];
     const foundIndex = temp.indexOf(id);
-    console.log(temp, foundIndex);
     if (foundIndex !== -1) {
       temp.splice(foundIndex, 1);
     } else {
-      console.log([...temp, id]);
       temp = [...temp, id];
     }
     setSelected(temp);

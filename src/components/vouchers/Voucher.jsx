@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './voucher.css';
 import { Box, Typography } from '@mui/material';
 import { TiTick } from 'react-icons/ti';

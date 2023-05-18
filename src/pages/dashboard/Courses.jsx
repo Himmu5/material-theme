@@ -59,7 +59,14 @@ function Courses() {
         height: '100vh',
       }}
     >
-      {loading && <LinearProgress sx={{ ml: -4 }} color="primary" />}
+      {loading && (
+        <LinearProgress
+          sx={{
+            position: 'absolute', top: 0, left: 0, right: 0,
+          }}
+          color="primary"
+        />
+      )}
       <Box
         sx={{
           py: 3,

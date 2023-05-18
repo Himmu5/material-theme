@@ -1,6 +1,8 @@
-import { Box, Paper, Typography } from '@mui/material';
+import {
+  Box, Paper, Skeleton, Typography,
+} from '@mui/material';
 import React from 'react';
-import dummy from '../../../../assets/dummy.jpg';
+import './text.css';
 
 function CourseInfoCard({ course }) {
   return (
@@ -10,7 +12,6 @@ function CourseInfoCard({ course }) {
       sx={{
         bgcolor: '#0F2B54',
         display: 'flex',
-        gap: 2,
         alignItems: 'center',
         borderRadius: 4,
         height: 'min(14rem,25vw)',
@@ -18,17 +19,20 @@ function CourseInfoCard({ course }) {
       }}
     >
       <Box sx={{ width: 'min(16rem,30vw)', height: 'min(14rem,25vw)', position: 'relative' }}>
-        <img
-          src={course?.coverPicture}
-          alt={course?.name}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectPosition: 'center center',
-            objectFit: 'cover',
-          }}
-        />
-
+        {course?.coverPicture ? (
+          <img
+            src={course.coverPicture}
+            alt={course?.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectPosition: 'center center',
+              objectFit: 'cover',
+            }}
+          />
+        ) : (
+          <Skeleton sx={{ width: '100%', height: '100%' }} variant="rectangular" animation="wave" />
+        )}
         <Box
           sx={{
             display: 'flex',
@@ -45,22 +49,40 @@ function CourseInfoCard({ course }) {
           }}
         >
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            <Typography variant="h6">20</Typography>
-            <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Videos
-            </Typography>
+            {course?.courseIncludes?.numberOfVideoLectures ? (
+              <>
+                <Typography variant="h6">{course.courseIncludes.numberOfVideoLectures}</Typography>
+                <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
+                  Videos
+                </Typography>
+              </>
+            ) : (
+              <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
+            )}
           </Box>
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            <Typography variant="h6">50</Typography>
-            <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Visits
-            </Typography>
+            {course?.courseIncludes?.totalSiteVisits ? (
+              <>
+                <Typography variant="h6">{course.courseIncludes.totalSiteVisits}</Typography>
+                <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
+                  Visits
+                </Typography>
+              </>
+            ) : (
+              <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
+            )}
           </Box>
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            <Typography variant="h6">{course?.durationInMonths}</Typography>
-            <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              {course?.durationInMonths <= 1 ? 'Month' : 'Months'}
-            </Typography>
+            {course?.durationInMonths ? (
+              <>
+                <Typography variant="h6">{course.durationInMonths}</Typography>
+                <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
+                  {course.durationInMonths <= 1 ? 'Month' : 'Months'}
+                </Typography>
+              </>
+            ) : (
+              <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
+            )}
           </Box>
         </Box>
       </Box>
@@ -69,16 +91,31 @@ function CourseInfoCard({ course }) {
           width: 'min(20rem,25vw)',
           color: 'white',
           height: '100%',
-          py: 2.5,
-          px: 0.5,
+          py: 2,
+          px: 2,
+          overflow: 'hidden',
         }}
       >
-        <Typography variant="h3" fontWeight={700} sx={{ mb: 2 }}>
-          {course?.name}
+        <Typography variant="h3" fontWeight={700} sx={{ mb: 0.5 }} className="multi-ellipsis-title">
+          {course?.name ? course.name : <Skeleton variant="text" animation="wave" />}
         </Typography>
-        <Typography>
-          Lorem ipsum dolor sit amet consectetur. Elementum sit tincidunt tempus at ac.r.
-        </Typography>
+        {course?.description ? (
+          <Typography className="multi-ellipsis">
+            {course.description}
+          </Typography>
+        ) : (
+          <>
+            <Typography>
+              <Skeleton variant="text" animation="wave" />
+            </Typography>
+            <Typography>
+              <Skeleton variant="text" animation="wave" />
+            </Typography>
+            <Typography>
+              <Skeleton variant="text" animation="wave" />
+            </Typography>
+          </>
+        )}
       </Box>
     </Box>
   );

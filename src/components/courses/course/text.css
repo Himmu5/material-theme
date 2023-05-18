@@ -1,0 +1,14 @@
+.multi-ellipsis {
+  overflow: hidden;
+  max-height: 110px !important;
+  line-height: 22px !important;
+  position: relative;
+}
+
+.multi-ellipsis-title {
+    overflow: hidden;
+    max-height: 80px !important;
+    line-height: 40px !important;
+    position: relative;
+  }
+  

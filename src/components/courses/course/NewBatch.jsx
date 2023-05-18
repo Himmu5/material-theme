@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Box,
   Button,
@@ -27,31 +28,31 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-const initialValues = {
-  batchName: '',
-  courseID: '64523e36119d9d4ff40c4501',
-  numberOfIntakes: 30,
-  startDate: '',
-  endDate: '',
-  purchaseAvailability: '',
-};
-
 const validationSchema = yup.object({
   batchName: yup.string().required('Batch name is required!'),
   numberOfIntakes: yup.number('Enter a number'),
-  startDate: yup.date('Invalid date'),
+  startDate: yup.date('Invalid date').required('Start date is required!'),
+  endDate: yup
+    .date('Invalid date')
+    .required('End date is required!')
+    .min(yup.ref('startDate'), 'End date cannot be before start date'),
+  purchaseAvailability: yup.date('Invalid date').required('Purchase availability is required!'),
 });
 
-function NewBatch() {
+function NewBatch({ course }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const initialValues = {
+    batchName: '',
+    courseID: course?._id,
+    numberOfIntakes: 30,
+    startDate: null,
+    endDate: null,
+    purchaseAvailability: '',
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
@@ -61,7 +62,6 @@ function NewBatch() {
     validationSchema,
     onSubmit: (values) => {
       setLoading(true);
-      console.log(values);
       submitBatch(values)
         .then((res) => {
           console.log(res);
@@ -77,9 +77,19 @@ function NewBatch() {
     },
   });
 
+  const handleClose = () => {
+    setOpen(false);
+    formik.resetForm();
+  };
+
   return (
     <>
-      <Button variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={handleClickOpen}
+        disabled={!course}
+      >
         New Batch
       </Button>
 
@@ -142,7 +152,9 @@ function NewBatch() {
                 onChange={formik.handleChange}
                 error={formik.touched.batchName && Boolean(formik.errors.batchName)}
               />
-              <FormHelperText>{formik.touched.batchName && formik.errors.batchName}</FormHelperText>
+              <FormHelperText sx={{ color: '#dd0000' }}>
+                {formik.touched.batchName && formik.errors.batchName}
+              </FormHelperText>
             </FormControl>
 
             {/* <FormControl fullWidth>
@@ -191,7 +203,7 @@ function NewBatch() {
                 onChange={formik.handleChange}
                 error={formik.touched.numberOfIntakes && Boolean(formik.errors.numberOfIntakes)}
               />
-              <FormHelperText>
+              <FormHelperText sx={{ color: '#dd0000' }}>
                 {formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
               </FormHelperText>
             </FormControl>
@@ -219,7 +231,7 @@ function NewBatch() {
                   onChange={formik.handleChange}
                   error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                 />
-                <FormHelperText>
+                <FormHelperText sx={{ color: '#dd0000' }}>
                   {formik.touched.startDate && formik.errors.startDate}
                 </FormHelperText>
               </FormControl>
@@ -246,7 +258,9 @@ function NewBatch() {
                   onChange={formik.handleChange}
                   error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                 />
-                <FormHelperText>{formik.touched.endDate && formik.errors.endDate}</FormHelperText>
+                <FormHelperText sx={{ color: '#dd0000' }}>
+                  {formik.touched.endDate && formik.errors.endDate}
+                </FormHelperText>
               </FormControl>
             </Box>
 
@@ -255,27 +269,27 @@ function NewBatch() {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="purchaseAvailibility"
+                htmlFor="purchaseAvailability"
               >
                 Set Purchase Availibility
               </Typography>
               <InputBase
                 type="date"
-                id="purchaseAvailibility"
-                name="purchaseAvailibility"
+                id="purchaseAvailability"
+                name="purchaseAvailability"
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.purchaseAvailibility}
+                value={formik.values.purchaseAvailability}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.purchaseAvailibility && Boolean(formik.errors.purchaseAvailibility)
+                  formik.touched.purchaseAvailability && Boolean(formik.errors.purchaseAvailability)
                 }
               />
-              <FormHelperText>
-                {formik.touched.purchaseAvailibility && formik.errors.purchaseAvailibility}
+              <FormHelperText sx={{ color: '#dd0000' }}>
+                {formik.touched.purchaseAvailability && formik.errors.purchaseAvailability}
               </FormHelperText>
             </FormControl>
             <Box

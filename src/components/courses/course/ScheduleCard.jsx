@@ -1,8 +1,27 @@
+/* eslint-disable no-underscore-dangle */
 import { Box, Paper, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import MarkAttendance from '../mark-attendance/MarkAttendance';
+import api from '../../../utils/api';
 
-function ScheduleCard() {
+function ScheduleCard({ course }) {
+  console.log(course);
+
+  const today = new Date();
+
+  useEffect(() => {
+    if (course) {
+      api.schedules
+        .students(course?._id)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
+
   return (
     <Box
       component={Paper}
@@ -33,11 +52,14 @@ function ScheduleCard() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box display="flex" alignItems="center" height="100%" gap={0.4}>
           <Typography variant="h6" fontWeight={600}>
-            03
+            {today.toLocaleDateString('en-GB', { day: 'numeric' })}
           </Typography>
-          <Typography variant="body2">Apr,</Typography>
+          <Typography variant="body2">
+            {today.toLocaleDateString('en-GB', { month: 'long' })}
+            ,
+          </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-            2023
+            {today.toLocaleDateString('en-GB', { year: 'numeric' })}
           </Typography>
           <Typography variant="h6" fontWeight={600}>
             06

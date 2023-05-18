@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, LinearProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,20 +10,25 @@ import api from '../../../utils/api';
 
 function Course() {
   const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const courseId = params?.id ? params.id : null;
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.course
-      .getById('')
-      .then((res) => {
-        console.log(res);
-        setCourse(res.data.length > 0 ? res.data[0] : null);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (courseId) {
+      setLoading(true);
+      api.course
+        .getById(courseId)
+        .then((res) => {
+          setCourse(res?.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
   }, []);
 
   return (
@@ -38,6 +43,17 @@ function Course() {
         gap: 1,
       }}
     >
+      {loading && (
+        <LinearProgress
+          sx={{
+            width: '100vw',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+          }}
+        />
+      )}
       <Button
         startIcon={<ArrowBackIosNewIcon />}
         size="small"
@@ -64,10 +80,10 @@ function Course() {
         transition={{ type: 'tween' }}
       >
         <CoursesInfoCard course={course} />
-        <ScheduleCard />
+        <ScheduleCard course={course} />
       </Box>
 
-      <AllBatches courseId={courseId} />
+      <AllBatches course={course} />
     </Box>
   );
 }

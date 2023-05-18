@@ -14,20 +14,22 @@ function BatchesFilter({ filter, changeFilter, courseId }) {
 
   useEffect(() => {
     setLoading(true);
-    api.batch
-      .list(courseId)
-      .then((res) => {
-        setLoading(false);
-        console.log(res.data);
-        setBatches(res.data);
-        changeFilter(res?.data && res.data.length > 0 ? res.data[0]._id : null);
-        setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, []);
+    if (courseId) {
+      api.batch
+        .list(courseId)
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data);
+          setBatches(res.data);
+          changeFilter(res?.data && res.data.length > 0 ? res.data[0]._id : null);
+          setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
+  }, [courseId]);
 
   useEffect(() => {
     setActive(batches.find((batch) => batch._id === filter));
@@ -50,7 +52,8 @@ function BatchesFilter({ filter, changeFilter, courseId }) {
             label={batch?.name}
             color="primary"
             variant={active && active?._id === batch?._id ? 'filled' : 'outlined'}
-            onClick={() => (filter === batch?._id ? changeFilter(null) : changeFilter(batch?._id))}
+            onClick={() => changeFilter(batch?._id)}
+            // {() => (filter === batch?._id ? changeFilter(null) : changeFilter(batch?._id))}
             sx={{ transition: 'all 0.3s ease-in-out' }}
           />
         ))
