@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   FormControl,
+  DialogActions,
 } from '@mui/material';
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -97,12 +98,16 @@ function MarkAttendance() {
               </Select>
             </FormControl>
           </Box>
-
+        </DialogTitle>
+        <DialogContent>
           <AttendanceSearch />
 
           <StudentsList />
-        </DialogTitle>
-        <DialogContent />
+        </DialogContent>
+        <DialogActions sx={{ mb: 1, mx: 1 }}>
+          <Button variant="outlined">Cancel</Button>
+          <Button variant="contained">Confirm</Button>
+        </DialogActions>
       </Dialog>
     </>
   );

@@ -8,7 +8,7 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { MdEditCalendar } from 'react-icons/md';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -50,25 +50,31 @@ const AccordionDetails = styled(MuiAccordionDetails)(() => ({
 }));
 
 function Schedule({
-  expanded = false, makeExpanded, slot, index, courseId,
+  expanded = false, makeExpanded, slot, index, batchId,
 }) {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const date = new Date(slot);
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
     -2,
   )}-${`0${date.getDate()}`.slice(-2)}`;
 
   useEffect(() => {
-    if (courseId) {
+    if (batchId) {
+      setLoading(true);
       api.schedules
-        .students(courseId, dateString)
+        .students(batchId, dateString)
         .then((res) => {
           console.log(res);
+          setStudents(res.data);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
         });
     }
-  }, [courseId]);
+  }, [batchId]);
 
   return (
     <Accordion expanded={expanded} onChange={() => makeExpanded(!expanded)}>
@@ -137,7 +143,7 @@ function Schedule({
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <SlotList />
+        <SlotList rows={students} loading={loading}/>
       </AccordionDetails>
     </Accordion>
   );

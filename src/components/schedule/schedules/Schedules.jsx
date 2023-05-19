@@ -1,5 +1,5 @@
 import {
-  Box, LinearProgress, Paper, Typography,
+  Box, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
@@ -89,11 +89,23 @@ function Schedules({ activeCourse }) {
                 slot={slot}
                 index={index}
                 key={slot}
-                courseId={activeCourse}
+                batchId={filter}
                 expanded={expandedSchedule !== null && expandedSchedule === index}
                 makeExpanded={(expand) => setExpandedSchedule(expand ? index : null)}
               />
             ))}
+
+          {loading && slots.length === 0
+            ? [...new Array(5)].map((slot) => (
+              <Skeleton
+                key={slot}
+                variant="rounded"
+                sx={{ width: '100%', mb: 2, borderRadius: 4 }}
+                height={80}
+                animation="wave"
+              />
+            ))
+            : null}
         </Box>
       </Paper>
     </Box>
