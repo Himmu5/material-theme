@@ -1,9 +1,17 @@
+/* eslint-disable no-nested-ternary */
 import {
-  Box, CircularProgress, IconButton, Paper, Skeleton, Typography,
+  Box,
+  CircularProgress,
+  IconButton,
+  Paper,
+  Skeleton,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { FaUserCheck } from 'react-icons/fa';
 import { SiMicrosoftexcel } from 'react-icons/si';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import api from '../../utils/api';
 
 function Signups() {
@@ -95,7 +103,6 @@ function Signups() {
         <Box ml={1} display="flex" alignItems="end" gap={1}>
           {signups?.studentsNotPurchased ? (
             <>
-              {' '}
               <Typography variant="h4" color="white" fontWeight={700}>
                 {signups.studentsNotPurchased}
               </Typography>
@@ -117,9 +124,21 @@ function Signups() {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignSelf: 'end', height: '100%' }}>
-        <IconButton sx={{ color: '#5DDC21', width: 40, height: 40 }} disabled={loading}>
-          {loading ? <CircularProgress color="secondary" size={20} /> : <SiMicrosoftexcel />}
-        </IconButton>
+        <Tooltip title={signups ? 'Download as spreadsheet' : 'Error loading data'}>
+          <IconButton
+            sx={{ color: '#5DDC21', width: 40, height: 40 }}
+            disabled={loading}
+            size="small"
+          >
+            {loading ? (
+              <CircularProgress color="secondary" size={20} />
+            ) : !signups ? (
+              <ErrorOutlineIcon sx={{ color: 'secondary.main', fontSize: 22 }} />
+            ) : (
+              <SiMicrosoftexcel />
+            )}
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   );

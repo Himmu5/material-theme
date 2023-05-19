@@ -10,10 +10,9 @@ import UsersListTable from '../../common/UsersListTable';
 import { logout } from '../../../slices/adminAuth';
 import api from '../../../utils/api';
 
-function AllBatches({ course }) {
+function AllBatches({ course, filter, handleFilterChange }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -37,8 +36,6 @@ function AllBatches({ course }) {
         });
     }
   }, [filter]);
-
-  const handleFilterChange = (batchId) => setFilter(batchId);
 
   return (
     <Paper

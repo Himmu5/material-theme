@@ -32,82 +32,82 @@ function StudentsList({ rows = [], loading }) {
           </TableHead>
           <TableBody>
             <AnimatePresence>
-              {/* {rows.length > 0
-                && rows.map((row, index) => ( */}
-              <TableRow
-                hover
-                component={motion.tr}
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -10, opacity: 0 }}
-                transition={{ type: 'tween' }}
-                viewport={{ once: true }}
-                // key={row.name}
-                sx={{
-                  color: marked ? '#fff' : '#707070',
-                }}
-                onClick={() => setMarked((prev) => !prev)}
-              >
-                <TableCell
-                  sx={{
-                    color: 'inherit',
-                    bgcolor: marked ? '#19488C !important' : 'transparent',
-                    transition: 'all 0.2s ease-in-out',
-                  }}
-                >
-                  1
-                </TableCell>
-                <TableCell
-                  sx={{
-                    color: 'inherit',
-                    bgcolor: marked ? '#19488C !important' : 'transparent',
-                    transition: 'all 0.2s ease-in-out',
-                  }}
-                >
-                  Mark spectre
-                </TableCell>
-                <TableCell
-                  sx={{
-                    color: 'inherit',
-                    bgcolor: marked ? '#19488C !important' : 'transparent',
-                    transition: 'all 0.2s ease-in-out',
-                  }}
-                >
-                  Markspc@gmail.com
-                </TableCell>
-                <TableCell
-                  sx={{
-                    color: 'inherit',
-                    bgcolor: marked ? '#19488C !important' : 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    transition: 'all 0.2s ease-in-out',
-                    gap: 0.5,
-                  }}
-                >
-                  {marked ? 'Marked' : 'Mark'}
-                  <Box
+              {rows.length > 0
+                && rows.map((row, index) => (
+                  <TableRow
+                    hover
+                    component={motion.tr}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ type: 'tween' }}
+                    viewport={{ once: true }}
+                    key={row?.email}
                     sx={{
-                      width: 14,
-                      height: 14,
-                      bgcolor: '#fff',
-                      borderRadius: '50%',
-                      transition: 'all 0.2s ease-in-out',
-                      fontSize: 18,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'primary.light',
-                      border: 1.5,
-                      borderColor: '#808080',
-                      mr: 0.7,
+                      color: row?.mark ? '#fff' : '#707070',
                     }}
+                    onClick={() => setMarked((prev) => !prev)}
                   >
-                    {marked && <TiTick />}
-                  </Box>
-                </TableCell>
-              </TableRow>
-              {/* ))} */}
+                    <TableCell
+                      sx={{
+                        color: 'inherit',
+                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        transition: 'all 0.2s ease-in-out',
+                      }}
+                    >
+                      1
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: 'inherit',
+                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        transition: 'all 0.2s ease-in-out',
+                      }}
+                    >
+                      {row?.name}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: 'inherit',
+                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        transition: 'all 0.2s ease-in-out',
+                      }}
+                    >
+                      {row?.email}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: 'inherit',
+                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'all 0.2s ease-in-out',
+                        gap: 0.5,
+                      }}
+                    >
+                      {row?.mark ? 'Marked' : 'Mark'}
+                      <Box
+                        sx={{
+                          width: 14,
+                          height: 14,
+                          bgcolor: '#fff',
+                          borderRadius: '50%',
+                          transition: 'all 0.2s ease-in-out',
+                          fontSize: 18,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'primary.light',
+                          border: 1.5,
+                          borderColor: '#808080',
+                          mr: 0.7,
+                        }}
+                      >
+                        {row?.mark && <TiTick />}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </AnimatePresence>
           </TableBody>
         </Table>
@@ -124,7 +124,7 @@ function StudentsList({ rows = [], loading }) {
           viewport={{ once: true }}
           sx={{ color: '#707070', width: '100%' }}
         >
-          There are no registered students!
+          0 students on this date!
         </Typography>
       ) : null}
       {loading && (

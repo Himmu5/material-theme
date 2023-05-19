@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Box, Button, LinearProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -11,6 +12,7 @@ import api from '../../../utils/api';
 function Course() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [batchId, setBatchId] = useState(null);
   const params = useParams();
   const courseId = params?.id ? params.id : null;
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ function Course() {
         });
     }
   }, []);
+
+  const handleBatchIdChange = (id) => setBatchId(id);
 
   return (
     <Box
@@ -80,10 +84,14 @@ function Course() {
         transition={{ type: 'tween' }}
       >
         <CoursesInfoCard course={course} />
-        <ScheduleCard course={course} />
+        <ScheduleCard batchId={batchId} courseId={course?._id} />
       </Box>
 
-      <AllBatches course={course} />
+      <AllBatches
+        course={course}
+        filter={batchId}
+        handleFilterChange={(id) => handleBatchIdChange(id)}
+      />
     </Box>
   );
 }

@@ -49,7 +49,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(() => ({
 }));
 
 function Schedule({
+<<<<<<< HEAD
   expanded = false, makeExpanded, slot = null, slots = [], index, batchId,
+=======
+  expanded = false, makeExpanded, slot, index, batchId,
+>>>>>>> courses
 }) {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -63,6 +67,7 @@ function Schedule({
       setLoading(true);
       api.schedules
         .students(batchId, dateString)
+<<<<<<< HEAD
         .then((res) => {
           console.log(res);
           setLoading(false);
@@ -81,13 +86,19 @@ function Schedule({
 
       api.schedules
         .update({ slotsForSiteBooking: newSlots }, batchId)
+=======
+>>>>>>> courses
         .then((res) => {
           console.log(res);
+          setStudents(res.data);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
         });
     }
+<<<<<<< HEAD
   };
 
   const handleUpdate = () => {
@@ -98,6 +109,9 @@ function Schedule({
       newSlots[itemIndex] = 1010;
     }
   };
+=======
+  }, [batchId]);
+>>>>>>> courses
 
   return (
     <Accordion expanded={expanded} onChange={() => makeExpanded(!expanded)}>
@@ -166,7 +180,11 @@ function Schedule({
         </Box>
       </AccordionSummary>
       <AccordionDetails>
+<<<<<<< HEAD
         <SlotList rows={students} loading={loading} />
+=======
+        <SlotList rows={students} loading={loading}/>
+>>>>>>> courses
       </AccordionDetails>
     </Accordion>
   );

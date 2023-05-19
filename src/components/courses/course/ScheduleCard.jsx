@@ -1,26 +1,30 @@
 /* eslint-disable no-underscore-dangle */
 import { Box, Paper, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import MarkAttendance from '../mark-attendance/MarkAttendance';
 import api from '../../../utils/api';
 
-function ScheduleCard({ course }) {
-  console.log(course);
+function ScheduleCard({ batchId, courseId }) {
+  const [bookings, setBookings] = useState([]);
 
   const today = new Date();
+  const dateString = `${today.getFullYear()}-${`0${today.getMonth() + 1}`.slice(
+    -2,
+  )}-${`0${today.getDate()}`.slice(-2)}`;
 
   useEffect(() => {
-    if (course) {
+    if (batchId) {
       api.schedules
-        .students(course?._id)
+        .students(batchId, dateString)
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
+          setBookings(res.data);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, []);
+  }, [batchId]);
 
   return (
     <Box
@@ -62,14 +66,14 @@ function ScheduleCard({ course }) {
             {today.toLocaleDateString('en-GB', { year: 'numeric' })}
           </Typography>
           <Typography variant="h6" fontWeight={600}>
-            06
+            {String(bookings.length).padStart(2, '0')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             bookings
           </Typography>
         </Box>
 
-        <MarkAttendance />
+        <MarkAttendance batchId={batchId} />
       </Box>
     </Box>
   );

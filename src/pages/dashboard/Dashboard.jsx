@@ -8,7 +8,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === '/dashboard') navigate('/dashboard/users');
+    if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') navigate('/dashboard/users');
   }, []);
 
   return (

@@ -29,7 +29,7 @@ import { TiTick } from 'react-icons/ti';
 //   },
 // }));
 
-function SlotList({ rows = [], page, loading }) {
+function SlotList({ rows = [], loading }) {
   console.log(rows);
   return (
     <>
@@ -54,7 +54,11 @@ function SlotList({ rows = [], page, loading }) {
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ type: 'tween' }}
                     viewport={{ once: true }}
+<<<<<<< HEAD
                     key={row?.email}
+=======
+                    key={row.name}
+>>>>>>> courses
                     sx={{ color: '#707070' }}
                   >
                     <TableCell sx={{ color: 'inherit' }}>1</TableCell>
