@@ -45,53 +45,56 @@ function SlotList({ rows = [], page, loading }) {
           </TableHead>
           <TableBody>
             <AnimatePresence>
-              <TableRow
-                component={motion.tr}
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -10, opacity: 0 }}
-                transition={{ type: 'tween' }}
-                viewport={{ once: true }}
-                // key={row.name}
-                sx={{ color: '#707070' }}
-              >
-                <TableCell sx={{ color: 'inherit' }}>1</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>
-                  <div style={{ color: 'black' }}>Naveen</div>
-                  <div>Naveenms@gmail.com</div>
-                </TableCell>
-                <TableCell sx={{ color: 'inherit' }}>Confirmed</TableCell>
-                <TableCell sx={{ color: 'inherit' }}>
-                  <Button
-                    sx={{ borderRadius: 2 }}
-                    size="small"
-                    disableElevation
-                    variant="contained"
-                    disabled
+              {rows.length > 0
+                && rows.map((row) => (
+                  <TableRow
+                    component={motion.tr}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ type: 'tween' }}
+                    viewport={{ once: true }}
+                    key={row?.email}
+                    sx={{ color: '#707070' }}
                   >
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        bgcolor: '#fff',
-                        borderRadius: '50%',
-                        transition: 'all 0.3s ease-in-out',
-                        fontSize: 18,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'primary.light',
-                        borderColor: 'primary.light',
-                        border: 1.5,
-                        mr: 0.7,
-                      }}
-                    >
-                      <TiTick />
-                    </Box>
-                    Marked
-                  </Button>
-                </TableCell>
-              </TableRow>
+                    <TableCell sx={{ color: 'inherit' }}>1</TableCell>
+                    <TableCell sx={{ color: 'inherit' }}>
+                      <div style={{ color: 'black' }}>{row?.name}</div>
+                      <div>{row?.email}</div>
+                    </TableCell>
+                    <TableCell sx={{ color: 'inherit' }}>Confirmed</TableCell>
+                    <TableCell sx={{ color: 'inherit' }}>
+                      <Button
+                        sx={{ borderRadius: 2 }}
+                        size="small"
+                        disableElevation
+                        variant="contained"
+                        disabled={row?.mark}
+                      >
+                        <Box
+                          sx={{
+                            width: 16,
+                            height: 16,
+                            bgcolor: '#fff',
+                            borderRadius: '50%',
+                            transition: 'all 0.3s ease-in-out',
+                            fontSize: 18,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'primary.light',
+                            borderColor: 'primary.light',
+                            border: 1.5,
+                            mr: 0.7,
+                          }}
+                        >
+                          {row?.mark && <TiTick />}
+                        </Box>
+                        {row?.mark ? 'Marked' : 'Mark'}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </AnimatePresence>
           </TableBody>
         </Table>

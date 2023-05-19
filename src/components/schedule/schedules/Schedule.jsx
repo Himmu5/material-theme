@@ -1,19 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import {
   Box,
-  IconButton,
   Accordion as MuiAccordion,
   AccordionDetails as MuiAccordionDetails,
   AccordionSummary as MuiAccordionSummary,
   Typography,
   styled,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { MdEditCalendar } from 'react-icons/md';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SlotList from './SlotList';
 import api from '../../../utils/api';
+import DeleteSlot from './DeleteSlot';
+import UpdateSlot from './UpdateSlot';
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
@@ -50,17 +49,38 @@ const AccordionDetails = styled(MuiAccordionDetails)(() => ({
 }));
 
 function Schedule({
-  expanded = false, makeExpanded, slot, index, courseId,
+  expanded = false, makeExpanded, slot = null, slots = [], index, batchId,
 }) {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const date = new Date(slot);
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
     -2,
   )}-${`0${date.getDate()}`.slice(-2)}`;
 
   useEffect(() => {
-    if (courseId) {
+    if (batchId) {
+      setLoading(true);
       api.schedules
-        .students(courseId, dateString)
+        .students(batchId, dateString)
+        .then((res) => {
+          console.log(res);
+          setLoading(false);
+          setStudents(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
+  }, [batchId]);
+
+  const handleDelete = () => {
+    if (slots.find((item) => item === slot)) {
+      const newSlots = slots.filter((item) => item !== slot);
+
+      api.schedules
+        .update({ slotsForSiteBooking: newSlots }, batchId)
         .then((res) => {
           console.log(res);
         })
@@ -68,7 +88,16 @@ function Schedule({
           console.log(err);
         });
     }
-  }, [courseId]);
+  };
+
+  const handleUpdate = () => {
+    const itemIndex = slots.indexOf(3452);
+
+    if (itemIndex !== -1) {
+      const newSlots = [...slots];
+      newSlots[itemIndex] = 1010;
+    }
+  };
 
   return (
     <Accordion expanded={expanded} onChange={() => makeExpanded(!expanded)}>
@@ -98,12 +127,9 @@ function Schedule({
                   alignItems: 'center',
                 }}
               >
-                <IconButton size="small" color="primary" sx={{ fontSize: 20 }}>
-                  <MdEditCalendar />
-                </IconButton>
-                <IconButton size="small" color="error">
-                  <DeleteIcon fontSize="18" />
-                </IconButton>
+                <UpdateSlot />
+
+                <DeleteSlot slot={slot} deleteSlot={() => handleDelete()} />
               </Box>
             )}
           </Box>
@@ -131,13 +157,16 @@ function Schedule({
             </Box>
 
             <Typography variant="body2" fontWeight={500} color="text.secondary">
-              3 Apr, 2023
+              {`${date.toLocaleDateString('en-GB', { day: 'numeric' })} ${date.toLocaleDateString(
+                'en-GB',
+                { month: 'long' },
+              )}, ${date.toLocaleDateString('en-GB', { year: 'numeric' })}`}
             </Typography>
           </Box>
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <SlotList />
+        <SlotList rows={students} loading={loading} />
       </AccordionDetails>
     </Accordion>
   );

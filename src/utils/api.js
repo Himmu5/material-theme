@@ -48,8 +48,11 @@ const api = {
   schedules: {
     students: (id, date) => {
       const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
-
       return axios.get(path).then((res) => res.data);
+    },
+    update: (slots, batchId) => {
+      const path = `/admin/add-slots/${batchId}`;
+      return axios.post(path, slots).then((res) => res.data);
     },
   },
 };

@@ -86,10 +86,11 @@ function Schedules({ activeCourse }) {
           {slots.length > 0
             && slots.map((slot, index) => (
               <Schedule
+                slots={slots}
                 slot={slot}
                 index={index}
                 key={slot}
-                courseId={activeCourse}
+                batchId={filter}
                 expanded={expandedSchedule !== null && expandedSchedule === index}
                 makeExpanded={(expand) => setExpandedSchedule(expand ? index : null)}
               />
