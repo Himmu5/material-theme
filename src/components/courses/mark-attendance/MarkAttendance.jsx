@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
   Button,
   Dialog as MuiDialog,
@@ -12,11 +13,12 @@ import {
   FormControl,
   DialogActions,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import AttendanceSearch from './AttendanceSearch';
 import StudentsList from './StudentsList';
 import './select.css';
+import api from '../../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -26,9 +28,67 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function MarkAttendance() {
+function MarkAttendance({ batchId }) {
   const [open, setOpen] = React.useState(false);
-  const [age, setAge] = React.useState('');
+  const [date, setDate] = React.useState('no-options');
+  const [dates, setDates] = React.useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [students, setStudents] = useState([]);
+
+  const formatDateView = (slot) => {
+    const dateVal = new Date(slot);
+    return `${`0${dateVal.getDate()}`.slice(-2)}/${`0${dateVal.getMonth() + 1}`.slice(
+      -2,
+    )}/${dateVal.getFullYear()}`;
+  };
+
+  const formatDateValue = (slot) => {
+    const dateVal = new Date(slot);
+    return `${dateVal.getFullYear()}-${`0${dateVal.getMonth() + 1}`.slice(
+      -2,
+    )}-${`0${dateVal.getDate()}`.slice(-2)}`;
+  };
+
+  useEffect(() => {
+    if (batchId) {
+      setLoading(true);
+      setDate('loading');
+      api.batch
+        .getByBatch(batchId)
+        .then((res) => {
+          console.log(res?.data?.slotsForSiteBooking);
+          const availableDates = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
+          setDates(availableDates);
+          setDate(
+            availableDates.length !== 0 ? availableDates[availableDates.length - 1] : 'no-options',
+          );
+          setLoading(false);
+        })
+        .catch((err) => {
+          setDate('no-options');
+          console.log(err);
+          setLoading(false);
+        });
+    }
+  }, [batchId]);
+
+  useEffect(() => {
+    if (batchId && date !== 'no-options' && date !== 'loading') {
+      setLoadingStudents(true);
+      api.schedules
+        .students(batchId, formatDateValue(date))
+        .then((res) => {
+          console.log(res);
+          setStudents(res.data);
+          setLoadingStudents(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoadingStudents(false);
+        });
+    }
+  }, [batchId, date]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -39,7 +99,7 @@ function MarkAttendance() {
   };
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setDate(event.target.value);
   };
 
   return (
@@ -83,26 +143,32 @@ function MarkAttendance() {
             <FormControl size="small">
               <Select
                 className="date-select"
-                value={age}
+                value={date}
                 displayEmpty
                 sx={{ borderRadius: 3 }}
                 onChange={handleChange}
                 size="small"
               >
-                <MenuItem value="" disabled>
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>01/05/2023</MenuItem>
-                <MenuItem value={20}>02/05/2023</MenuItem>
-                <MenuItem value={30}>03/05/2023</MenuItem>
+                {dates.length > 0
+                  && dates.map((slot) => <MenuItem value={slot}>{formatDateView(slot)}</MenuItem>)}
+                {loading && (
+                  <MenuItem value="loading" disabled>
+                    loading...
+                  </MenuItem>
+                )}
+                {dates.length === 0 && !loading ? (
+                  <MenuItem value="no-options" disabled>
+                    <em>- No available dates -</em>
+                  </MenuItem>
+                ) : null}
               </Select>
             </FormControl>
           </Box>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
           <AttendanceSearch />
 
-          <StudentsList />
+          <StudentsList loading={loadingStudents} rows={students} />
         </DialogContent>
         <DialogActions sx={{ mb: 1, mx: 1 }}>
           <Button variant="outlined">Cancel</Button>
