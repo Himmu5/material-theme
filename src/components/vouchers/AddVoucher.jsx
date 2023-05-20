@@ -49,10 +49,6 @@ function AddVoucher({ updateList }) {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const submitVoucher = (formData) => {
     console.log(formData);
     const voucher = {
@@ -64,6 +60,11 @@ function AddVoucher({ updateList }) {
     };
 
     return api.voucher.add(voucher).then((res) => res);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    formik.resetForm();
   };
 
   const formik = useFormik({
@@ -143,7 +144,9 @@ function AddVoucher({ updateList }) {
                 onChange={formik.handleChange}
                 error={formik.touched.code && Boolean(formik.errors.code)}
               />
-              <FormHelperText>{formik.touched.code && formik.errors.code}</FormHelperText>
+              <FormHelperText sx={{ color: '#dd0000' }}>
+                {formik.touched.code && formik.errors.code}
+              </FormHelperText>
             </FormControl>
 
             <FormControl fullWidth>
@@ -167,7 +170,7 @@ function AddVoucher({ updateList }) {
                 onChange={formik.handleChange}
                 error={formik.touched.discountPerCent && Boolean(formik.errors.discountPerCent)}
               />
-              <FormHelperText>
+              <FormHelperText sx={{ color: '#dd0000' }}>
                 {formik.touched.discountPerCent && formik.errors.discountPerCent}
               </FormHelperText>
             </FormControl>

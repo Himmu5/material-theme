@@ -34,7 +34,8 @@ function MarkAttendance({ batchId }) {
   const [dates, setDates] = React.useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
-  const [students, setStudents] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [marked, setMarked] = useState([]);
 
   const formatDateView = (slot) => {
     const dateVal = new Date(slot);
@@ -80,7 +81,12 @@ function MarkAttendance({ batchId }) {
         .students(batchId, formatDateValue(date))
         .then((res) => {
           console.log(res);
-          setStudents(res.data);
+          setBookings(res?.data);
+          // eslint-disable-next-line max-len
+          const markedStudents = res?.data && res.data.length > 0 ? res.data.filter((booking) => booking.mark) : [];
+          setMarked(
+            markedStudents.length > 0 ? markedStudents.map((student) => student.email) : [],
+          );
           setLoadingStudents(false);
         })
         .catch((err) => {
@@ -100,6 +106,10 @@ function MarkAttendance({ batchId }) {
 
   const handleChange = (event) => {
     setDate(event.target.value);
+  };
+
+  const handleConfirmMarking = () => {
+    console.log(marked);
   };
 
   return (
@@ -168,11 +178,13 @@ function MarkAttendance({ batchId }) {
         <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
           <AttendanceSearch />
 
-          <StudentsList loading={loadingStudents} rows={students} />
+          <StudentsList loading={loadingStudents} rows={bookings} />
         </DialogContent>
         <DialogActions sx={{ mb: 1, mx: 1 }}>
           <Button variant="outlined">Cancel</Button>
-          <Button variant="contained">Confirm</Button>
+          <Button variant="contained" onClick={handleConfirmMarking}>
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </>
