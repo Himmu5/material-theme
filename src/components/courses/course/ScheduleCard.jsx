@@ -15,7 +15,7 @@ function ScheduleCard({ batchId, courseId }) {
   useEffect(() => {
     if (batchId) {
       api.schedules
-        .students(batchId, dateString)
+        .bookings(batchId, dateString)
         .then((res) => {
           console.log(res.data);
           setBookings(res.data);

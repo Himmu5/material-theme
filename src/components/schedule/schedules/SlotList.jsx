@@ -54,11 +54,7 @@ function SlotList({ rows = [], loading }) {
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ type: 'tween' }}
                     viewport={{ once: true }}
-<<<<<<< HEAD
                     key={row?.email}
-=======
-                    key={row.name}
->>>>>>> courses
                     sx={{ color: '#707070' }}
                   >
                     <TableCell sx={{ color: 'inherit' }}>1</TableCell>
@@ -115,7 +111,7 @@ function SlotList({ rows = [], loading }) {
           viewport={{ once: true }}
           sx={{ color: '#707070', width: '100%' }}
         >
-          There are no registered students!
+          There are no bookings!
         </Typography>
       ) : null}
       {loading && (

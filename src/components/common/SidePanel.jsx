@@ -70,8 +70,8 @@ function SidePanel() {
   return (
     <Box
       sx={{
-        width: 'min(20rem,14vw)',
-        minWidth: '250px',
+        width: 250,
+        minWidth: 250,
         borderTopRightRadius: 32,
         bgcolor: 'primary.main',
         height: '100vh',

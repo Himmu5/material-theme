@@ -38,13 +38,13 @@ function Course() {
   return (
     <Box
       sx={{
-        flexGrow: 1,
         pt: 3,
         pl: 3,
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
         gap: 1,
+        width: 'calc(100vw - 250px)',
       }}
     >
       {loading && (

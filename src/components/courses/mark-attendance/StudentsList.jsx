@@ -124,7 +124,7 @@ function StudentsList({ rows = [], loading }) {
           viewport={{ once: true }}
           sx={{ color: '#707070', width: '100%' }}
         >
-          0 students on this date!
+          0 bookings on this date!
         </Typography>
       ) : null}
       {loading && (

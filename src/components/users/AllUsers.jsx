@@ -56,7 +56,7 @@ function AllUsers() {
         All Users
       </Typography>
 
-      <UsersListTable page="users" rows={users} loading={loading} />
+      <UsersListTable page="users" rows={users} loading={loading} height="calc(100vh - 240px)" />
     </Paper>
   );
 }

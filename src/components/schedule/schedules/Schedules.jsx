@@ -2,16 +2,18 @@ import {
   Box, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import BatchesFilter from '../../common/BatchesFilter';
 import Schedule from './Schedule';
 import api from '../../../utils/api';
+import AddSlot from './AddSlot';
 
 function Schedules({ activeCourse }) {
   const [expandedSchedule, setExpandedSchedule] = useState(null);
   const [filter, setFilter] = useState(null);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const handleFilterChange = (batchId) => setFilter(batchId);
 
@@ -19,7 +21,7 @@ function Schedules({ activeCourse }) {
     if (filter) {
       setLoading(true);
       api.batch
-        .getByBatch(filter)
+        .getById(filter)
         .then((res) => {
           console.log(res);
           setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
@@ -30,7 +32,7 @@ function Schedules({ activeCourse }) {
           setLoading(false);
         });
     }
-  }, [activeCourse, filter]);
+  }, [activeCourse, filter, forceUpdate]);
 
   useEffect(() => {
     setLoading((prev) => (!prev ? !filter : prev));
@@ -63,15 +65,25 @@ function Schedules({ activeCourse }) {
       >
         {loading && <LinearProgress sx={{ mx: -3, mt: -2, mb: 1.5 }} />}
 
-        <Typography typography="h3" sx={{ mb: 1 }}>
-          Schedules
-        </Typography>
-
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 1,
+            pr: 2,
+          }}
+        >
+          <Typography typography="h3" sx={{ mb: 1 }}>
+            Schedules
+          </Typography>
+          <AddSlot courseId={activeCourse} updateList={() => setForceUpdate((prev) => !prev)} />
+        </Box>
         <BatchesFilter
           filter={filter}
           changeFilter={(batchId) => handleFilterChange(batchId)}
           courseId={activeCourse}
-          width="min(95%,60vw)"
+          width="calc(100vw - 370px - min(35vw,35rem))"
         />
 
         <Box
@@ -93,6 +105,7 @@ function Schedules({ activeCourse }) {
                 batchId={filter}
                 expanded={expandedSchedule !== null && expandedSchedule === index}
                 makeExpanded={(expand) => setExpandedSchedule(expand ? index : null)}
+                updateList={() => setForceUpdate((prev) => !prev)}
               />
             ))}
 
@@ -113,4 +126,4 @@ function Schedules({ activeCourse }) {
   );
 }
 
-export default Schedules;
+export default memo(Schedules);

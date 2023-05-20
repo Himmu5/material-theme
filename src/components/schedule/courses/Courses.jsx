@@ -39,7 +39,7 @@ function Courses({ activeCourse, changeActive }) {
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         bgcolor: 'white',
-        width: 'min(35vw,40rem)',
+        width: 'min(35vw,35rem)',
         height: '100%',
         px: 3,
         py: 2,

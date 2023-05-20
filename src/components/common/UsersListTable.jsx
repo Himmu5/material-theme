@@ -28,11 +28,21 @@ import colorFns from '../../utils/colorFunctions';
 //   },
 // }));
 
-function UsersListTable({ rows = [], page, loading }) {
+function UsersListTable({
+  rows = [], page, loading, height = '100%',
+}) {
   console.log(rows);
   return (
     <>
-      <TableContainer sx={{ width: '100%' }}>
+      <TableContainer
+        sx={{
+          width: '100%',
+          pr: 2,
+          maxHeight: height,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }}
+      >
         <Table style={{ width: '100%', borderSpacing: '0 12px' }}>
           <TableHead>
             <TableRow sx={{ color: '#5c5c5c' }}>
@@ -59,21 +69,21 @@ function UsersListTable({ rows = [], page, loading }) {
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ type: 'tween' }}
                     viewport={{ once: true }}
-                    key={row.name}
+                    key={row?.name}
                     sx={{ color: '#707070' }}
                   >
                     <TableCell sx={{ color: 'inherit' }}>{index + 1}</TableCell>
                     <TableCell sx={{ color: 'inherit' }}>
-                      <div style={{ color: 'black' }}>{row.name}</div>
-                      <div>{row.email}</div>
+                      <div style={{ color: 'black' }}>{row?.name}</div>
+                      <div>{row?.email}</div>
                     </TableCell>
                     {page === 'users' && (
                       <TableCell sx={{ color: 'inherit' }}>{row?.phone?.number}</TableCell>
                     )}
 
-                    <TableCell sx={{ color: 'inherit' }}>{row.location}</TableCell>
+                    <TableCell sx={{ color: 'inherit' }}>{row?.location}</TableCell>
 
-                    <TableCell sx={{ color: 'inherit' }}>{row.degree}</TableCell>
+                    <TableCell sx={{ color: 'inherit' }}>{row?.degree}</TableCell>
                     <TableCell sx={{ color: 'inherit' }}>
                       {row?.coursesRegistered && row.coursesRegistered.length > 0
                         ? row.coursesRegistered[0].course.name
@@ -127,7 +137,7 @@ function UsersListTable({ rows = [], page, loading }) {
           viewport={{ once: true }}
           sx={{ color: '#707070', width: '100%' }}
         >
-          There are no registered students!
+          There are no registrations!
         </Typography>
       ) : null}
       {loading && (

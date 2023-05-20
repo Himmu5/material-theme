@@ -20,7 +20,7 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function DeleteSlot({ slot, deleteSlot }) {
+function DeleteSlot({ slot, deleteSlot, updateList }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -34,6 +34,22 @@ function DeleteSlot({ slot, deleteSlot }) {
   const handleClose = (e) => {
     e.stopPropagation();
     setOpen(false);
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    setLoading(true);
+    deleteSlot()
+      .then((res) => {
+        console.log(res);
+        setLoading(false);
+        handleClose(e);
+        updateList();
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   return (
@@ -93,7 +109,7 @@ function DeleteSlot({ slot, deleteSlot }) {
             fullWidth
             disabled={loading}
             endIcon={loading ? <CircularProgress size={14} /> : undefined}
-            onClick={() => deleteSlot()}
+            onClick={handleDelete}
           >
             {loading ? 'Deleting...' : 'Delete'}
           </Button>

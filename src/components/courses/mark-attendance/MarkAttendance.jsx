@@ -34,7 +34,7 @@ function MarkAttendance({ batchId }) {
   const [dates, setDates] = React.useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
-  const [students, setStudents] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
   const formatDateView = (slot) => {
     const dateVal = new Date(slot);
@@ -55,7 +55,7 @@ function MarkAttendance({ batchId }) {
       setLoading(true);
       setDate('loading');
       api.batch
-        .getByBatch(batchId)
+        .getById(batchId)
         .then((res) => {
           console.log(res?.data?.slotsForSiteBooking);
           const availableDates = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
@@ -77,10 +77,10 @@ function MarkAttendance({ batchId }) {
     if (batchId && date !== 'no-options' && date !== 'loading') {
       setLoadingStudents(true);
       api.schedules
-        .students(batchId, formatDateValue(date))
+        .bookings(batchId, formatDateValue(date))
         .then((res) => {
           console.log(res);
-          setStudents(res.data);
+          setBookings(res.data);
           setLoadingStudents(false);
         })
         .catch((err) => {
@@ -144,13 +144,19 @@ function MarkAttendance({ batchId }) {
               <Select
                 className="date-select"
                 value={date}
+                name="date"
+                id="date"
                 displayEmpty
                 sx={{ borderRadius: 3 }}
                 onChange={handleChange}
                 size="small"
               >
                 {dates.length > 0
-                  && dates.map((slot) => <MenuItem value={slot}>{formatDateView(slot)}</MenuItem>)}
+                  && dates.map((slot) => (
+                    <MenuItem value={slot} key={slot}>
+                      {formatDateView(slot)}
+                    </MenuItem>
+                  ))}
                 {loading && (
                   <MenuItem value="loading" disabled>
                     loading...
@@ -168,7 +174,7 @@ function MarkAttendance({ batchId }) {
         <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
           <AttendanceSearch />
 
-          <StudentsList loading={loadingStudents} rows={students} />
+          <StudentsList loading={loadingStudents} rows={bookings} />
         </DialogContent>
         <DialogActions sx={{ mb: 1, mx: 1 }}>
           <Button variant="outlined">Cancel</Button>

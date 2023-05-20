@@ -20,7 +20,7 @@ function AllBatches({ course, filter, handleFilterChange }) {
     if (filter) {
       setLoading(true);
       api.batch
-        .getByBatch(filter)
+        .getById(filter)
         .then((res) => {
           setUsers(res.data.studentsEnrolled);
           console.log(res.data.studentsEnrolled);
@@ -76,11 +76,11 @@ function AllBatches({ course, filter, handleFilterChange }) {
           filter={filter}
           changeFilter={(batchId) => handleFilterChange(batchId)}
           courseId={course?._id}
-          width="calc(100vw - min(500px,35vw))"
+          width="calc(100vw - 310px)"
         />
       </Box>
 
-      <UsersListTable page="course" rows={users} loading={loading} />
+      <UsersListTable page="course" loading={loading} height="calc(100vh - 450px)" rows={users}/>
     </Paper>
   );
 }

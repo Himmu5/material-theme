@@ -20,7 +20,7 @@ const api = {
       const path = `/admin/all-batches/?courseID=${id}`;
       return axios.get(path).then((res) => res.data);
     },
-    getByBatch: (id) => {
+    getById: (id) => {
       const path = `/admin/all-batches/${id}`;
       return axios.get(path).then((res) => res.data);
     },
@@ -46,7 +46,7 @@ const api = {
     },
   },
   schedules: {
-    students: (id, date) => {
+    bookings: (id, date) => {
       const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
       return axios.get(path).then((res) => res.data);
     },
