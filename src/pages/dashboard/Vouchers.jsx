@@ -1,13 +1,13 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Box, Button, Grid, LinearProgress, Paper, Skeleton, Typography,
+  Box, Grid, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { motion } from 'framer-motion';
 import Voucher from '../../components/vouchers/Voucher';
 import api from '../../utils/api';
 import AddVoucher from '../../components/vouchers/AddVoucher';
+import DeleteVouchers from '../../components/vouchers/DeleteVouchers';
 
 const animationParent = {
   hidden: { opacity: 0, y: 10, x: 10 },
@@ -33,14 +33,16 @@ function Vouchers() {
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [courseId, setCourseId] = useState(null);
 
   useEffect(() => {
     setLoading(true);
     api.voucher
       .list()
       .then((res) => {
-        console.log(res?.data[0]?.availableVoucherCodes);
+        console.log(res?.data);
         setLoading(false);
+        setCourseId(res?.data[0]?._id);
         setVouchers(res?.data[0]?.availableVoucherCodes);
       })
       .catch((err) => {
@@ -49,7 +51,10 @@ function Vouchers() {
       });
   }, [forceUpdate]);
 
-  const handlUpdateList = () => setForceUpdate((prev) => !prev);
+  const handlUpdateList = () => {
+    setForceUpdate((prev) => !prev);
+    setSelected([]);
+  };
 
   const handleSelect = (id) => {
     let temp = [...selected];
@@ -60,6 +65,14 @@ function Vouchers() {
       temp = [...temp, id];
     }
     setSelected(temp);
+  };
+
+  const deleteVouchers = () => {
+    console.log(courseId);
+    if (courseId) {
+      return api.voucher.deleteList({ IDs: selected }, courseId).then((res) => res);
+    }
+    return null;
   };
 
   return (
@@ -89,9 +102,10 @@ function Vouchers() {
             Vouchers Data
           </Typography>
           {selected.length > 0 ? (
-            <Button variant="outlined" color="error" startIcon={<DeleteIcon />} disableElevation>
-              Delete
-            </Button>
+            <DeleteVouchers
+              deleteVouchers={() => deleteVouchers()}
+              updateList={() => handlUpdateList()}
+            />
           ) : (
             <AddVoucher updateList={() => handlUpdateList()} />
           )}

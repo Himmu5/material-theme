@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import { HiTicket } from 'react-icons/hi';
 import api from '../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
@@ -101,30 +102,35 @@ function AddVoucher({ updateList }) {
       <Dialog open={open} onClose={handleClose} maxWidth="sm">
         <DialogTitle>
           {handleClose ? (
-            <Box
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              size="small"
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
               }}
             >
-              <Typography variant="h4" fontWeight={600}>
-                Mark Attendance
-              </Typography>
-
-              <IconButton
-                aria-label="close"
-                onClick={handleClose}
-                size="small"
-                sx={{
-                  mt: -1,
-                  mr: -2,
-                  color: (theme) => theme.palette.grey[500],
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Box>
+              <CloseIcon />
+            </IconButton>
           ) : null}
+
+          <Typography
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              justifyContent: 'center',
+            }}
+            variant="h4"
+            align="center"
+            fontWeight={600}
+          >
+            <HiTicket style={{ color: '#19488C' }} />
+            Add a New Voucher
+          </Typography>
         </DialogTitle>
         <DialogContent sx={{ width: 450 }}>
           <Box component="form" onSubmit={formik.handleSubmit}>

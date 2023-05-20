@@ -34,6 +34,10 @@ const api = {
       const path = '/admin/all-vouchers';
       return axios.get(path).then((res) => res.data);
     },
+    deleteList: (vouchers, id) => {
+      const path = `/admin/remove-voucher/${id}`;
+      return axios.post(path, vouchers).then((res) => res.data);
+    },
   },
   course: {
     list: () => {
