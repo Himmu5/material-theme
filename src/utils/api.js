@@ -58,6 +58,10 @@ const api = {
       const path = `/admin/add-slots/${batchId}`;
       return axios.post(path, slots).then((res) => res.data);
     },
+    markAttendance: (attendance) => {
+      const path = '/admin/mark-attendance';
+      return axios.post(path, attendance).then((res) => res.data);
+    },
   },
 };
 
