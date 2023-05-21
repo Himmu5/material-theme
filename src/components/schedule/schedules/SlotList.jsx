@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
   Box,
   Button,
@@ -11,10 +12,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TiTick } from 'react-icons/ti';
+import api from '../../../utils/api';
 
 // const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
 //   '&.MuiTableRow-head': {
@@ -29,8 +31,29 @@ import { TiTick } from 'react-icons/ti';
 //   },
 // }));
 
-function SlotList({ rows = [], loading }) {
-  console.log(rows);
+function SlotList({
+  rows = [], loading, batchId, date,
+}) {
+  const [loadingMarking, setLoadingMarking] = useState(false);
+
+  const handleMark = (id) => {
+    console.log(date, batchId, id);
+
+    if (batchId && date && id) {
+      setLoadingMarking(true);
+      api.schedules
+        .markAttendance({ date, students: [id], batchId })
+        .then((res) => {
+          console.log(res);
+          setLoadingMarking(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoadingMarking(false);
+        });
+    }
+  };
+
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
@@ -69,7 +92,8 @@ function SlotList({ rows = [], loading }) {
                         size="small"
                         disableElevation
                         variant="contained"
-                        disabled={row?.mark}
+                        disabled={row?.mark || loadingMarking}
+                        onClick={() => handleMark(row?.id)}
                       >
                         <Box
                           sx={{
@@ -88,7 +112,11 @@ function SlotList({ rows = [], loading }) {
                             mr: 0.7,
                           }}
                         >
-                          {row?.mark && <TiTick />}
+                          {loadingMarking ? (
+                            <CircularProgress size={14} />
+                          ) : row?.mark ? (
+                            <TiTick />
+                          ) : null}
                         </Box>
                         {row?.mark ? 'Marked' : 'Mark'}
                       </Button>

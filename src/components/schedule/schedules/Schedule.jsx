@@ -277,7 +277,7 @@ function Schedule({
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SlotList rows={bookings} loading={loading} />
+          <SlotList rows={bookings} loading={loading} batchId={batchId} date={date} />
         </AccordionDetails>
       </Accordion>
 
