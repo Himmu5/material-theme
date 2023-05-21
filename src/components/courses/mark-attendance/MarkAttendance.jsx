@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-nested-ternary */
 import {
   Button,
@@ -12,6 +13,7 @@ import {
   MenuItem,
   FormControl,
   DialogActions,
+  CircularProgress,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,6 +35,7 @@ function MarkAttendance({ batchId }) {
   const [date, setDate] = React.useState('no-options');
   const [dates, setDates] = React.useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMarking, setLoadingMarking] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [marked, setMarked] = useState([]);
@@ -82,11 +85,6 @@ function MarkAttendance({ batchId }) {
         .then((res) => {
           console.log(res);
           setBookings(res?.data);
-          // eslint-disable-next-line max-len
-          const markedStudents = res?.data && res.data.length > 0 ? res.data.filter((booking) => booking.mark) : [];
-          setMarked(
-            markedStudents.length > 0 ? markedStudents.map((student) => student.email) : [],
-          );
           setLoadingStudents(false);
         })
         .catch((err) => {
@@ -108,8 +106,34 @@ function MarkAttendance({ batchId }) {
     setDate(event.target.value);
   };
 
+  const toggleAttendance = (id) => {
+    const markedCopy = [...marked];
+    if (marked.includes(id)) {
+      const itemIndex = markedCopy.indexOf(id);
+      if (itemIndex !== -1) {
+        markedCopy.splice(itemIndex, 1);
+      }
+    } else markedCopy.push(id);
+    console.log(id, markedCopy);
+    setMarked(markedCopy);
+  };
+
   const handleConfirmMarking = () => {
-    console.log(marked);
+    console.log(marked, date, batchId);
+
+    if (batchId && date !== 'no-options' && date !== 'loading' && marked.length > 0) {
+      setLoadingMarking(true);
+      api.schedules
+        .markAttendance({ date, students: marked, batchId })
+        .then((res) => {
+          console.log(res);
+          setLoadingMarking(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoadingMarking(false);
+        });
+    }
   };
 
   return (
@@ -184,12 +208,24 @@ function MarkAttendance({ batchId }) {
         <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
           <AttendanceSearch />
 
-          <StudentsList loading={loadingStudents} rows={bookings} />
+          <StudentsList
+            loading={loadingStudents}
+            rows={bookings}
+            marked={marked}
+            mark={(id) => toggleAttendance(id)}
+          />
         </DialogContent>
         <DialogActions sx={{ mb: 1, mx: 1 }}>
-          <Button variant="outlined">Cancel</Button>
-          <Button variant="contained" onClick={handleConfirmMarking}>
-            Confirm
+          <Button variant="outlined" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmMarking}
+            endIcon={loadingMarking ? <CircularProgress size={14} /> : undefined}
+            disabled={marked.length === 0}
+          >
+            {loadingMarking ? 'Updating...' : 'Confirm'}
           </Button>
         </DialogActions>
       </Dialog>
