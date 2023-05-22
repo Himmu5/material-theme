@@ -8,15 +8,22 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FaUserCheck } from 'react-icons/fa';
 import { SiMicrosoftexcel } from 'react-icons/si';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import api from '../../utils/api';
+import { ToastContext } from '../contexts/ToastContext';
+import { logout } from '../../slices/adminAuth';
 
 function Signups() {
   const [signups, setSignups] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -29,7 +36,14 @@ function Signups() {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        console.log(err.code);
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
       });
   }, []);
 
@@ -72,10 +86,19 @@ function Signups() {
               Sign Ups
             </Typography>
           </>
-        ) : (
+        ) : loading ? (
           <>
             <Skeleton variant="text" width={40} sx={{ fontSize: 28 }} animation="wave" />
             <Skeleton variant="text" width={70} animation="wave" sx={{ fontSize: 18 }} />
+          </>
+        ) : (
+          <>
+            <Typography variant="h3" color="white" fontWeight={700}>
+              00
+            </Typography>
+            <Typography variant="body1" color="#B8C6DB" fontWeight={500}>
+              Sign Ups
+            </Typography>
           </>
         )}
       </Box>
@@ -93,10 +116,19 @@ function Signups() {
                 Purchased
               </Typography>
             </>
-          ) : (
+          ) : loading ? (
             <>
               <Skeleton variant="text" width={30} sx={{ fontSize: 24 }} animation="wave" />
               <Skeleton variant="text" width={80} animation="wave" sx={{ fontSize: 18, mb: 0.2 }} />
+            </>
+          ) : (
+            <>
+              <Typography variant="h4" color="white" fontWeight={700}>
+                0
+              </Typography>
+              <Typography variant="h6" color="#B8C6DB" fontWeight={500} sx={{ mb: 0.2 }}>
+                Purchased
+              </Typography>
             </>
           )}
         </Box>
@@ -110,7 +142,7 @@ function Signups() {
                 Not purchased
               </Typography>
             </>
-          ) : (
+          ) : loading ? (
             <>
               <Skeleton variant="text" width={30} sx={{ fontSize: 24 }} animation="wave" />
               <Skeleton
@@ -119,6 +151,15 @@ function Signups() {
                 animation="wave"
                 sx={{ fontSize: 18, mb: 0.2 }}
               />
+            </>
+          ) : (
+            <>
+              <Typography variant="h4" color="white" fontWeight={700}>
+                0
+              </Typography>
+              <Typography variant="h6" color="#B8C6DB" fontWeight={500} sx={{ mb: 0.2 }}>
+                Not purchased
+              </Typography>
             </>
           )}
         </Box>

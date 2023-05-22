@@ -23,8 +23,11 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import api from '../../../utils/api';
 import './select.css';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -38,6 +41,8 @@ function AddSlot({ courseId, updateList }) {
   const [loading, setLoading] = useState(false);
   const [batches, setBatches] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const initialValues = {
     batch: batches.length > 0 ? batches[batches.length - 1]._id : 'select',
@@ -105,9 +110,17 @@ function AddSlot({ courseId, updateList }) {
           .catch((err) => {
             setLoadingSubmit(false);
             console.log(err);
+            if (err?.response?.status === 401) {
+              dispatch(logout());
+              navigate('/admin-login');
+            }
           });
       })
       .catch((err) => {
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
         console.log(err);
       });
   };
@@ -147,6 +160,10 @@ function AddSlot({ courseId, updateList }) {
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [courseId]);

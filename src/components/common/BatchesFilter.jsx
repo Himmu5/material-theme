@@ -5,6 +5,9 @@ import { Box, Chip, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import api from '../../utils/api';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../slices/adminAuth';
 
 function BatchesFilter({
   filter = null, changeFilter, courseId, width,
@@ -13,10 +16,12 @@ function BatchesFilter({
   const [batches, setBatches] = useState([]);
   const [active, setActive] = useState(null);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
     if (courseId) {
+      setLoading(true);
       api.batch
         .list(courseId)
         .then((res) => {
@@ -27,6 +32,10 @@ function BatchesFilter({
           setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
         })
         .catch((err) => {
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           console.log(err);
           setLoading(false);
         });

@@ -19,7 +19,10 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -42,6 +45,8 @@ const validationSchema = yup.object({
 function NewBatch({ course }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const initialValues = {
     batchName: '',
     courseID: course?._id,
@@ -73,6 +78,10 @@ function NewBatch({ course }) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     },
   });

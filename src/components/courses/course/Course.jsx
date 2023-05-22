@@ -8,6 +8,8 @@ import AllBatches from './AllBatches';
 import CoursesInfoCard from './CourseInfoCard';
 import ScheduleCard from './ScheduleCard';
 import api from '../../../utils/api';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../slices/adminAuth';
 
 function Course() {
   const [course, setCourse] = useState(null);
@@ -16,6 +18,7 @@ function Course() {
   const params = useParams();
   const courseId = params?.id ? params.id : null;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (courseId) {
@@ -29,6 +32,10 @@ function Course() {
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, []);

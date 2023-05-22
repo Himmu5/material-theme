@@ -23,9 +23,12 @@ import { useFormik } from 'formik';
 import { MdEditCalendar } from 'react-icons/md';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import SlotList from './SlotList';
 import api from '../../../utils/api';
 import DeleteSlot from './DeleteSlot';
+import { logout } from '../../../slices/adminAuth';
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
@@ -85,6 +88,8 @@ function Schedule({
   const [loading, setLoading] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const date = new Date(slot);
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
@@ -131,6 +136,10 @@ function Schedule({
         })
         .catch((err) => {
           setLoadingUpdate(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           console.log(err);
         });
     }
@@ -164,6 +173,10 @@ function Schedule({
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [batchId]);

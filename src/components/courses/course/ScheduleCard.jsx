@@ -1,11 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 import { Box, Paper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import MarkAttendance from '../mark-attendance/MarkAttendance';
 import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
 
-function ScheduleCard({ batchId, courseId }) {
+function ScheduleCard({ batchId }) {
   const [bookings, setBookings] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const today = new Date();
   const dateString = `${today.getFullYear()}-${`0${today.getMonth() + 1}`.slice(
@@ -22,6 +27,10 @@ function ScheduleCard({ batchId, courseId }) {
         })
         .catch((err) => {
           console.log(err);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [batchId]);

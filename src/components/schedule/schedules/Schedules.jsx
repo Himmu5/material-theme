@@ -3,10 +3,13 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import React, { memo, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import BatchesFilter from '../../common/BatchesFilter';
 import Schedule from './Schedule';
 import api from '../../../utils/api';
 import AddSlot from './AddSlot';
+import { logout } from '../../../slices/adminAuth';
 
 function Schedules({ activeCourse }) {
   const [expandedSchedule, setExpandedSchedule] = useState(null);
@@ -14,6 +17,9 @@ function Schedules({ activeCourse }) {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleFilterChange = (batchId) => setFilter(batchId);
 
@@ -30,6 +36,11 @@ function Schedules({ activeCourse }) {
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          setError(true);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [activeCourse, filter, forceUpdate]);
@@ -120,6 +131,12 @@ function Schedules({ activeCourse }) {
               />
             ))
             : null}
+
+          {slots.length === 0 && error ? (
+            <Typography align="center" variant="body2" color="text.secondary">
+              No slots available for this course!
+            </Typography>
+          ) : null}
         </Box>
       </Paper>
     </Box>

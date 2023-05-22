@@ -3,13 +3,20 @@ import {
   Box, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import api from '../../../utils/api';
 import CourseCard from './CourseCard';
+import { ToastContext } from '../../contexts/ToastContext';
+import { logout } from '../../../slices/adminAuth';
 
 function Courses({ activeCourse, changeActive }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -23,6 +30,13 @@ function Courses({ activeCourse, changeActive }) {
       })
       .catch((err) => {
         setLoading(false);
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
         console.log(err);
       });
   }, []);
@@ -72,6 +86,12 @@ function Courses({ activeCourse, changeActive }) {
             <Skeleton variant="rounded" height={160} sx={{ borderRadius: 4 }} animation="wave" />
           ))
           : null}
+
+        {courses.length === 0 && !loading ? (
+          <Typography align="center" variant="body2" color="text.secondary">
+            No courses available!
+          </Typography>
+        ) : null}
       </Box>
     </Paper>
   );

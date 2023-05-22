@@ -17,10 +17,13 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AttendanceSearch from './AttendanceSearch';
 import StudentsList from './StudentsList';
 import './select.css';
 import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -39,6 +42,8 @@ function MarkAttendance({ batchId }) {
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [marked, setMarked] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formatDateView = (slot) => {
     const dateVal = new Date(slot);
@@ -71,6 +76,10 @@ function MarkAttendance({ batchId }) {
         })
         .catch((err) => {
           setDate('no-options');
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           console.log(err);
           setLoading(false);
         });
@@ -89,6 +98,10 @@ function MarkAttendance({ batchId }) {
         })
         .catch((err) => {
           console.log(err);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           setLoadingStudents(false);
         });
     }
@@ -131,6 +144,10 @@ function MarkAttendance({ batchId }) {
         })
         .catch((err) => {
           console.log(err);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           setLoadingMarking(false);
         });
     }

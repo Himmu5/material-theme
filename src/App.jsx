@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import Loading from './components/common/Loading';
+import ProtectedRoutes from './components/common/ProtectedRoutes';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
@@ -39,15 +40,16 @@ function App() {
           )}
         />
 
-        <Route
-          path="/dashboard"
-          element={(
-            <WaitWhileLoad>
-              <Dashboard />
-            </WaitWhileLoad>
-          )}
-        >
-          {/* <Route
+        <Route Component={<ProtectedRoutes />}>
+          <Route
+            path="/dashboard"
+            element={(
+              <WaitWhileLoad>
+                <Dashboard />
+              </WaitWhileLoad>
+            )}
+          >
+            {/* <Route
             index
             element={(
               <WaitWhileLoad>
@@ -55,47 +57,48 @@ function App() {
               </WaitWhileLoad>
             )}
           /> */}
-          <Route
-            path="users"
-            element={(
-              <WaitWhileLoad>
-                <Users />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="courses"
-            element={(
-              <WaitWhileLoad>
-                <Courses />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="courses/course/:id"
-            element={(
-              <WaitWhileLoad>
-                <Course />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="scheduled-slots"
-            element={(
-              <WaitWhileLoad>
-                <ScheduledSlots />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="vouchers"
-            element={(
-              <WaitWhileLoad>
-                <Vouchers />
-              </WaitWhileLoad>
-            )}
-          />
-          {/* <Route path="loading" element={<Loading />} /> */}
+            <Route
+              path="users"
+              element={(
+                <WaitWhileLoad>
+                  <Users />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="courses"
+              element={(
+                <WaitWhileLoad>
+                  <Courses />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="courses/course/:id"
+              element={(
+                <WaitWhileLoad>
+                  <Course />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="scheduled-slots"
+              element={(
+                <WaitWhileLoad>
+                  <ScheduledSlots />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="vouchers"
+              element={(
+                <WaitWhileLoad>
+                  <Vouchers />
+                </WaitWhileLoad>
+              )}
+            />
+            {/* <Route path="loading" element={<Loading />} /> */}
+          </Route>
         </Route>
 
         <Route
