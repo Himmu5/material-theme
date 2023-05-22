@@ -47,7 +47,6 @@ function Vouchers() {
     api.voucher
       .list()
       .then((res) => {
-        console.log(res?.data);
         setLoading(false);
         setCourseId(res?.data[0]?._id);
         setVouchers(res?.data[0]?.availableVoucherCodes);
@@ -82,7 +81,6 @@ function Vouchers() {
   };
 
   const deleteVouchers = () => {
-    console.log(courseId);
     if (courseId) {
       return api.voucher.deleteList({ IDs: selected }, courseId).then((res) => res);
     }
@@ -119,6 +117,7 @@ function Vouchers() {
             <DeleteVouchers
               deleteVouchers={() => deleteVouchers()}
               updateList={() => handlUpdateList()}
+              count={selected.length}
             />
           ) : (
             <AddVoucher updateList={() => handlUpdateList()} />

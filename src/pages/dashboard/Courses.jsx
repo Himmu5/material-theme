@@ -42,7 +42,6 @@ function Courses() {
     api.course
       .list()
       .then((res) => {
-        console.log(res);
         setLoading(false);
         setCourses(res.data);
       })

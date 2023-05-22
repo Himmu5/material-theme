@@ -22,7 +22,6 @@ function ScheduleCard({ batchId }) {
       api.schedules
         .bookings(batchId, dateString)
         .then((res) => {
-          console.log(res.data);
           setBookings(res.data);
         })
         .catch((err) => {

@@ -4,15 +4,14 @@
 import { Box, Chip, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import api from '../../utils/api';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import api from '../../utils/api';
 import { logout } from '../../slices/adminAuth';
 
 function BatchesFilter({
-  filter = null, changeFilter, courseId, width,
+  filter = null, changeFilter, courseId, width, shouldUpdate = false,
 }) {
-  console.log(courseId);
   const [batches, setBatches] = useState([]);
   const [active, setActive] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +25,6 @@ function BatchesFilter({
         .list(courseId)
         .then((res) => {
           setLoading(false);
-          console.log(res.data);
           setBatches(res.data);
           changeFilter(res?.data && res.data.length > 0 ? res.data[0]._id : null);
           setActive(res?.data && res.data.length > 0 ? res.data[0] : null);
@@ -40,7 +38,7 @@ function BatchesFilter({
           setLoading(false);
         });
     }
-  }, [courseId]);
+  }, [courseId, shouldUpdate]);
 
   useEffect(() => {
     setActive(batches.find((batch) => batch._id === filter));

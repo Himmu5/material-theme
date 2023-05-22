@@ -9,9 +9,10 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import { ToastContext } from '../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -20,9 +21,10 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function DeleteVouchers({ deleteVouchers, updateList }) {
+function DeleteVouchers({ deleteVouchers, updateList, count }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,14 +37,18 @@ function DeleteVouchers({ deleteVouchers, updateList }) {
   const handleDelete = () => {
     setLoading(true);
     deleteVouchers()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setLoading(false);
         handleClose();
+        createToast({
+          type: 'success',
+          message: `Deleted ${count} voucher(s) successfully`,
+        });
         updateList();
       })
       .catch((err) => {
         setLoading(false);
+        createToast({ type: 'error', message: 'Failed to delete voucher(s), try again!' });
         console.log(err);
       });
   };

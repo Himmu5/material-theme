@@ -29,7 +29,6 @@ function Schedules({ activeCourse }) {
       api.batch
         .getById(filter)
         .then((res) => {
-          console.log(res);
           setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
           setLoading(false);
         })

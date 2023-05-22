@@ -13,6 +13,7 @@ import api from '../../../utils/api';
 function AllBatches({ course, filter, handleFilterChange }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [forceUpdate, setForceUpdate] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,7 +24,6 @@ function AllBatches({ course, filter, handleFilterChange }) {
         .getById(filter)
         .then((res) => {
           setUsers(res.data.studentsEnrolled);
-          console.log(res.data.studentsEnrolled);
           setLoading(false);
         })
         .catch((err) => {
@@ -59,7 +59,7 @@ function AllBatches({ course, filter, handleFilterChange }) {
           Registered Students and Progress
         </Typography>
 
-        <NewBatch course={course} />
+        <NewBatch course={course} updateBatches={() => setForceUpdate((prev) => !prev)} />
       </Box>
 
       <Box
@@ -77,10 +77,11 @@ function AllBatches({ course, filter, handleFilterChange }) {
           changeFilter={(batchId) => handleFilterChange(batchId)}
           courseId={course?._id}
           width="calc(100vw - 310px)"
+          shouldUpdate={forceUpdate}
         />
       </Box>
 
-      <UsersListTable page="course" loading={loading} height="calc(100vh - 450px)" rows={users}/>
+      <UsersListTable page="course" loading={loading} height="calc(100vh - 450px)" rows={users} />
     </Paper>
   );
 }

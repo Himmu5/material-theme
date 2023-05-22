@@ -25,10 +25,7 @@ export const login = createAsyncThunk('adminAuth/login', async ({ email, passwor
     const data = await AuthService.adminLogin(email, password);
     return { user: data };
   } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
+    const message = error;
     return thunkAPI.rejectWithValue(message);
   }
 });

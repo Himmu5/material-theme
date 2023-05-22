@@ -15,7 +15,7 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ import StudentsList from './StudentsList';
 import './select.css';
 import api from '../../../utils/api';
 import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -44,6 +45,7 @@ function MarkAttendance({ batchId }) {
   const [marked, setMarked] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
 
   const formatDateView = (slot) => {
     const dateVal = new Date(slot);
@@ -66,7 +68,6 @@ function MarkAttendance({ batchId }) {
       api.batch
         .getById(batchId)
         .then((res) => {
-          console.log(res?.data?.slotsForSiteBooking);
           const availableDates = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
           setDates(availableDates);
           setDate(
@@ -92,7 +93,6 @@ function MarkAttendance({ batchId }) {
       api.schedules
         .bookings(batchId, formatDateValue(date))
         .then((res) => {
-          console.log(res);
           setBookings(res?.data);
           setLoadingStudents(false);
         })
@@ -127,20 +127,17 @@ function MarkAttendance({ batchId }) {
         markedCopy.splice(itemIndex, 1);
       }
     } else markedCopy.push(id);
-    console.log(id, markedCopy);
     setMarked(markedCopy);
   };
 
   const handleConfirmMarking = () => {
-    console.log(marked, date, batchId);
-
     if (batchId && date !== 'no-options' && date !== 'loading' && marked.length > 0) {
       setLoadingMarking(true);
       api.schedules
         .markAttendance({ date, students: marked, batchId })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           setLoadingMarking(false);
+          createToast({ type: 'success', message: 'Attendance(s) marked successfully' });
         })
         .catch((err) => {
           console.log(err);
@@ -148,6 +145,7 @@ function MarkAttendance({ batchId }) {
             dispatch(logout());
             navigate('/admin-login');
           }
+          createToast({ type: 'error', message: 'Failed to mark attendance(s), try again!' });
           setLoadingMarking(false);
         });
     }

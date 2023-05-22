@@ -1,5 +1,6 @@
+/* eslint-disable no-use-before-define */
 import { Box } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import LoginForm from '../components/admin-login/LoginForm';
 import { login } from '../slices/adminAuth';
 import loginSvg from '../../assets/login.svg';
 import loginVector from '../../assets/loginvector.svg';
+import { ToastContext } from '../components/contexts/ToastContext';
 
 const initialValues = {
   email: '',
@@ -25,6 +27,8 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { isLoggedIn } = useSelector((state) => state.adminAuth);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
+
   const handleLogin = (formValue) => {
     const { email, password } = formValue;
     // console.log(formValue)
@@ -32,16 +36,23 @@ export default function AdminLogin() {
 
     dispatch(login({ email, password }))
       .unwrap()
-      .then(() => {
-        navigate('/');
-        window.location.reload();
-        // toast.success('Succesfully logged in');
+      .then((res) => {
+        createToast({ type: 'success', message: `Welcome back ${formik?.values?.email}` });
+        setTimeout(() => {
+          navigate('/');
+          window.location.reload();
+        }, [1000]);
         setLoading(false);
-        console.log('logged in!');
       })
       .catch((err) => {
-        // toast.error(Errormessage.message);
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
         console.log(err);
+        if (
+          err?.response?.data?.message
+          && err.response.data.message === 'invalid credintials. please try again'
+        ) createToast({ type: 'error', message: 'Invalid credentials, try again!' });
         setLoading(false);
       });
   };

@@ -20,7 +20,6 @@ function AllUsers() {
       .list()
       .then((res) => {
         setUsers(res.data);
-        console.log(res.data);
         setLoading(false);
       })
       .catch((err) => {

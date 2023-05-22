@@ -1,5 +1,11 @@
 import {
-  Box, Button, CircularProgress, FormControl, InputBase, Typography,
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  InputBase,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 
@@ -11,7 +17,7 @@ function LoginForm({ formik, loading }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        gap: 3,
+        gap: 1,
         mt: 2,
         width: 'min(90%,470px)',
       }}
@@ -38,8 +44,10 @@ function LoginForm({ formik, loading }) {
           value={formik.values.email}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
         />
+        <FormHelperText sx={{ color: '#dd0000' }}>
+          {formik.touched.email && formik.errors.email}
+        </FormHelperText>
       </FormControl>
       <FormControl fullWidth>
         <Typography variant="body1" color="text.secondary" component="label" htmlFor="password">
@@ -57,17 +65,17 @@ function LoginForm({ formik, loading }) {
           value={formik.values.password}
           onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
         />
+        <FormHelperText sx={{ color: '#dd0000' }}>
+          {formik.touched.password && formik.errors.password}
+        </FormHelperText>
       </FormControl>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="contained"
           type="submit"
           disabled={loading}
-          endIcon={
-            loading ? <CircularProgress size={14} /> : undefined
-          }
+          endIcon={loading ? <CircularProgress size={14} /> : undefined}
         >
           Login
         </Button>

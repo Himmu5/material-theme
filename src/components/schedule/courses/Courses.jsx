@@ -23,7 +23,6 @@ function Courses({ activeCourse, changeActive }) {
     api.course
       .list()
       .then((res) => {
-        console.log(res);
         setLoading(false);
         setCourses(res.data);
         changeActive(res?.data && res.data.length > 0 ? res.data[0]._id : null);

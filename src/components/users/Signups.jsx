@@ -30,13 +30,12 @@ function Signups() {
     api.users
       .glance()
       .then((res) => {
-        console.log(res);
         setSignups(res.data);
         setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err.code);
+        console.log(err);
         if (err?.code === 'ERR_NETWORK') {
           createToast({ type: 'error', message: 'Network error, try again!' });
         }

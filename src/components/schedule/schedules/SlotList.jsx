@@ -42,14 +42,11 @@ function SlotList({
   const navigate = useNavigate();
 
   const handleMark = (id) => {
-    console.log(date, batchId, id);
-
     if (batchId && date && id) {
       setLoadingMarking(true);
       api.schedules
         .markAttendance({ date, students: [id], batchId })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           setLoadingMarking(false);
         })
         .catch((err) => {

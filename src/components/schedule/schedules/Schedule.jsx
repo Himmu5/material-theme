@@ -17,7 +17,7 @@ import {
   styled,
   Skeleton,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useFormik } from 'formik';
 import { MdEditCalendar } from 'react-icons/md';
@@ -29,6 +29,7 @@ import SlotList from './SlotList';
 import api from '../../../utils/api';
 import DeleteSlot from './DeleteSlot';
 import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
@@ -90,6 +91,7 @@ function Schedule({
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
 
   const date = new Date(slot);
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
@@ -124,18 +126,22 @@ function Schedule({
         return dateA > dateB;
       });
 
-      console.log(newSlots);
       setLoadingUpdate(true);
       api.schedules
         .update({ slotsForSiteBooking: newSlots }, batchId)
-        .then((res) => {
+        .then(() => {
           setLoadingUpdate(false);
-          console.log(res);
+          createToast({
+            type: 'success',
+            message: 'Updated slot date successfully',
+          });
           updateList();
           setOpen(false);
         })
         .catch((err) => {
           setLoadingUpdate(false);
+          createToast({ type: 'error', message: 'Failed to update slot date, try again!' });
+
           if (err?.response?.status === 401) {
             dispatch(logout());
             navigate('/admin-login');
@@ -150,7 +156,6 @@ function Schedule({
     validationSchema,
     onSubmit: (values) => {
       handleUpdate(values);
-      console.log(values);
     },
   });
 
@@ -166,7 +171,6 @@ function Schedule({
       api.schedules
         .bookings(batchId, dateString)
         .then((res) => {
-          console.log(res);
           setLoading(false);
           setBookings(res.data);
         })
@@ -186,7 +190,6 @@ function Schedule({
       const newSlots = slots.filter((item) => item !== slot);
       const newSlotsFormatted = newSlots.map((dateVal) => formatDateValue(new Date(dateVal)));
 
-      console.log(newSlotsFormatted);
       return api.schedules
         .update({ slotsForSiteBooking: newSlotsFormatted }, batchId)
         .then((res) => res);

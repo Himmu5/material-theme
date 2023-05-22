@@ -31,7 +31,6 @@ import colorFns from '../../utils/colorFunctions';
 function UsersListTable({
   rows = [], page, loading, height = '100%',
 }) {
-  console.log(rows);
   return (
     <>
       <TableContainer

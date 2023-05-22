@@ -17,7 +17,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import api from '../../../utils/api';
 import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -43,6 +44,7 @@ function AddSlot({ courseId, updateList }) {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
 
   const initialValues = {
     batch: batches.length > 0 ? batches[batches.length - 1]._id : 'select',
@@ -87,8 +89,6 @@ function AddSlot({ courseId, updateList }) {
     api.batch
       .getById(values.batch)
       .then((res) => {
-        console.log(res?.data?.slotsForSiteBooking);
-
         const slots = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
 
         let newSlots = [...slots, setDateTime(new Date(values.date), values.time).toISOString()];
@@ -98,17 +98,20 @@ function AddSlot({ courseId, updateList }) {
           return dateA > dateB;
         });
 
-        console.log(newSlots);
         api.schedules
           .update({ slotsForSiteBooking: newSlots }, values.batch)
-          .then((response) => {
+          .then(() => {
             setLoadingSubmit(false);
-            console.log(response);
+            createToast({
+              type: 'success',
+              message: 'Added a new slot successfully',
+            });
             updateList();
             setOpen(false);
           })
           .catch((err) => {
             setLoadingSubmit(false);
+            createToast({ type: 'error', message: 'Failed to add new slot, try again!' });
             console.log(err);
             if (err?.response?.status === 401) {
               dispatch(logout());
@@ -129,7 +132,6 @@ function AddSlot({ courseId, updateList }) {
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       handleAddSlot(values);
     },
   });
@@ -149,7 +151,6 @@ function AddSlot({ courseId, updateList }) {
       api.batch
         .list(courseId)
         .then((res) => {
-          console.log(res);
           formik.setFieldValue(
             'batch',
             res?.data && res.data.length > 0 ? res.data[res.data.length - 1]?._id : null,

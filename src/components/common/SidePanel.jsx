@@ -2,7 +2,7 @@
 import {
   Box, Button, List, ListItemButton, Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import textLogo from '../../../assets/text_logo.svg';
 import Notifications from './Notifications';
 import { logout } from '../../slices/adminAuth';
+import { ToastContext } from '../contexts/ToastContext';
 
 function ListItem({ isActive = false, children, ...props }) {
   return (
@@ -59,12 +60,19 @@ function SidePanel() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { createToast } = useContext(ToastContext);
 
   const handleLogout = () => {
     dispatch(logout());
     // localStorage.removeItem('user')
-    navigate('/admin-login');
-    window.location.reload();
+    createToast({
+      type: 'success',
+      message: 'Logged out successfully',
+    });
+    setTimeout(() => {
+      navigate('/admin-login');
+      window.location.reload();
+    }, [1000]);
   };
 
   return (

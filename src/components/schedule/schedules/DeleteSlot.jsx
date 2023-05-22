@@ -9,9 +9,10 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -23,6 +24,7 @@ const Dialog = styled(MuiDialog)(() => ({
 function DeleteSlot({ slot, deleteSlot, updateList }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
 
   const date = new Date(slot);
 
@@ -40,13 +42,17 @@ function DeleteSlot({ slot, deleteSlot, updateList }) {
     e.stopPropagation();
     setLoading(true);
     deleteSlot()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setLoading(false);
+        createToast({
+          type: 'success',
+          message: 'Deleted slot successfully',
+        });
         handleClose(e);
         updateList();
       })
       .catch((err) => {
+        createToast({ type: 'error', message: 'Failed to delete slot, try again!' });
         setLoading(false);
         console.log(err);
       });
