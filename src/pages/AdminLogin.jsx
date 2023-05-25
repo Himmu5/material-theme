@@ -31,7 +31,7 @@ export default function AdminLogin() {
 
   const handleLogin = (formValue) => {
     const { email, password } = formValue;
-    // console.log(formValue)
+    // console.(formValue)
     setLoading(true);
 
     dispatch(login({ email, password }))

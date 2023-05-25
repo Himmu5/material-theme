@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 function CourseCard({ course }) {
   const navigate = useNavigate();
-  console.log(course);
   return (
     <Box
       sx={{

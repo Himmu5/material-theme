@@ -106,6 +106,7 @@ function Schedules({ activeCourse }) {
           }}
         >
           {slots.length > 0
+            && !loading
             && slots.map((slot, index) => (
               <Schedule
                 slots={slots}
@@ -119,7 +120,7 @@ function Schedules({ activeCourse }) {
               />
             ))}
 
-          {loading && slots.length === 0
+          {loading
             ? [...new Array(5)].map((slot) => (
               <Skeleton
                 key={slot}
