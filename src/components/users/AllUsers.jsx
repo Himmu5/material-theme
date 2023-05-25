@@ -19,7 +19,7 @@ function AllUsers() {
     api.users
       .list()
       .then((res) => {
-        setUsers(res.data);
+        setUsers(res.data.students);
         console.log(res.data);
         setLoading(false);
       })
