@@ -92,7 +92,6 @@ function Vouchers() {
     <Box sx={{ flexGrow: 1 }}>
       <Box
         sx={{
-          bgcolor: '#fff',
           ml: -4,
         }}
         component={motion.div}
