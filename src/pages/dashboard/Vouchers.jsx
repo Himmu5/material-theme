@@ -2,12 +2,16 @@
 import {
   Box, Grid, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Voucher from '../../components/vouchers/Voucher';
 import api from '../../utils/api';
 import AddVoucher from '../../components/vouchers/AddVoucher';
 import DeleteVouchers from '../../components/vouchers/DeleteVouchers';
+import { ToastContext } from '../../components/contexts/ToastContext';
+import { logout } from '../../slices/adminAuth';
 
 const animationParent = {
   hidden: { opacity: 0, y: 10, x: 10 },
@@ -34,6 +38,9 @@ function Vouchers() {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [selected, setSelected] = useState([]);
   const [courseId, setCourseId] = useState(null);
+  const { createToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -43,11 +50,18 @@ function Vouchers() {
         console.log(res?.data);
         setLoading(false);
         setCourseId(res?.data[0]?._id);
-        setVouchers(res?.data[0]?.availableVoucherCodes);
+        setVouchers(res?.data);
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
       });
   }, [forceUpdate]);
 
@@ -68,7 +82,6 @@ function Vouchers() {
   };
 
   const deleteVouchers = () => {
-    console.log(courseId);
     if (courseId) {
       return api.voucher.deleteList({ IDs: selected }, courseId).then((res) => res);
     }
@@ -104,6 +117,7 @@ function Vouchers() {
             <DeleteVouchers
               deleteVouchers={() => deleteVouchers()}
               updateList={() => handlUpdateList()}
+              count={selected.length}
             />
           ) : (
             <AddVoucher updateList={() => handlUpdateList()} />
@@ -172,6 +186,12 @@ function Vouchers() {
             </Grid>
           ))}
       </Grid>
+
+      {vouchers.length === 0 && !loading ? (
+        <Typography align="center" variant="body2" color="text.secondary">
+          No vouchers available!
+        </Typography>
+      ) : null}
     </Box>
   );
 }

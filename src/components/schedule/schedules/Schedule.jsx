@@ -17,15 +17,19 @@ import {
   styled,
   Skeleton,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useFormik } from 'formik';
 import { MdEditCalendar } from 'react-icons/md';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import SlotList from './SlotList';
 import api from '../../../utils/api';
 import DeleteSlot from './DeleteSlot';
+import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
@@ -85,6 +89,9 @@ function Schedule({
   const [loading, setLoading] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
 
   const date = new Date(slot);
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
@@ -119,18 +126,26 @@ function Schedule({
         return dateA > dateB;
       });
 
-      console.log(newSlots);
       setLoadingUpdate(true);
       api.schedules
         .update({ slotsForSiteBooking: newSlots }, batchId)
-        .then((res) => {
+        .then(() => {
           setLoadingUpdate(false);
-          console.log(res);
+          createToast({
+            type: 'success',
+            message: 'Updated slot date successfully',
+          });
           updateList();
           setOpen(false);
         })
         .catch((err) => {
           setLoadingUpdate(false);
+          createToast({ type: 'error', message: 'Failed to update slot date, try again!' });
+
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           console.log(err);
         });
     }
@@ -141,7 +156,6 @@ function Schedule({
     validationSchema,
     onSubmit: (values) => {
       handleUpdate(values);
-      console.log(values);
     },
   });
 
@@ -157,13 +171,16 @@ function Schedule({
       api.schedules
         .bookings(batchId, dateString)
         .then((res) => {
-          console.log(res);
           setLoading(false);
           setBookings(res.data);
         })
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [batchId]);
@@ -173,7 +190,6 @@ function Schedule({
       const newSlots = slots.filter((item) => item !== slot);
       const newSlotsFormatted = newSlots.map((dateVal) => formatDateValue(new Date(dateVal)));
 
-      console.log(newSlotsFormatted);
       return api.schedules
         .update({ slotsForSiteBooking: newSlotsFormatted }, batchId)
         .then((res) => res);
@@ -277,7 +293,7 @@ function Schedule({
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SlotList rows={bookings} loading={loading} />
+          <SlotList rows={bookings} loading={loading} batchId={batchId} date={date} />
         </AccordionDetails>
       </Accordion>
 

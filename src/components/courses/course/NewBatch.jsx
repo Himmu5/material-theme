@@ -14,12 +14,16 @@ import {
   CircularProgress,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -39,9 +43,13 @@ const validationSchema = yup.object({
   purchaseAvailability: yup.date('Invalid date').required('Purchase availability is required!'),
 });
 
-function NewBatch({ course }) {
+function NewBatch({ course, updateBatches }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
+
   const initialValues = {
     batchName: '',
     courseID: course?._id,
@@ -63,9 +71,13 @@ function NewBatch({ course }) {
     onSubmit: (values) => {
       setLoading(true);
       submitBatch(values)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           setOpen(false);
+          createToast({
+            type: 'success',
+            message: `Created batch ${formik.values.batchName} successfully`,
+          });
+          updateBatches();
           formik.resetForm();
           setLoading(false);
         })
@@ -73,6 +85,11 @@ function NewBatch({ course }) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
+          createToast({ type: 'error', message: 'Failed to create to new batch, try again!' });
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     },
   });

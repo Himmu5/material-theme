@@ -2,17 +2,18 @@
 import {
   Box, Button, List, ListItemButton, Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
 import { HiTicket } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BiLogOut } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import textLogo from '../../../assets/text_logo.svg';
 import Notifications from './Notifications';
 import { logout } from '../../slices/adminAuth';
+import { ToastContext } from '../contexts/ToastContext';
+import Logout from './logout/Logout';
 
 function ListItem({ isActive = false, children, ...props }) {
   return (
@@ -58,14 +59,7 @@ const pages = [
 function SidePanel() {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    // localStorage.removeItem('user')
-    navigate('/admin-login');
-    window.location.reload();
-  };
 
   return (
     <Box
@@ -124,19 +118,7 @@ function SidePanel() {
           right: 0,
         }}
       >
-        <Button
-          sx={{
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-          fullWidth
-          onClick={handleLogout}
-        >
-          <BiLogOut />
-          Log Out
-        </Button>
+        <Logout />
       </Box>
     </Box>
   );

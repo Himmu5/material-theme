@@ -12,13 +12,14 @@ import {
   styled,
   CircularProgress,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { HiTicket } from 'react-icons/hi';
 import api from '../../utils/api';
+import { ToastContext } from '../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -45,13 +46,13 @@ const validationSchema = yup.object({
 function AddVoucher({ updateList }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const submitVoucher = (formData) => {
-    console.log(formData);
     const voucher = {
       courseID: formData.courseID,
       voucher: {
@@ -74,15 +75,19 @@ function AddVoucher({ updateList }) {
     onSubmit: (values) => {
       setLoading(true);
       submitVoucher(values)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           handleClose();
+          createToast({
+            type: 'success',
+            message: `Created voucher ${formik.values.code} successfully`,
+          });
           updateList();
           formik.resetForm();
           setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          createToast({ type: 'error', message: 'Failed to create to new voucher, try again!' });
           handleClose();
           setLoading(false);
         });

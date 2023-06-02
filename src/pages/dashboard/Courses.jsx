@@ -1,17 +1,15 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
-  Box,
-  CircularProgress,
-  Grid,
-  LinearProgress,
-  Paper,
-  Skeleton,
-  Typography,
+  Box, Grid, LinearProgress, Skeleton, Typography,
 } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import api from '../../utils/api';
 import CourseCard from '../../components/courses/CourseCard';
+import { ToastContext } from '../../components/contexts/ToastContext';
+import { logout } from '../../slices/adminAuth';
 
 const animationParent = {
   hidden: { opacity: 0, y: 10, x: 10 },
@@ -35,19 +33,27 @@ const animationChild = {
 function Courses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     api.course
       .list()
       .then((res) => {
-        console.log(res);
         setLoading(false);
         setCourses(res.data);
       })
       .catch((err) => {
         setLoading(false);
-
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
         console.log(err);
       });
   }, []);
@@ -62,7 +68,10 @@ function Courses() {
       {loading && (
         <LinearProgress
           sx={{
-            position: 'absolute', top: 0, left: 0, right: 0,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
           }}
           color="primary"
         />
@@ -131,6 +140,12 @@ function Courses() {
               </Grid>
             ))}
         </Grid>
+
+        {courses.length === 0 && !loading ? (
+          <Typography align="center" variant="body2" color="text.secondary">
+            No courses available!
+          </Typography>
+        ) : null}
       </Box>
     </Box>
   );

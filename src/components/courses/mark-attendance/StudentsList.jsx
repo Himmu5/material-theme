@@ -10,14 +10,14 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TiTick } from 'react-icons/ti';
 
-function StudentsList({ rows = [], loading }) {
-  const [marked, setMarked] = useState(false);
-
+function StudentsList({
+  rows = [], loading, marked, mark,
+}) {
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
@@ -33,7 +33,7 @@ function StudentsList({ rows = [], loading }) {
           <TableBody>
             <AnimatePresence>
               {rows.length > 0
-                && rows.map((row, index) => (
+                && rows.map((row) => (
                   <TableRow
                     hover
                     component={motion.tr}
@@ -42,16 +42,20 @@ function StudentsList({ rows = [], loading }) {
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ type: 'tween' }}
                     viewport={{ once: true }}
-                    key={row?.email}
+                    key={row?.id}
                     sx={{
-                      color: row?.mark ? '#fff' : '#707070',
+                      color: marked.includes(row?.id) || row?.mark ? '#fff' : '#707070',
+                      cursor: 'pointer',
                     }}
-                    onClick={() => setMarked((prev) => !prev)}
+                    onClick={row?.mark ? undefined : () => mark(row?.id)}
                   >
                     <TableCell
                       sx={{
                         color: 'inherit',
-                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        bgcolor:
+                          marked.includes(row?.id) || row?.mark
+                            ? '#19488C !important'
+                            : 'transparent',
                         transition: 'all 0.2s ease-in-out',
                       }}
                     >
@@ -60,7 +64,10 @@ function StudentsList({ rows = [], loading }) {
                     <TableCell
                       sx={{
                         color: 'inherit',
-                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        bgcolor:
+                          marked.includes(row?.id) || row?.mark
+                            ? '#19488C !important'
+                            : 'transparent',
                         transition: 'all 0.2s ease-in-out',
                       }}
                     >
@@ -69,7 +76,10 @@ function StudentsList({ rows = [], loading }) {
                     <TableCell
                       sx={{
                         color: 'inherit',
-                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        bgcolor:
+                          marked.includes(row?.id) || row?.mark
+                            ? '#19488C !important'
+                            : 'transparent',
                         transition: 'all 0.2s ease-in-out',
                       }}
                     >
@@ -78,14 +88,17 @@ function StudentsList({ rows = [], loading }) {
                     <TableCell
                       sx={{
                         color: 'inherit',
-                        bgcolor: row?.mark ? '#19488C !important' : 'transparent',
+                        bgcolor:
+                          marked.includes(row?.id) || row?.mark
+                            ? '#19488C !important'
+                            : 'transparent',
                         display: 'flex',
                         alignItems: 'center',
                         transition: 'all 0.2s ease-in-out',
                         gap: 0.5,
                       }}
                     >
-                      {row?.mark ? 'Marked' : 'Mark'}
+                      {marked.includes(row?.id) || row?.mark ? 'Marked' : 'Mark'}
                       <Box
                         sx={{
                           width: 14,
@@ -103,7 +116,7 @@ function StudentsList({ rows = [], loading }) {
                           mr: 0.7,
                         }}
                       >
-                        {row?.mark && <TiTick />}
+                        {marked.includes(row?.id) || row?.mark ? <TiTick /> : null}
                       </Box>
                     </TableCell>
                   </TableRow>

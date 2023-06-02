@@ -17,14 +17,18 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import * as yup from 'yup';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import api from '../../../utils/api';
 import './select.css';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -33,14 +37,19 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function AddSlot({ courseId, updateList }) {
+function AddSlot({ courseId, updateList, filter }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [batches, setBatches] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
+
+  console.log(filter);
 
   const initialValues = {
-    batch: batches.length > 0 ? batches[batches.length - 1]._id : 'select',
+    batch: filter, // batches.length > 0 ? batches[batches.length - 1]._id : 'select',
     date: '',
     time: '',
   };
@@ -82,8 +91,6 @@ function AddSlot({ courseId, updateList }) {
     api.batch
       .getById(values.batch)
       .then((res) => {
-        console.log(res?.data?.slotsForSiteBooking);
-
         const slots = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
 
         let newSlots = [...slots, setDateTime(new Date(values.date), values.time).toISOString()];
@@ -93,21 +100,32 @@ function AddSlot({ courseId, updateList }) {
           return dateA > dateB;
         });
 
-        console.log(newSlots);
         api.schedules
           .update({ slotsForSiteBooking: newSlots }, values.batch)
-          .then((response) => {
+          .then(() => {
             setLoadingSubmit(false);
-            console.log(response);
+            createToast({
+              type: 'success',
+              message: 'Added a new slot successfully',
+            });
             updateList();
             setOpen(false);
           })
           .catch((err) => {
             setLoadingSubmit(false);
+            createToast({ type: 'error', message: 'Failed to add new slot, try again!' });
             console.log(err);
+            if (err?.response?.status === 401) {
+              dispatch(logout());
+              navigate('/admin-login');
+            }
           });
       })
       .catch((err) => {
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
         console.log(err);
       });
   };
@@ -116,7 +134,6 @@ function AddSlot({ courseId, updateList }) {
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       handleAddSlot(values);
     },
   });
@@ -136,7 +153,6 @@ function AddSlot({ courseId, updateList }) {
       api.batch
         .list(courseId)
         .then((res) => {
-          console.log(res);
           formik.setFieldValue(
             'batch',
             res?.data && res.data.length > 0 ? res.data[res.data.length - 1]?._id : null,
@@ -147,13 +163,22 @@ function AddSlot({ courseId, updateList }) {
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [courseId]);
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen} startIcon={<AddIcon />}>
+      <Button
+        variant="contained"
+        onClick={handleClickOpen}
+        startIcon={<AddIcon />}
+        disabled={!filter}
+      >
         Add Slot
       </Button>
 
@@ -192,7 +217,7 @@ function AddSlot({ courseId, updateList }) {
         </DialogTitle>
         <DialogContent sx={{ width: 400, display: 'flex' }}>
           <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
-            <FormControl fullWidth size="small">
+            {/* <FormControl fullWidth size="small">
               <Typography variant="body1" color="text.secondary" component="label" htmlFor="batch">
                 Select Batch
               </Typography>
@@ -225,7 +250,7 @@ function AddSlot({ courseId, updateList }) {
               <FormHelperText sx={{ color: '#dd0000' }}>
                 {formik.touched.batch && formik.errors.batch}
               </FormHelperText>
-            </FormControl>
+            </FormControl> */}
 
             <Box sx={{ gap: 1, display: 'flex', my: 1 }}>
               <FormControl fullWidth>

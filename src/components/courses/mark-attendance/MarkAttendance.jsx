@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-nested-ternary */
 import {
   Button,
@@ -12,13 +13,18 @@ import {
   MenuItem,
   FormControl,
   DialogActions,
+  CircularProgress,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AttendanceSearch from './AttendanceSearch';
 import StudentsList from './StudentsList';
 import './select.css';
 import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -33,9 +39,13 @@ function MarkAttendance({ batchId }) {
   const [date, setDate] = React.useState('no-options');
   const [dates, setDates] = React.useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMarking, setLoadingMarking] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [marked, setMarked] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { createToast } = useContext(ToastContext);
 
   const formatDateView = (slot) => {
     const dateVal = new Date(slot);
@@ -58,7 +68,6 @@ function MarkAttendance({ batchId }) {
       api.batch
         .getById(batchId)
         .then((res) => {
-          console.log(res?.data?.slotsForSiteBooking);
           const availableDates = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
           setDates(availableDates);
           setDate(
@@ -68,6 +77,10 @@ function MarkAttendance({ batchId }) {
         })
         .catch((err) => {
           setDate('no-options');
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           console.log(err);
           setLoading(false);
         });
@@ -80,17 +93,15 @@ function MarkAttendance({ batchId }) {
       api.schedules
         .bookings(batchId, formatDateValue(date))
         .then((res) => {
-          console.log(res);
           setBookings(res?.data);
-          // eslint-disable-next-line max-len
-          const markedStudents = res?.data && res.data.length > 0 ? res.data.filter((booking) => booking.mark) : [];
-          setMarked(
-            markedStudents.length > 0 ? markedStudents.map((student) => student.email) : [],
-          );
           setLoadingStudents(false);
         })
         .catch((err) => {
           console.log(err);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
           setLoadingStudents(false);
         });
     }
@@ -108,8 +119,36 @@ function MarkAttendance({ batchId }) {
     setDate(event.target.value);
   };
 
+  const toggleAttendance = (id) => {
+    const markedCopy = [...marked];
+    if (marked.includes(id)) {
+      const itemIndex = markedCopy.indexOf(id);
+      if (itemIndex !== -1) {
+        markedCopy.splice(itemIndex, 1);
+      }
+    } else markedCopy.push(id);
+    setMarked(markedCopy);
+  };
+
   const handleConfirmMarking = () => {
-    console.log(marked);
+    if (batchId && date !== 'no-options' && date !== 'loading' && marked.length > 0) {
+      setLoadingMarking(true);
+      api.schedules
+        .markAttendance({ date, students: marked, batchId })
+        .then(() => {
+          setLoadingMarking(false);
+          createToast({ type: 'success', message: 'Attendance(s) marked successfully' });
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
+          createToast({ type: 'error', message: 'Failed to mark attendance(s), try again!' });
+          setLoadingMarking(false);
+        });
+    }
   };
 
   return (
@@ -184,12 +223,24 @@ function MarkAttendance({ batchId }) {
         <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
           <AttendanceSearch />
 
-          <StudentsList loading={loadingStudents} rows={bookings} />
+          <StudentsList
+            loading={loadingStudents}
+            rows={bookings}
+            marked={marked}
+            mark={(id) => toggleAttendance(id)}
+          />
         </DialogContent>
         <DialogActions sx={{ mb: 1, mx: 1 }}>
-          <Button variant="outlined">Cancel</Button>
-          <Button variant="contained" onClick={handleConfirmMarking}>
-            Confirm
+          <Button variant="outlined" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmMarking}
+            endIcon={loadingMarking ? <CircularProgress size={14} /> : undefined}
+            disabled={marked.length === 0}
+          >
+            {loadingMarking ? 'Updating...' : 'Confirm'}
           </Button>
         </DialogActions>
       </Dialog>

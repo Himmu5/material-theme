@@ -3,10 +3,13 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import React, { memo, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import BatchesFilter from '../../common/BatchesFilter';
 import Schedule from './Schedule';
 import api from '../../../utils/api';
 import AddSlot from './AddSlot';
+import { logout } from '../../../slices/adminAuth';
 
 function Schedules({ activeCourse }) {
   const [expandedSchedule, setExpandedSchedule] = useState(null);
@@ -14,6 +17,9 @@ function Schedules({ activeCourse }) {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleFilterChange = (batchId) => setFilter(batchId);
 
@@ -23,13 +29,17 @@ function Schedules({ activeCourse }) {
       api.batch
         .getById(filter)
         .then((res) => {
-          console.log(res);
           setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
           setLoading(false);
         })
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          setError(true);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
         });
     }
   }, [activeCourse, filter, forceUpdate]);
@@ -77,7 +87,11 @@ function Schedules({ activeCourse }) {
           <Typography typography="h3" sx={{ mb: 1 }}>
             Schedules
           </Typography>
-          <AddSlot courseId={activeCourse} updateList={() => setForceUpdate((prev) => !prev)} />
+          <AddSlot
+            courseId={activeCourse}
+            updateList={() => setForceUpdate((prev) => !prev)}
+            filter={filter}
+          />
         </Box>
         <BatchesFilter
           filter={filter}
@@ -96,6 +110,7 @@ function Schedules({ activeCourse }) {
           }}
         >
           {slots.length > 0
+            && !loading
             && slots.map((slot, index) => (
               <Schedule
                 slots={slots}
@@ -109,7 +124,7 @@ function Schedules({ activeCourse }) {
               />
             ))}
 
-          {loading && slots.length === 0
+          {loading
             ? [...new Array(5)].map((slot) => (
               <Skeleton
                 key={slot}
@@ -120,6 +135,12 @@ function Schedules({ activeCourse }) {
               />
             ))
             : null}
+
+          {slots.length === 0 && error ? (
+            <Typography align="center" variant="body2" color="text.secondary">
+              No slots available for this course!
+            </Typography>
+          ) : null}
         </Box>
       </Paper>
     </Box>

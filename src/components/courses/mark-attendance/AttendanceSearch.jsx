@@ -2,20 +2,17 @@ import {
   Autocomplete, Box, InputAdornment, TextField,
 } from '@mui/material';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 
 function AttendanceSearch({ keys = [] }) {
   const [searchKey, setSearchKey] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [notFound, setNotFound] = useState(false);
-  const navigate = useNavigate();
 
   //   const orderIds = keys.length > 0 ? keys.map((order) => order?.no) : [];
 
   const handleSearchClick = (e, newValue) => {
     setSearchKey(newValue);
-    console.log(newValue);
 
     // if (newValue !== null && orderIds.find((orderId) => orderId === newValue)) {
     //   console.log(orderIds.find((orderId) => orderId === newValue));
@@ -27,9 +24,13 @@ function AttendanceSearch({ keys = [] }) {
   };
 
   return (
-    <Box sx={{
-      width: '100%', my: 1, display: 'flex', alignItems: 'stretch',
-    }}
+    <Box
+      sx={{
+        width: '100%',
+        my: 1,
+        display: 'flex',
+        alignItems: 'stretch',
+      }}
     >
       <Autocomplete
         sx={{ flexGrow: 1 }}

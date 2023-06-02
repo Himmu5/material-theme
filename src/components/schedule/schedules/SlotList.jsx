@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
   Box,
   Button,
@@ -11,10 +12,14 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TiTick } from 'react-icons/ti';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import api from '../../../utils/api';
+import { logout } from '../../../slices/adminAuth';
 
 // const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
 //   '&.MuiTableRow-head': {
@@ -29,8 +34,32 @@ import { TiTick } from 'react-icons/ti';
 //   },
 // }));
 
-function SlotList({ rows = [], loading }) {
-  console.log(rows);
+function SlotList({
+  rows = [], loading, batchId, date,
+}) {
+  const [loadingMarking, setLoadingMarking] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleMark = (id) => {
+    if (batchId && date && id) {
+      setLoadingMarking(true);
+      api.schedules
+        .markAttendance({ date, students: [id], batchId })
+        .then(() => {
+          setLoadingMarking(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoadingMarking(false);
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
+        });
+    }
+  };
+
   return (
     <>
       <TableContainer sx={{ width: '100%' }}>
@@ -69,7 +98,8 @@ function SlotList({ rows = [], loading }) {
                         size="small"
                         disableElevation
                         variant="contained"
-                        disabled={row?.mark}
+                        disabled={row?.mark || loadingMarking}
+                        onClick={() => handleMark(row?.id)}
                       >
                         <Box
                           sx={{
@@ -88,7 +118,11 @@ function SlotList({ rows = [], loading }) {
                             mr: 0.7,
                           }}
                         >
-                          {row?.mark && <TiTick />}
+                          {loadingMarking ? (
+                            <CircularProgress size={14} />
+                          ) : row?.mark ? (
+                            <TiTick />
+                          ) : null}
                         </Box>
                         {row?.mark ? 'Marked' : 'Mark'}
                       </Button>

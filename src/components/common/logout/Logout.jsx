@@ -10,9 +10,12 @@ import {
   styled,
 } from '@mui/material';
 import React, { useContext, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-import { ToastContext } from '../contexts/ToastContext';
+import { BiLogOut } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { ToastContext } from '../../contexts/ToastContext';
+import { logout } from '../../../slices/adminAuth';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -21,10 +24,11 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function DeleteVouchers({ deleteVouchers, updateList, count }) {
+function Logout() {
   const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = useState(false);
   const { createToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,35 +38,34 @@ function DeleteVouchers({ deleteVouchers, updateList, count }) {
     setOpen(false);
   };
 
-  const handleDelete = () => {
-    setLoading(true);
-    deleteVouchers()
-      .then(() => {
-        setLoading(false);
-        handleClose();
-        createToast({
-          type: 'success',
-          message: `Deleted ${count} voucher(s) successfully`,
-        });
-        updateList();
-      })
-      .catch((err) => {
-        setLoading(false);
-        createToast({ type: 'error', message: 'Failed to delete voucher(s), try again!' });
-        console.log(err);
-      });
+  const handleLogout = () => {
+    dispatch(logout());
+    // localStorage.removeItem('user')
+    createToast({
+      type: 'success',
+      message: 'Logged out successfully',
+    });
+    handleClose();
+    setTimeout(() => {
+      navigate('/admin-login');
+      window.location.reload();
+    }, [1000]);
   };
 
   return (
     <>
       <Button
-        variant="outlined"
-        color="error"
-        startIcon={<DeleteIcon />}
-        disableElevation
+        sx={{
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+        }}
+        fullWidth
         onClick={handleClickOpen}
       >
-        Delete
+        <BiLogOut />
+        Log Out
       </Button>
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm">
@@ -87,30 +90,17 @@ function DeleteVouchers({ deleteVouchers, updateList, count }) {
             Are you sure?
           </Typography>
         </DialogTitle>
-        <DialogContent sx={{ width: 400, display: 'flex' }}>
+        <DialogContent sx={{ width: 350, display: 'flex', justifyContent: 'center' }}>
           <Typography variant="body1" align="center" fontWeight={500} color="text.secondary">
-            Do you realy want to delete these vouchers? this process cannot be undone
+            Do you really wish to log out
           </Typography>
         </DialogContent>
         <DialogActions sx={{ mb: 2, mx: 2 }}>
-          <Button
-            onClick={handleClose}
-            type="button"
-            variant="outlined"
-            fullWidth
-            disabled={loading}
-          >
-            Cancel
+          <Button onClick={handleClose} type="button" variant="outlined" fullWidth>
+            No
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            fullWidth
-            disabled={loading}
-            endIcon={loading ? <CircularProgress size={14} /> : undefined}
-            onClick={handleDelete}
-          >
-            {loading ? 'Deleting...' : 'Delete'}
+          <Button variant="contained" color="error" fullWidth onClick={handleLogout}>
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
@@ -118,4 +108,4 @@ function DeleteVouchers({ deleteVouchers, updateList, count }) {
   );
 }
 
-export default DeleteVouchers;
+export default Logout;
