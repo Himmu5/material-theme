@@ -77,12 +77,11 @@ function Vouchers() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Paper
+      <Box
         sx={{
           bgcolor: '#fff',
           ml: -4,
         }}
-        elevation={3}
         component={motion.div}
         initial={{ opacity: 0, y: -50 }}
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -112,7 +111,7 @@ function Vouchers() {
         </Box>
 
         {loading && <LinearProgress />}
-      </Paper>
+      </Box>
 
       {loading && vouchers.length === 0 ? (
         <Grid
