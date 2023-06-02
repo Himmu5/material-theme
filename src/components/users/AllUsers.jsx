@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import UsersListTable from '../common/UsersListTable';
+import UsersListTable from '../common/user-list/UsersListTable';
 import { logout } from '../../slices/adminAuth';
 import api from '../../utils/api';
+import CertificateUpload from '../common/certificate-upload/CertificateUpload';
 
 function AllUsers() {
   const [users, setUsers] = useState([]);
@@ -56,6 +57,8 @@ function AllUsers() {
       </Typography>
 
       <UsersListTable page="users" rows={users} loading={loading} height="calc(100vh - 240px)" />
+
+      <CertificateUpload />
     </Paper>
   );
 }

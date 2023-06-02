@@ -37,7 +37,7 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function AddSlot({ courseId, updateList }) {
+function AddSlot({ courseId, updateList, filter }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [batches, setBatches] = useState([]);
@@ -46,8 +46,10 @@ function AddSlot({ courseId, updateList }) {
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
 
+  console.log(filter);
+
   const initialValues = {
-    batch: batches.length > 0 ? batches[batches.length - 1]._id : 'select',
+    batch: filter, // batches.length > 0 ? batches[batches.length - 1]._id : 'select',
     date: '',
     time: '',
   };
@@ -171,7 +173,12 @@ function AddSlot({ courseId, updateList }) {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen} startIcon={<AddIcon />}>
+      <Button
+        variant="contained"
+        onClick={handleClickOpen}
+        startIcon={<AddIcon />}
+        disabled={!filter}
+      >
         Add Slot
       </Button>
 
@@ -210,7 +217,7 @@ function AddSlot({ courseId, updateList }) {
         </DialogTitle>
         <DialogContent sx={{ width: 400, display: 'flex' }}>
           <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
-            <FormControl fullWidth size="small">
+            {/* <FormControl fullWidth size="small">
               <Typography variant="body1" color="text.secondary" component="label" htmlFor="batch">
                 Select Batch
               </Typography>
@@ -243,7 +250,7 @@ function AddSlot({ courseId, updateList }) {
               <FormHelperText sx={{ color: '#dd0000' }}>
                 {formik.touched.batch && formik.errors.batch}
               </FormHelperText>
-            </FormControl>
+            </FormControl> */}
 
             <Box sx={{ gap: 1, display: 'flex', my: 1 }}>
               <FormControl fullWidth>

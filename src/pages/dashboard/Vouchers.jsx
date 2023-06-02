@@ -47,9 +47,10 @@ function Vouchers() {
     api.voucher
       .list()
       .then((res) => {
+        console.log(res?.data);
         setLoading(false);
         setCourseId(res?.data[0]?._id);
-        setVouchers(res?.data[0]?.availableVoucherCodes);
+        setVouchers(res?.data);
       })
       .catch((err) => {
         console.log(err);

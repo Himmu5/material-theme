@@ -1,6 +1,7 @@
 import {
   Box,
   CircularProgress,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -10,10 +11,12 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
-import colorFns from '../../utils/colorFunctions';
+import { BiCloudUpload } from 'react-icons/bi';
+import colorFns from '../../../utils/colorFunctions';
+import CertificateUpload from '../certificate-upload/CertificateUpload';
 
 // const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
 //   '&.MuiTableRow-head': {
@@ -31,6 +34,7 @@ import colorFns from '../../utils/colorFunctions';
 function UsersListTable({
   rows = [], page, loading, height = '100%',
 }) {
+  const [upload, setUpload] = useState(false);
   return (
     <>
       <TableContainer
@@ -97,17 +101,34 @@ function UsersListTable({
                     )}
                     <TableCell sx={{ color: 'inherit' }}>
                       {row?.coursesRegistered && row.coursesRegistered.length > 0 ? (
-                        <Box
-                          sx={{
-                            bgcolor: colorFns.getColorShade(0),
-                            color: colorFns.getColorShadeText(0),
-                            p: 0.5,
-                            borderRadius: 5,
-                            textAlign: 'center',
-                            width: '5rem',
-                          }}
-                        >
-                          0%
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <Box
+                            sx={{
+                              bgcolor: colorFns.getColorShade(0),
+                              color: colorFns.getColorShadeText(0),
+                              border: 1,
+                              borderColor: colorFns.getColorShadeText(0),
+                              p: 0.5,
+                              borderRadius: 5,
+                              textAlign: 'center',
+                              width: '5rem',
+                            }}
+                          >
+                            0%
+                          </Box>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            sx={{
+                              border: 1,
+                              width: 30,
+                              height: 30,
+                              borderColor: 'primary.main',
+                            }}
+                            onClick={() => setUpload(true)}
+                          >
+                            <BiCloudUpload size={19} />
+                          </IconButton>
                         </Box>
                       ) : (
                         <span
@@ -153,6 +174,8 @@ function UsersListTable({
           <CircularProgress color="primary" size="small" sx={{ width: '100%' }} />
         </Paper>
       )}
+
+      <CertificateUpload isOpen={upload} close={() => setUpload(false)} />
     </>
   );
 }

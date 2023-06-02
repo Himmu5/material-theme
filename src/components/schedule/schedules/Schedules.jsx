@@ -87,7 +87,11 @@ function Schedules({ activeCourse }) {
           <Typography typography="h3" sx={{ mb: 1 }}>
             Schedules
           </Typography>
-          <AddSlot courseId={activeCourse} updateList={() => setForceUpdate((prev) => !prev)} />
+          <AddSlot
+            courseId={activeCourse}
+            updateList={() => setForceUpdate((prev) => !prev)}
+            filter={filter}
+          />
         </Box>
         <BatchesFilter
           filter={filter}

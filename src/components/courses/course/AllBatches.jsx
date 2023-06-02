@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import NewBatch from './NewBatch';
 import BatchesFilter from '../../common/BatchesFilter';
-import UsersListTable from '../../common/UsersListTable';
+import UsersListTable from '../../common/user-list/UsersListTable';
 import { logout } from '../../../slices/adminAuth';
 import api from '../../../utils/api';
 
