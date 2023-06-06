@@ -52,7 +52,7 @@ const api = {
   schedules: {
     slots: (id) => {
       const path = '/admin/available-slots';
-      return axios.get(path, { data: { batchId: id } }).then((res) => res.data);
+      return axios.post(path, { batchId: id }).then((res) => res.data);
     },
     bookings: (id, date) => {
       const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
