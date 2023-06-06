@@ -35,6 +35,7 @@ function UsersListTable({
   rows = [], page, loading, height = '100%',
 }) {
   const [upload, setUpload] = useState(false);
+  console.log(rows);
   return (
     <>
       <TableContainer
