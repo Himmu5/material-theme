@@ -9,9 +9,11 @@ import {
   Typography,
   styled,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DragDropInput from './DragDropInput';
+import api from '../../../utils/api';
 
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
@@ -20,7 +22,39 @@ const Dialog = styled(MuiDialog)(() => ({
   },
 }));
 
-function CertificateUpload({ isOpen, close }) {
+function CertificateUpload({
+  isOpen, close, courseId, studentId,
+}) {
+  const [file, setFile] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const uploadFile = () => {
+    if (file.length > 0 && courseId && studentId) {
+      setLoading(true);
+      console.log(file[0]);
+      api.certificate
+        .s3url({ file_names: [file[0].name] })
+        .then((res) => {
+          console.log(res);
+          api.certificate
+            .upload(courseId, studentId, { certificate: res.data[0].url })
+            .then((response) => {
+              console.log(response);
+              close();
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.log(err);
+              setLoading(false);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
+  };
+
   return (
     <div>
       <Dialog open={isOpen} onClose={() => close()} maxWidth="sm">
@@ -47,11 +81,20 @@ function CertificateUpload({ isOpen, close }) {
           </Typography>
         </DialogTitle>
         <DialogContent sx={{ width: 600 }}>
-          <DragDropInput />
+          <DragDropInput file={file} changeFile={(fileVal) => setFile(fileVal)} />
         </DialogContent>
         <DialogActions sx={{ mb: 2, mr: 2 }}>
-          <Button variant="outlined">Cancel</Button>
-          <Button variant="contained">Confirm</Button>
+          <Button variant="outlined" disabled={loading}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            disabled={file.length === 0 || loading}
+            onClick={uploadFile}
+            endIcon={loading ? <CircularProgress size={20} /> : undefined}
+          >
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -81,7 +81,13 @@ function AllBatches({ course, filter, handleFilterChange }) {
         />
       </Box>
 
-      <UsersListTable page="course" loading={loading} height="calc(100vh - 450px)" rows={users} />
+      <UsersListTable
+        page="course"
+        loading={loading}
+        height="calc(100vh - 450px)"
+        rows={users}
+        courseId={course?._id}
+      />
     </Paper>
   );
 }

@@ -26,20 +26,29 @@ function Schedules({ activeCourse }) {
   useEffect(() => {
     if (filter) {
       setLoading(true);
-      api.batch
-        .getById(filter)
+      // api.batch
+      //   .getById(filter)
+      //   .then((res) => {
+      //     console.log(res);
+      //     setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
+      //     setLoading(false);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     setLoading(false);
+      //     setError(true);
+      //     if (err?.response?.status === 401) {
+      //       dispatch(logout());
+      //       navigate('/admin-login');
+      //     }
+      //   });
+      api.schedules
+        .slots(filter)
         .then((res) => {
-          setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
-          setLoading(false);
+          console.log(res);
         })
         .catch((err) => {
           console.log(err);
-          setLoading(false);
-          setError(true);
-          if (err?.response?.status === 401) {
-            dispatch(logout());
-            navigate('/admin-login');
-          }
         });
     }
   }, [activeCourse, filter, forceUpdate]);

@@ -32,9 +32,13 @@ import CertificateUpload from '../certificate-upload/CertificateUpload';
 // }));
 
 function UsersListTable({
-  rows = [], page, loading, height = '100%',
+  rows = [], page, loading, height = '100%', courseId, studentId,
 }) {
-  const [upload, setUpload] = useState(false);
+  const [upload, setUpload] = useState({ show: false, studentId: null });
+
+  const handleUploadClick = (studentId) => {
+    setUpload({ show: true, studentId });
+  };
   return (
     <>
       <TableContainer
@@ -100,43 +104,43 @@ function UsersListTable({
                       </TableCell>
                     )}
                     <TableCell sx={{ color: 'inherit' }}>
-                      {row?.coursesRegistered && row.coursesRegistered.length > 0 ? (
-                        <Box sx={{ display: 'flex', gap: 0.5 }}>
-                          <Box
-                            sx={{
-                              bgcolor: colorFns.getColorShade(0),
-                              color: colorFns.getColorShadeText(0),
-                              border: 1,
-                              borderColor: colorFns.getColorShadeText(0),
-                              p: 0.5,
-                              borderRadius: 5,
-                              textAlign: 'center',
-                              width: '5rem',
-                            }}
-                          >
-                            0%
-                          </Box>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            sx={{
-                              border: 1,
-                              width: 30,
-                              height: 30,
-                              borderColor: 'primary.main',
-                            }}
-                            onClick={() => setUpload(true)}
-                          >
-                            <BiCloudUpload size={19} />
-                          </IconButton>
+                      {/* {row?.coursesRegistered && row.coursesRegistered.length > 0 ? ( */}
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <Box
+                          sx={{
+                            bgcolor: colorFns.getColorShade(0),
+                            color: colorFns.getColorShadeText(0),
+                            border: 1,
+                            borderColor: colorFns.getColorShadeText(0),
+                            p: 0.5,
+                            borderRadius: 5,
+                            textAlign: 'center',
+                            width: '5rem',
+                          }}
+                        >
+                          0%
                         </Box>
-                      ) : (
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          sx={{
+                            border: 1,
+                            width: 30,
+                            height: 30,
+                            borderColor: 'primary.main',
+                          }}
+                          onClick={() => handleUploadClick(row._id)}
+                        >
+                          <BiCloudUpload size={19} />
+                        </IconButton>
+                      </Box>
+                      {/* ) : (
                         <span
                           style={{ textAlign: 'center', width: '5rem', display: 'inline-block' }}
                         >
                           N/A
                         </span>
-                      )}
+                      )} */}
                     </TableCell>
                     {page === 'course' && <TableCell sx={{ color: 'inherit' }}>9.5</TableCell>}
                   </TableRow>
@@ -175,7 +179,12 @@ function UsersListTable({
         </Paper>
       )}
 
-      <CertificateUpload isOpen={upload} close={() => setUpload(false)} />
+      <CertificateUpload
+        isOpen={upload.show}
+        close={() => setUpload({ show: false, studentId: null })}
+        courseId={courseId}
+        studentId={upload.studentId}
+      />
     </>
   );
 }

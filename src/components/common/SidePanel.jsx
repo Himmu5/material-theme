@@ -1,18 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import {
-  Box, Button, List, ListItemButton, Typography,
+  Box, List, ListItemButton, Typography,
 } from '@mui/material';
-import React, { useContext } from 'react';
+import React from 'react';
 import { FaUser } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
 import { HiTicket } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import textLogo from '../../../assets/text_logo.svg';
 import Notifications from './Notifications';
-import { logout } from '../../slices/adminAuth';
-import { ToastContext } from '../contexts/ToastContext';
 import Logout from './logout/Logout';
 
 function ListItem({ isActive = false, children, ...props }) {
@@ -59,7 +56,6 @@ const pages = [
 function SidePanel() {
   const navigate = useNavigate();
   const location = useLocation();
-
 
   return (
     <Box

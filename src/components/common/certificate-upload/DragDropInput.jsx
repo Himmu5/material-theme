@@ -6,10 +6,9 @@ import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import uploadSvg from '../../../../assets/upload.svg';
 
-function DragDropInput() {
+function DragDropInput({ file, changeFile }) {
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef(null);
-  const [file, setFile] = useState([]);
   const [error, setError] = useState(null);
 
   // handle drag events
@@ -46,7 +45,7 @@ function DragDropInput() {
         setError('invalid');
         inputRef.current.value = '';
       } else {
-        setFile(e.dataTransfer.files);
+        changeFile(e.dataTransfer.files);
         setError(null);
       }
     }
@@ -65,7 +64,7 @@ function DragDropInput() {
         setError('invalid');
         inputRef.current.value = '';
       } else {
-        setFile(e.target.files);
+        changeFile(e.target.files);
         setError(null);
       }
     }
@@ -76,7 +75,7 @@ function DragDropInput() {
   };
 
   const onClear = () => {
-    setFile([]);
+    changeFile([]);
   };
 
   console.log(inputRef?.current?.value ? inputRef.current.value : '', file);

@@ -50,6 +50,10 @@ const api = {
     },
   },
   schedules: {
+    slots: (id) => {
+      const path = '/admin/available-slots';
+      return axios.get(path, { data: { batchId: id } }).then((res) => res.data);
+    },
     bookings: (id, date) => {
       const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
       return axios.get(path).then((res) => res.data);
@@ -61,6 +65,16 @@ const api = {
     markAttendance: (attendance) => {
       const path = '/admin/mark-attendance';
       return axios.post(path, attendance).then((res) => res.data);
+    },
+  },
+  certificate: {
+    s3url: (files) => {
+      const path = '/s3url';
+      return axios.post(path, files).then((res) => res.data);
+    },
+    upload: (courseId, studentId, certificate) => {
+      const path = `/admin/add-certificate/${courseId}/${studentId}`;
+      return axios.post(path, certificate).then((res) => res.data);
     },
   },
 };
