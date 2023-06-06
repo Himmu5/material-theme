@@ -26,10 +26,11 @@ function Schedules({ activeCourse }) {
   useEffect(() => {
     if (filter) {
       setLoading(true);
-      api.batch
-        .getById(filter)
+      api.schedules
+        .slots(filter)
         .then((res) => {
-          setSlots(res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : []);
+          console.log(res);
+          setSlots(res?.data ? res.data : []);
           setLoading(false);
         })
         .catch((err) => {
