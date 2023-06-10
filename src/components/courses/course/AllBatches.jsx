@@ -87,6 +87,7 @@ function AllBatches({ course, filter, handleFilterChange }) {
         height="calc(100vh - 450px)"
         rows={users}
         courseId={course?._id}
+        courseName={course?.name ? course.name : ''}
       />
     </Paper>
   );

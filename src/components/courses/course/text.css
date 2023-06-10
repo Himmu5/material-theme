@@ -6,9 +6,8 @@
 }
 
 .multi-ellipsis-title {
-    overflow: hidden;
-    max-height: 80px !important;
-    line-height: 40px !important;
-    position: relative;
-  }
-  
+  overflow: hidden;
+  max-height: 80px !important;
+  line-height: 40px !important;
+  position: relative;
+}

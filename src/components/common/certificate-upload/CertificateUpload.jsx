@@ -29,19 +29,30 @@ function CertificateUpload({
   const [loading, setLoading] = useState(false);
 
   const uploadFile = () => {
+    console.log(file, courseId, studentId);
     if (file.length > 0 && courseId && studentId) {
       setLoading(true);
-      console.log(file[0]);
+      // console.log(file[0]);
       api.certificate
         .s3url({ file_names: [file[0].name] })
         .then((res) => {
           console.log(res);
+          const url = res && res?.data && res.data.length > 0 ? res.data[0].url : null;
           api.certificate
-            .upload(courseId, studentId, { certificate: res.data[0].url })
-            .then((response) => {
-              console.log(response);
-              close();
-              setLoading(false);
+            .upload(url, file[0])
+            .then((res) => {
+              console.log(res);
+              api.certificate
+                .save(courseId, studentId, { certificate: url })
+                .then((response) => {
+                  console.log(response);
+                  close();
+                  setLoading(false);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  setLoading(false);
+                });
             })
             .catch((err) => {
               console.log(err);

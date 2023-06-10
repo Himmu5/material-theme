@@ -1,7 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Box,
+  Button,
   CircularProgress,
   IconButton,
+  Link,
   Paper,
   Table,
   TableBody,
@@ -17,6 +20,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BiCloudUpload } from 'react-icons/bi';
 import colorFns from '../../../utils/colorFunctions';
 import CertificateUpload from '../certificate-upload/CertificateUpload';
+import MCQScores from '../../courses/course/mcq-scores/MCQScores';
 
 // const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
 //   '&.MuiTableRow-head': {
@@ -32,13 +36,22 @@ import CertificateUpload from '../certificate-upload/CertificateUpload';
 // }));
 
 function UsersListTable({
-  rows = [], page, loading, height = '100%', courseId
+  rows = [], page, loading, height = '100%', courseId, courseName = '',
 }) {
-  const [upload, setUpload] = useState({ show: false, studentId: null });
+  const [upload, setUpload] = useState({ show: false, studentId: null, courseId: null });
 
-  const handleUploadClick = (studentId) => {
-    setUpload({ show: true, studentId });
+  const handleUploadClick = (studentId, courseId) => {
+    setUpload({ show: true, studentId, courseId });
   };
+
+  const getPercentage = (row) => (page === 'course' && row?.progress
+    ? row.progress
+    : row?.coursesRegistered
+        && row.coursesRegistered.length > 0
+        && row?.coursesRegistered[0]?.progressPercentage
+      ? row.coursesRegistered[0].progressPercentage
+      : 0);
+
   console.log(rows);
   return (
     <>
@@ -93,9 +106,11 @@ function UsersListTable({
 
                     <TableCell sx={{ color: 'inherit' }}>{row?.degree}</TableCell>
                     <TableCell sx={{ color: 'inherit' }}>
-                      {row?.coursesRegistered && row.coursesRegistered.length > 0
+                      {page === 'users'
+                      && row?.coursesRegistered
+                      && row.coursesRegistered.length > 0
                         ? row.coursesRegistered[0].course.name
-                        : null}
+                        : courseName}
                     </TableCell>
                     {page === 'users' && (
                       <TableCell sx={{ color: 'inherit' }}>
@@ -105,45 +120,75 @@ function UsersListTable({
                       </TableCell>
                     )}
                     <TableCell sx={{ color: 'inherit' }}>
-                      {/* {row?.coursesRegistered && row.coursesRegistered.length > 0 ? ( */}
-                      <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <Box
-                          sx={{
-                            bgcolor: colorFns.getColorShade(0),
-                            color: colorFns.getColorShadeText(0),
-                            border: 1,
-                            borderColor: colorFns.getColorShadeText(0),
-                            p: 0.5,
-                            borderRadius: 5,
-                            textAlign: 'center',
-                            width: '5rem',
-                          }}
+                      {row?.coursesRegistered
+                      && row?.coursesRegistered.length > 0
+                      && row.coursesRegistered[0]?.isCompleted
+                      && getPercentage(row) === 100
+                      && row?.coursesRegistered[0].certificate ? (
+                        <Button
+                          LinkComponent={Link}
+                          href={row?.coursesRegistered[0].certificate}
+                          download="certificate"
                         >
-                          0%
-                        </Box>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          sx={{
-                            border: 1,
-                            width: 30,
-                            height: 30,
-                            borderColor: 'primary.main',
-                          }}
-                          onClick={() => handleUploadClick(row._id)}
-                        >
-                          <BiCloudUpload size={19} />
-                        </IconButton>
-                      </Box>
-                      {/* ) : (
-                        <span
-                          style={{ textAlign: 'center', width: '5rem', display: 'inline-block' }}
-                        >
-                          N/A
-                        </span>
-                      )} */}
+                          certificate
+                        </Button>
+                        ) : (row?.coursesRegistered && row.coursesRegistered.length > 0)
+                        || page === 'course' ? (
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <Box
+                              sx={{
+                                bgcolor: colorFns.getColorShade(getPercentage(row)),
+                                color: colorFns.getColorShadeText(getPercentage(row)),
+                                border: 1,
+                                borderColor: colorFns.getColorShadeText(getPercentage(row)),
+                                p: 0.5,
+                                borderRadius: 5,
+                                textAlign: 'center',
+                                width: '5rem',
+                              }}
+                            >
+                              {getPercentage(row)}
+                              %
+                            </Box>
+                            {getPercentage(row) === 100 && (
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              sx={{
+                                border: 1,
+                                width: 30,
+                                height: 30,
+                                borderColor: 'primary.main',
+                              }}
+                              onClick={() => handleUploadClick(
+                                row._id,
+                                page === 'course'
+                                  ? null
+                                  : row?.coursesRegistered && row.coursesRegistered.length > 0
+                                    ? row.coursesRegistered[0]._id
+                                    : null,
+                              )}
+                            >
+                              <BiCloudUpload size={19} />
+                            </IconButton>
+                            )}
+                          </Box>
+                          ) : (
+                            <span
+                              style={{ textAlign: 'center', width: '5rem', display: 'inline-block' }}
+                            >
+                              N/A
+                            </span>
+                          )}
                     </TableCell>
-                    {page === 'course' && <TableCell sx={{ color: 'inherit' }}>9.5</TableCell>}
+                    {page === 'course' && (row?.averageScore || row?.averageScore === 0) ? (
+                      <TableCell sx={{ color: 'inherit' }}>
+                        <Box>{row.averageScore}</Box>
+                        {row?.assignmentScores && (
+                          <MCQScores scores={row.assignmentScores} avgScore={row.averageScore} />
+                        )}
+                      </TableCell>
+                    ) : null}
                   </TableRow>
                 ))}
             </AnimatePresence>
@@ -183,7 +228,7 @@ function UsersListTable({
       <CertificateUpload
         isOpen={upload.show}
         close={() => setUpload({ show: false, studentId: null })}
-        courseId={courseId}
+        courseId={page === 'course' ? courseId : upload.courseId}
         studentId={upload.studentId}
       />
     </>

@@ -65,10 +65,10 @@ function MarkAttendance({ batchId }) {
     if (batchId) {
       setLoading(true);
       setDate('loading');
-      api.batch
-        .getById(batchId)
+      api.schedules
+        .slots(batchId)
         .then((res) => {
-          const availableDates = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
+          const availableDates = res?.data ? res.data : [];
           setDates(availableDates);
           setDate(
             availableDates.length !== 0 ? availableDates[availableDates.length - 1] : 'no-options',

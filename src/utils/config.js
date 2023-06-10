@@ -1,0 +1,5 @@
+const S3_BUCKET_URL = import.meta.env.VITE_REACT_S3_BUCKET_URL;
+
+const BACKEND_BASE_URL = import.meta.env.VITE_REACT_BACKEND_BASE_URL;
+
+export { S3_BUCKET_URL, BACKEND_BASE_URL };
