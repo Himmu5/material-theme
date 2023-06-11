@@ -6,7 +6,9 @@ import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import uploadSvg from '../../../../assets/upload.svg';
 
-function DragDropInput({ file, changeFile }) {
+function DragDropInput({
+  file, changeFile, download, downloadUrl,
+}) {
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef(null);
   const [error, setError] = useState(null);
@@ -82,7 +84,28 @@ function DragDropInput({ file, changeFile }) {
 
   return (
     <Box>
-      {file.length > 0 ? (
+      {download && downloadUrl ? (
+        <Button
+          href={downloadUrl}
+          download={String(downloadUrl).split('/').pop()}
+          fullWidth
+          sx={{
+            display: 'block',
+            maxWidth: 550,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            textAlign: 'left',
+            textTransform: 'none',
+            bgcolor: '#E8EDF4',
+            borderRadius: 3,
+            py: 2,
+            px: 4,
+          }}
+        >
+          {String(downloadUrl).split('/').pop()}
+        </Button>
+      ) : file.length > 0 ? (
         <Box
           sx={{
             bgcolor: '#E8EDF4',

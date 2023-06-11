@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 import {
   Box,
@@ -38,10 +39,20 @@ import MCQScores from '../../courses/course/mcq-scores/MCQScores';
 function UsersListTable({
   rows = [], page, loading, height = '100%', courseId, courseName = '',
 }) {
-  const [upload, setUpload] = useState({ show: false, studentId: null, courseId: null });
+  const [upload, setUpload] = useState({
+    show: false,
+    studentId: null,
+    courseId: null,
+    download: false,
+    downloadUrl: null,
+  });
 
-  const handleUploadClick = (studentId, courseId) => {
-    setUpload({ show: true, studentId, courseId });
+  const handleUploadClick = (studentId, courseIdVal) => {
+    setUpload({ show: true, studentId, courseId: courseIdVal });
+  };
+
+  const handleViewFile = (downloadUrl) => {
+    setUpload({ show: true, download: true, downloadUrl });
   };
 
   const getPercentage = (row) => (page === 'course' && row?.progress
@@ -119,18 +130,36 @@ function UsersListTable({
                           : null}
                       </TableCell>
                     )}
-                    <TableCell sx={{ color: 'inherit' }}>
-                      {row?.coursesRegistered
-                      && row?.coursesRegistered.length > 0
-                      && row.coursesRegistered[0]?.isCompleted
-                      && getPercentage(row) === 100
-                      && row?.coursesRegistered[0].certificate ? (
+                    <TableCell sx={{ color: 'inherit', overflowX: 'hidden' }}>
+                      {(row?.coursesRegistered
+                        && row?.coursesRegistered.length > 0
+                        && row.coursesRegistered[0]?.isCompleted
+                        && row.coursesRegistered[0]?.certificate)
+                      || (page === 'course' && row?.certificate) ? (
                         <Button
-                          LinkComponent={Link}
-                          href={row?.coursesRegistered[0].certificate}
-                          download="certificate"
+                          onClick={() => handleViewFile(
+                            page === 'course' && row?.certificate
+                              ? row.certificate
+                              : row?.coursesRegistered[0].certificate,
+                          )}
+                          size="small"
+                          sx={{
+                            display: 'block',
+                            maxWidth: 150,
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                            textAlign: 'left',
+                            textTransform: 'none',
+                          }}
                         >
-                          certificate
+                          {String(
+                            page === 'course' && row?.certificate
+                              ? row.certificate
+                              : row?.coursesRegistered[0].certificate,
+                          )
+                            .split('/')
+                            .pop()}
                         </Button>
                         ) : (row?.coursesRegistered && row.coursesRegistered.length > 0)
                         || page === 'course' ? (
@@ -150,7 +179,9 @@ function UsersListTable({
                               {getPercentage(row)}
                               %
                             </Box>
-                            {getPercentage(row) === 100 && (
+                            {row.coursesRegistered
+                          && row.coursesRegistered.length > 0
+                          && row.coursesRegistered[0]?.isCompleted ? (
                             <IconButton
                               size="small"
                               color="primary"
@@ -164,14 +195,17 @@ function UsersListTable({
                                 row._id,
                                 page === 'course'
                                   ? null
-                                  : row?.coursesRegistered && row.coursesRegistered.length > 0
-                                    ? row.coursesRegistered[0]._id
+                                  : row?.coursesRegistered
+                                      && row.coursesRegistered.length > 0
+                                      && row.coursesRegistered[0]?.course
+                                      && row.coursesRegistered[0].course?._id
+                                    ? row.coursesRegistered[0].course._id
                                     : null,
                               )}
                             >
                               <BiCloudUpload size={19} />
                             </IconButton>
-                            )}
+                              ) : null}
                           </Box>
                           ) : (
                             <span
@@ -227,9 +261,16 @@ function UsersListTable({
 
       <CertificateUpload
         isOpen={upload.show}
-        close={() => setUpload({ show: false, studentId: null })}
+        close={() => setUpload({
+          show: false,
+          studentId: null,
+          download: false,
+          downloadUrl: null,
+        })}
         courseId={page === 'course' ? courseId : upload.courseId}
         studentId={upload.studentId}
+        download={upload.download}
+        downloadUrl={upload.downloadUrl}
       />
     </>
   );

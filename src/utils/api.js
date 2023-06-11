@@ -1,5 +1,6 @@
 import axios from 'axios';
 import axiosInstance from './axios';
+import { S3_BUCKET_URL } from './config';
 
 const api = {
   users: {
@@ -73,12 +74,14 @@ const api = {
       const path = '/s3url';
       return axiosInstance.post(path, files).then((res) => res.data);
     },
-    upload: (url, files) => axios
-      .put(url, files, { 'Content-Type': 'multipart/form-data' })
-      .then((res) => res),
-    save: (courseId, studentId, certificate) => {
+    upload: (url, files) => axios.put(url, files, { 'Content-Type': 'multipart/form-data' }).then((res) => res),
+    save: (courseId, studentId, s3url) => {
       const path = `/admin/add-certificate/${courseId}/${studentId}`;
-      return axiosInstance.post(path, certificate).then((res) => res.data);
+      const urlWithoutParams = String(s3url).split('?')[0];
+      const fileName = String(urlWithoutParams).split('/').pop();
+      return axiosInstance
+        .post(path, { certificate: `http://${S3_BUCKET_URL}/${fileName}` })
+        .then((res) => res.data);
     },
   },
 };

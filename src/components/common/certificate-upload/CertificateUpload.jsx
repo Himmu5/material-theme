@@ -23,10 +23,16 @@ const Dialog = styled(MuiDialog)(() => ({
 }));
 
 function CertificateUpload({
-  isOpen, close, courseId, studentId,
+  isOpen,
+  close,
+  courseId,
+  studentId,
+  download = false,
+  downloadUrl = null,
 }) {
   const [file, setFile] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(download, downloadUrl);
 
   const uploadFile = () => {
     console.log(file, courseId, studentId);
@@ -43,7 +49,7 @@ function CertificateUpload({
             .then((res) => {
               console.log(res);
               api.certificate
-                .save(courseId, studentId, { certificate: url })
+                .save(courseId, studentId, url)
                 .then((response) => {
                   console.log(response);
                   close();
@@ -69,7 +75,7 @@ function CertificateUpload({
   return (
     <div>
       <Dialog open={isOpen} onClose={() => close()} maxWidth="sm">
-        <DialogTitle sx={{ mt: 2, mx: 2 }}>
+        <DialogTitle>
           <IconButton
             aria-label="close"
             onClick={() => close()}
@@ -85,27 +91,45 @@ function CertificateUpload({
           </IconButton>
 
           <Typography variant="h4" fontWeight={600}>
-            Upload and attach files
+            {download && downloadUrl ? 'Download Certificate' : 'Upload and attach files'}
           </Typography>
-          <Typography variant="body2" color="text.secondary" fontWeight={500}>
-            Supported formats: jpg, jpeg, png, pdf
-          </Typography>
+          {!(download && downloadUrl) ? (
+            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+              Supported formats: jpg, jpeg, png, pdf
+            </Typography>
+          ) : null}
         </DialogTitle>
         <DialogContent sx={{ width: 600 }}>
-          <DragDropInput file={file} changeFile={(fileVal) => setFile(fileVal)} />
+          <DragDropInput
+            file={file}
+            changeFile={(fileVal) => setFile(fileVal)}
+            download={download}
+            downloadUrl={downloadUrl}
+          />
         </DialogContent>
         <DialogActions sx={{ mb: 2, mr: 2 }}>
           <Button variant="outlined" disabled={loading}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            disabled={file.length === 0 || loading}
-            onClick={uploadFile}
-            endIcon={loading ? <CircularProgress size={20} /> : undefined}
-          >
-            Confirm
-          </Button>
+          {download && downloadUrl ? (
+            <Button
+              href={downloadUrl}
+              download={String(downloadUrl).split('/').pop()}
+              variant="contained"
+              sx={{ ml: 2 }}
+            >
+              Download
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              disabled={file.length === 0 || loading}
+              onClick={uploadFile}
+              endIcon={loading ? <CircularProgress size={20} /> : undefined}
+            >
+              Confirm
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>
