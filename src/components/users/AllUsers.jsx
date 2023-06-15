@@ -1,40 +1,10 @@
 import { Paper, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import UsersListTable from '../common/user-list/UsersListTable';
-import { logout } from '../../slices/adminAuth';
-import api from '../../utils/api';
 import CertificateUpload from '../common/certificate-upload/CertificateUpload';
 
-function AllUsers() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    setLoading(true);
-
-    api.users
-      .list()
-      .then((res) => {
-        setUsers(res?.data?.students);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        if (err?.response?.status === 401) {
-          dispatch(logout());
-          navigate('/admin-login');
-        }
-      });
-  }, []);
-
-  // const handleFilterChange = (batchId) => setFilter(batchId);
-
+function AllUsers({ users, loading }) {
   return (
     <Paper
       component={motion.div}

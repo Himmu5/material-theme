@@ -36,7 +36,7 @@ export default function AdminLogin() {
 
     dispatch(login({ email, password }))
       .unwrap()
-      .then((res) => {
+      .then(() => {
         createToast({ type: 'success', message: `Welcome back ${formik?.values?.email}` });
         setTimeout(() => {
           navigate('/');
@@ -50,9 +50,11 @@ export default function AdminLogin() {
         }
         console.log(err);
         if (
-          err?.response?.data?.message
-          && err.response.data.message === 'invalid credintials. please try again'
-        ) createToast({ type: 'error', message: 'Invalid credentials, try again!' });
+          err?.response
+          && err.response?.data
+          && err.response.data?.message
+          && err.response.data.message
+        ) createToast({ type: 'error', message: err.response.data.message });
         setLoading(false);
       });
   };

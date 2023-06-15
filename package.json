@@ -26,6 +26,7 @@
     "react-icons": "^4.8.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.0",
+    "xlsx": "file:vendor/xlsx-0.19.3.tgz",
     "yup": "^1.1.1"
   },
   "devDependencies": {

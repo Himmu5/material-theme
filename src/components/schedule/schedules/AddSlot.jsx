@@ -110,6 +110,7 @@ function AddSlot({ courseId, updateList, filter }) {
             });
             updateList();
             setOpen(false);
+            formik.resetForm();
           })
           .catch((err) => {
             setLoadingSubmit(false);

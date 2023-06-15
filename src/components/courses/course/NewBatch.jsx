@@ -40,7 +40,10 @@ const validationSchema = yup.object({
     .date('Invalid date')
     .required('End date is required!')
     .min(yup.ref('startDate'), 'End date cannot be before start date'),
-  purchaseAvailability: yup.date('Invalid date').required('Purchase availability is required!'),
+  purchaseAvailability: yup
+    .date('Invalid date')
+    .required('Purchase availability is required!')
+    .min(yup.ref('startDate'), 'Purchase Availability cannot be before start date'),
 });
 
 function NewBatch({ course, updateBatches }) {
@@ -52,7 +55,6 @@ function NewBatch({ course, updateBatches }) {
 
   const initialValues = {
     batchName: '',
-    courseID: course?._id,
     numberOfIntakes: 30,
     startDate: null,
     endDate: null,
@@ -69,8 +71,10 @@ function NewBatch({ course, updateBatches }) {
     initialValues,
     validationSchema,
     onSubmit: (values) => {
+      const formData = { ...values, courseID: course?._id };
       setLoading(true);
-      submitBatch(values)
+      console.log(formData);
+      submitBatch(formData)
         .then(() => {
           setOpen(false);
           createToast({

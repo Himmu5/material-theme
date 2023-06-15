@@ -8,7 +8,6 @@ import {
   IconButton,
   Typography,
   styled,
-  Box,
   CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -46,12 +45,12 @@ function CertificateUpload({
           const url = res && res?.data && res.data.length > 0 ? res.data[0].url : null;
           api.certificate
             .upload(url, file[0])
-            .then((res) => {
-              console.log(res);
+            .then((response) => {
+              console.log(response);
               api.certificate
                 .save(courseId, studentId, url)
-                .then((response) => {
-                  console.log(response);
+                .then((response2) => {
+                  console.log(response2);
                   close();
                   setLoading(false);
                 })
@@ -108,7 +107,7 @@ function CertificateUpload({
           />
         </DialogContent>
         <DialogActions sx={{ mb: 2, mr: 2 }}>
-          <Button variant="outlined" disabled={loading}>
+          <Button variant="outlined" disabled={loading} onClick={close}>
             Cancel
           </Button>
           {download && downloadUrl ? (

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Box, Grid, LinearProgress, Paper, Skeleton, Typography,
+  Box, Grid, LinearProgress, Skeleton, Typography,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -93,12 +93,14 @@ function Vouchers() {
       <Box
         sx={{
           ml: -4,
+          pt: 2,
         }}
         component={motion.div}
-        initial={{ opacity: 0, y: -50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ scale: 0.5, y: -50 }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        exit={{ scale: 0.5 }}
       >
+        {loading && <LinearProgress sx={{ mt: -2, mb: 1 }} />}
         <Box
           sx={{
             display: 'flex',
@@ -122,8 +124,6 @@ function Vouchers() {
             <AddVoucher updateList={() => handlUpdateList()} />
           )}
         </Box>
-
-        {loading && <LinearProgress />}
       </Box>
 
       {loading && vouchers.length === 0 ? (

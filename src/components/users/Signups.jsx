@@ -1,24 +1,18 @@
 /* eslint-disable no-nested-ternary */
 import {
-  Box,
-  CircularProgress,
-  IconButton,
-  Paper,
-  Skeleton,
-  Tooltip,
-  Typography,
+  Box, Paper, Skeleton, Typography,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { FaUserCheck } from 'react-icons/fa';
-import { SiMicrosoftexcel } from 'react-icons/si';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import api from '../../utils/api';
 import { ToastContext } from '../contexts/ToastContext';
 import { logout } from '../../slices/adminAuth';
+import GenerateSpreadsheet from './GenerateSpreadsheet';
 
-function Signups() {
+function Signups({ loadingSheet, users }) {
   const [signups, setSignups] = useState(null);
   const [loading, setLoading] = useState(false);
   const { createToast } = useContext(ToastContext);
@@ -164,21 +158,7 @@ function Signups() {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignSelf: 'end', height: '100%' }}>
-        <Tooltip title={signups ? 'Download as spreadsheet' : 'Error loading data'}>
-          <IconButton
-            sx={{ color: '#5DDC21', width: 40, height: 40 }}
-            disabled={loading}
-            size="small"
-          >
-            {loading ? (
-              <CircularProgress color="secondary" size={20} />
-            ) : !signups ? (
-              <ErrorOutlineIcon sx={{ color: 'secondary.main', fontSize: 22 }} />
-            ) : (
-              <SiMicrosoftexcel />
-            )}
-          </IconButton>
-        </Tooltip>
+        <GenerateSpreadsheet loading={loadingSheet} users={users} />
       </Box>
     </Box>
   );

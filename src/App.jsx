@@ -40,7 +40,7 @@ function App() {
           )}
         />
 
-        <Route Component={<ProtectedRoutes />}>
+        <Route element={<ProtectedRoutes />}>
           <Route
             path="/dashboard"
             element={(

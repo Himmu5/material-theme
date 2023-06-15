@@ -1,10 +1,38 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Signups from '../../components/users/Signups';
 import AllUsers from '../../components/users/AllUsers';
+import api from '../../utils/api';
+import { logout } from '../../slices/adminAuth';
 
 function Users() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setLoading(true);
+
+    api.users
+      .list()
+      .then((res) => {
+        setUsers(res?.data?.students);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        if (err?.response?.status === 401) {
+          dispatch(logout());
+          navigate('/admin-login');
+        }
+      });
+  }, []);
+
   return (
     <Box
       sx={{
@@ -31,11 +59,11 @@ function Users() {
         exit={{ scale: 0, opacity: 0 }}
         viewport={{ once: true }}
       >
-        <Signups />
+        <Signups loadingSheet={loading} users={users} />
         {/* <Purchases /> */}
       </Box>
 
-      <AllUsers />
+      <AllUsers users={users} loading={loading} />
     </Box>
   );
 }
