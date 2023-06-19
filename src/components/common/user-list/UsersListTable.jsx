@@ -55,14 +55,13 @@ function UsersListTable({
   };
 
   const getPercentage = (row) => (page === 'course' && row?.progress
-    ? row.progress
+    ? Number(row.progress).toFixed(1)
     : row?.coursesRegistered
         && row.coursesRegistered.length > 0
         && row?.coursesRegistered[0]?.progressPercentage
-      ? row.coursesRegistered[0].progressPercentage
+      ? Number(row.coursesRegistered[0].progressPercentage).toFixed(1)
       : 0);
 
-  console.log(rows);
   return (
     <>
       <TableContainer

@@ -50,7 +50,7 @@ function Voucher({
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'end', gap: 0.2 }}>
         <Typography variant="h1" fontWeight={700} color="#091931">
-          {voucher?.discountPercent}
+          {voucher?.discountPerCent}
           %
         </Typography>
         <Typography variant="body1" sx={{ mb: 1.4 }} color="text.secondary" fontWeight={500}>

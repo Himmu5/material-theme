@@ -14,8 +14,6 @@ import {
   InputBase,
   Typography,
   styled,
-  Select,
-  MenuItem,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
@@ -55,14 +53,6 @@ function AddSlot({ courseId, updateList, filter }) {
   };
 
   const validationSchema = yup.object({
-    batch: yup
-      .string()
-      .notOneOf(['loading', 'select'], 'No batch is selected to continue!')
-      .oneOf(
-        batches.length > 0 ? batches.map((batch) => batch?._id) : [],
-        'Selected batch is invalid!',
-      )
-      .required('A batch is required!'),
     date: yup.date('Invalid date!').required('Date is required!'),
     time: yup.string().required('Time is required!'),
   });
@@ -88,47 +78,49 @@ function AddSlot({ courseId, updateList, filter }) {
 
   const handleAddSlot = (values) => {
     setLoadingSubmit(true);
-    api.batch
-      .getById(values.batch)
-      .then((res) => {
-        const slots = res?.data?.slotsForSiteBooking ? res.data.slotsForSiteBooking : [];
+    if (filter) {
+      api.schedules
+        .slots(filter)
+        .then((res) => {
+          const slots = res?.data ? res.data : [];
 
-        let newSlots = [...slots, setDateTime(new Date(values.date), values.time).toISOString()];
-        newSlots = newSlots.sort((date1, date2) => {
-          const dateA = new Date(date1);
-          const dateB = new Date(date2);
-          return dateA > dateB;
-        });
-
-        api.schedules
-          .update({ slotsForSiteBooking: newSlots }, values.batch)
-          .then(() => {
-            setLoadingSubmit(false);
-            createToast({
-              type: 'success',
-              message: 'Added a new slot successfully',
-            });
-            updateList();
-            setOpen(false);
-            formik.resetForm();
-          })
-          .catch((err) => {
-            setLoadingSubmit(false);
-            createToast({ type: 'error', message: 'Failed to add new slot, try again!' });
-            console.log(err);
-            if (err?.response?.status === 401) {
-              dispatch(logout());
-              navigate('/admin-login');
-            }
+          let newSlots = [...slots, setDateTime(new Date(values.date), values.time).toISOString()];
+          newSlots = newSlots.sort((date1, date2) => {
+            const dateA = new Date(date1);
+            const dateB = new Date(date2);
+            return dateA > dateB;
           });
-      })
-      .catch((err) => {
-        if (err?.response?.status === 401) {
-          dispatch(logout());
-          navigate('/admin-login');
-        }
-        console.log(err);
-      });
+
+          api.schedules
+            .update({ slotsForSiteBooking: newSlots }, filter)
+            .then(() => {
+              setLoadingSubmit(false);
+              createToast({
+                type: 'success',
+                message: 'Added a new slot successfully',
+              });
+              updateList();
+              setOpen(false);
+              formik.resetForm();
+            })
+            .catch((err) => {
+              setLoadingSubmit(false);
+              createToast({ type: 'error', message: 'Failed to add new slot, try again!' });
+              console.log(err);
+              if (err?.response?.status === 401) {
+                dispatch(logout());
+                navigate('/admin-login');
+              }
+            });
+        })
+        .catch((err) => {
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate('/admin-login');
+          }
+          console.log(err);
+        });
+    }
   };
 
   const formik = useFormik({

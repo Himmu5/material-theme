@@ -3,7 +3,7 @@ import { CircularProgress, IconButton, Tooltip } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SiMicrosoftexcel } from 'react-icons/si';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { read, utils, writeFile } from 'xlsx';
+import { utils, writeFile } from 'xlsx';
 
 function GenerateSpreadsheet({ loading, users }) {
   const [sheetData, setSheetData] = useState([]);
@@ -13,6 +13,7 @@ function GenerateSpreadsheet({ loading, users }) {
       ? users.map((user, index) => ({
         SI_No: index + 1,
         Name: user?.name,
+        Paid_User: user?.isPaidUser ? 'Yes' : 'No',
         Email: user?.email,
         Phone: user?.phone && user.phone?.number ? user.phone.number : '',
         Location: user?.location,
@@ -44,7 +45,6 @@ function GenerateSpreadsheet({ loading, users }) {
     writeFile(wb, 'SiteXpert Users.xlsx');
   }, [sheetData]);
 
-  console.log(users, sheetData);
   return (
     <Tooltip title={users ? 'Download as spreadsheet' : 'Error loading data'}>
       <IconButton
