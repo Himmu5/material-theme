@@ -11,6 +11,7 @@ import { logout } from '../../slices/adminAuth';
 function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,9 +19,10 @@ function Users() {
     setLoading(true);
 
     api.users
-      .list()
+      .list(page)
       .then((res) => {
-        setUsers(res?.data?.students);
+        const resUsers = res.data?.students ? res.data.students : [];
+        setUsers((prev) => [...prev, ...resUsers]);
         setLoading(false);
       })
       .catch((err) => {
@@ -31,7 +33,7 @@ function Users() {
           navigate('/admin-login');
         }
       });
-  }, []);
+  }, [page]);
 
   return (
     <Box
@@ -63,7 +65,14 @@ function Users() {
         {/* <Purchases /> */}
       </Box>
 
-      <AllUsers users={users} loading={loading} />
+      <AllUsers
+        users={users}
+        loading={loading}
+        next={() => {
+          console.log('called next');
+          setPage((prev) => prev + 1);
+        }}
+      />
     </Box>
   );
 }

@@ -4,8 +4,8 @@ import { S3_BUCKET_URL } from './config';
 
 const api = {
   users: {
-    list: () => {
-      const path = '/admin/all-students';
+    list: (page) => {
+      const path = `/admin/all-students?page=${page}`;
       return axiosInstance.get(path).then((res) => res.data);
     },
     glance: () => {
@@ -56,6 +56,10 @@ const api = {
       const path = '/admin/available-slots';
       return axiosInstance.post(path, { batchId: id }).then((res) => res.data);
     },
+    chapters: (id) => {
+      const path = `/admin/site-visit-lessons/${id}`;
+      return axiosInstance.get(path).then((res) => res.data);
+    },
     bookings: (id, date) => {
       const path = `/admin/students-scheduled/?id=${id}&date=${date}`;
       return axiosInstance.get(path).then((res) => res.data);
@@ -82,6 +86,12 @@ const api = {
       return axiosInstance
         .post(path, { certificate: `http://${S3_BUCKET_URL}/${fileName}` })
         .then((res) => res.data);
+    },
+  },
+  notification: {
+    list_new: () => {
+      const path = '/admin/notification/1';
+      return axiosInstance.get(path).then((res) => res.data);
     },
   },
 };

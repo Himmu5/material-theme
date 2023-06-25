@@ -292,7 +292,7 @@ function NewBatch({ course, updateBatches }) {
                 component="label"
                 htmlFor="purchaseAvailability"
               >
-                Set Purchase Availibility
+                Last Date for Purchasing
               </Typography>
               <InputBase
                 type="date"

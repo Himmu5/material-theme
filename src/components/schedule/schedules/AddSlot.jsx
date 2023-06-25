@@ -14,6 +14,8 @@ import {
   InputBase,
   Typography,
   styled,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
@@ -38,43 +40,24 @@ const Dialog = styled(MuiDialog)(() => ({
 function AddSlot({ courseId, updateList, filter }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
-  const [batches, setBatches] = useState([]);
+  const [chapters, setChapters] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
 
-  console.log(filter);
-
   const initialValues = {
-    batch: filter, // batches.length > 0 ? batches[batches.length - 1]._id : 'select',
+    batch: filter,
+    chapter: chapters.length > 0 ? chapters[chapters.length - 1]._id : 'select',
     date: '',
     time: '',
   };
 
   const validationSchema = yup.object({
     date: yup.date('Invalid date!').required('Date is required!'),
+    chapter: yup.string().required(''),
     time: yup.string().required('Time is required!'),
   });
-
-  function setDateTime(date, time) {
-    const index = time.indexOf('.'); // replace with ":" for differently displayed time.
-    const index2 = time.indexOf(' ');
-
-    let hours = time.substring(0, index);
-    const minutes = time.substring(index + 1, index2);
-
-    const mer = time.substring(index2 + 1, time.length);
-    if (mer === 'PM') {
-      hours += 12;
-    }
-
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    date.setSeconds('00');
-
-    return date;
-  }
 
   const handleAddSlot = (values) => {
     setLoadingSubmit(true);
@@ -82,9 +65,20 @@ function AddSlot({ courseId, updateList, filter }) {
       api.schedules
         .slots(filter)
         .then((res) => {
-          const slots = res?.data ? res.data : [];
+          const slots = res?.data && res.data.length > 0
+            ? res.data.map((slot) => ({
+              date: slot?.date,
+              lessonId: slot?.lessonId,
+              time: slot?.time,
+            }))
+            : [];
+          console.log('slots', res.data);
 
-          let newSlots = [...slots, setDateTime(new Date(values.date), values.time).toISOString()];
+          let newSlots = [
+            ...slots,
+            { date: values?.date, time: values?.time, lessonId: values?.chapter },
+          ];
+          // setDateTime(new Date(values.date), values.time).toISOString()];
           newSlots = newSlots.sort((date1, date2) => {
             const dateA = new Date(date1);
             const dateB = new Date(date2);
@@ -127,6 +121,7 @@ function AddSlot({ courseId, updateList, filter }) {
     initialValues,
     validationSchema,
     onSubmit: (values) => {
+      console.log(values);
       handleAddSlot(values);
     },
   });
@@ -141,16 +136,17 @@ function AddSlot({ courseId, updateList, filter }) {
   };
 
   useEffect(() => {
-    if (courseId) {
+    console.log(filter);
+    if (filter) {
       setLoading(true);
-      api.batch
-        .list(courseId)
+      api.schedules
+        .chapters(filter)
         .then((res) => {
           formik.setFieldValue(
-            'batch',
-            res?.data && res.data.length > 0 ? res.data[res.data.length - 1]?._id : null,
+            'chapter',
+            res?.data && res.data.length > 0 ? res.data[res.data.length - 1]?.lessonId : null,
           );
-          setBatches(res?.data);
+          setChapters(res?.data);
           setLoading(false);
         })
         .catch((err) => {
@@ -162,7 +158,9 @@ function AddSlot({ courseId, updateList, filter }) {
           }
         });
     }
-  }, [courseId]);
+  }, [courseId, filter]);
+
+  console.log('chapters', chapters);
 
   return (
     <>
@@ -210,25 +208,27 @@ function AddSlot({ courseId, updateList, filter }) {
         </DialogTitle>
         <DialogContent sx={{ width: 400, display: 'flex' }}>
           <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
-            {/* <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small">
               <Typography variant="body1" color="text.secondary" component="label" htmlFor="batch">
-                Select Batch
+                Select chapter
               </Typography>
               <Select
-                className="date-select"
-                value={loading ? 'loading' : batches.length === 0 ? 'select' : formik.values.batch}
+                className="chapter-select"
                 displayEmpty
-                name="batch"
-                id="batch"
+                name="chapter"
+                id="chapter"
+                value={
+                  loading ? 'loading' : chapters.length === 0 ? 'select' : formik.values.chapter
+                }
                 onChange={formik.handleChange}
                 size="small"
                 disabled={loading || loadingSubmit}
                 defaultValue="select"
               >
-                {batches.length > 0
-                  && batches.map((batch) => (
-                    <MenuItem value={batch?._id} key={batch?._id}>
-                      {batch?.name}
+                {chapters.length > 0
+                  && chapters.map((chapter) => (
+                    <MenuItem value={chapter?.lessonId} key={chapter?.lessonId}>
+                      {chapter?.lessonTitle}
                     </MenuItem>
                   ))}
                 {loading && (
@@ -241,9 +241,9 @@ function AddSlot({ courseId, updateList, filter }) {
                 </MenuItem>
               </Select>
               <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.batch && formik.errors.batch}
+                {formik.touched.chapter && formik.errors.chapter}
               </FormHelperText>
-            </FormControl> */}
+            </FormControl>
 
             <Box sx={{ gap: 1, display: 'flex', my: 1 }}>
               <FormControl fullWidth>

@@ -26,7 +26,7 @@ function DeleteSlot({ slot, deleteSlot, updateList }) {
   const [loading, setLoading] = useState(false);
   const { createToast } = useContext(ToastContext);
 
-  const date = new Date(slot);
+  const date = new Date(slot?.date);
 
   const handleClickOpen = (e) => {
     e.stopPropagation();
@@ -94,7 +94,7 @@ function DeleteSlot({ slot, deleteSlot, updateList }) {
               {`${date.toLocaleDateString('en-GB', { day: 'numeric' })} ${date.toLocaleDateString(
                 'en-GB',
                 { month: 'long' },
-              )} ${date.toLocaleDateString('en-GB', { year: 'numeric' })}`}
+              )} ${date.toLocaleDateString('en-GB', { year: 'numeric' })}  ${slot?.time}`}
             </span>
             ?
           </Typography>

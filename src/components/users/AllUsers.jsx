@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import UsersListTable from '../common/user-list/UsersListTable';
 import CertificateUpload from '../common/certificate-upload/CertificateUpload';
 
-function AllUsers({ users, loading }) {
+function AllUsers({ users, loading, next }) {
   return (
     <Paper
       component={motion.div}
@@ -26,7 +26,13 @@ function AllUsers({ users, loading }) {
         All Users
       </Typography>
 
-      <UsersListTable page="users" rows={users} loading={loading} height="calc(100vh - 240px)" />
+      <UsersListTable
+        page="users"
+        rows={users}
+        loading={loading}
+        height="calc(100vh - 240px)"
+        next={next}
+      />
 
       <CertificateUpload />
     </Paper>

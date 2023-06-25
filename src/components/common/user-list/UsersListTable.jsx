@@ -14,7 +14,9 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { memo, useState } from 'react';
+import React, {
+  memo, useEffect, useRef, useState,
+} from 'react';
 import './table.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BiCloudUpload } from 'react-icons/bi';
@@ -36,7 +38,13 @@ import MCQScores from '../../courses/course/mcq-scores/MCQScores';
 // }));
 
 function UsersListTable({
-  rows = [], page, loading, height = '100%', courseId, courseName = '',
+  rows = [],
+  page,
+  loading,
+  height = '100%',
+  courseId,
+  courseName = '',
+  next = null,
 }) {
   const [upload, setUpload] = useState({
     show: false,
@@ -45,6 +53,29 @@ function UsersListTable({
     download: false,
     downloadUrl: null,
   });
+  const lastRow = useRef(null);
+
+  useEffect(() => {
+    function checkVisible(elm) {
+      const rect = elm.getBoundingClientRect();
+      const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+      return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+    }
+
+    const loadNext = () => {
+      console.log(lastRow && lastRow.current && checkVisible(lastRow.current) && next !== null);
+      if (lastRow && lastRow.current && checkVisible(lastRow.current) && next !== null) {
+        next();
+        lastRow.current = null;
+      }
+    };
+
+    const tableCont = document.getElementById('users-table-cont');
+
+    if (tableCont) tableCont.addEventListener('scroll', loadNext);
+
+    return () => tableCont.removeEventListener('scroll', loadNext);
+  }, []);
 
   const handleUploadClick = (studentId, courseIdVal) => {
     setUpload({ show: true, studentId, courseId: courseIdVal });
@@ -65,6 +96,7 @@ function UsersListTable({
   return (
     <>
       <TableContainer
+        id="users-table-cont"
         sx={{
           width: '100%',
           pr: 2,
@@ -94,12 +126,13 @@ function UsersListTable({
                 && rows.map((row, index) => (
                   <TableRow
                     component={motion.tr}
+                    ref={index === rows.length - 1 && page === 'users' ? lastRow : undefined}
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ type: 'tween' }}
                     viewport={{ once: true }}
-                    key={row?.name}
+                    key={row?._id}
                     sx={{ color: '#707070' }}
                   >
                     <TableCell sx={{ color: 'inherit' }}>{index + 1}</TableCell>

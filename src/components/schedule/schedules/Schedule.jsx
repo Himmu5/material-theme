@@ -81,10 +81,10 @@ function Schedule({
   makeExpanded,
   slot = null,
   slots = [],
-  index,
   batchId,
   updateList,
 }) {
+  console.log(slot, slots);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -93,7 +93,8 @@ function Schedule({
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
 
-  const date = new Date(slot);
+  const date = new Date(slot?.date);
+  const time = slot?.time || '';
   const dateString = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(
     -2,
   )}-${`0${date.getDate()}`.slice(-2)}`;
@@ -106,8 +107,11 @@ function Schedule({
   };
 
   const initialValues = {
-    newDate: formatDateValue(slot),
+    newDate: dateString,
+    newTime: time,
   };
+
+  console.log(initialValues);
 
   const handleClickOpen = (e) => {
     e.stopPropagation();
@@ -118,13 +122,25 @@ function Schedule({
     const itemIndex = slots.indexOf(slot);
 
     if (itemIndex !== -1) {
-      let newSlots = [...slots.map((dateVal) => formatDateValue(new Date(dateVal)))];
-      newSlots[itemIndex] = formatDateValue(new Date(value.newDate));
-      newSlots = newSlots.sort((date1, date2) => {
-        const dateA = new Date(date1);
-        const dateB = new Date(date2);
+      let newSlots = [
+        ...slots.map((item) => ({
+          date: formatDateValue(new Date(item.date)),
+          time: item?.time,
+          lessonId: item?.lessonId,
+        })),
+      ];
+      newSlots[itemIndex] = {
+        date: formatDateValue(new Date(value?.newDate)),
+        time: value?.newTime,
+        lessonId: slot?.lessonId,
+      };
+      newSlots = newSlots.sort((slot1, slot2) => {
+        const dateA = new Date(slot1?.date);
+        const dateB = new Date(slot2?.date);
         return dateA > dateB;
       });
+
+      console.log(newSlots, itemIndex);
 
       setLoadingUpdate(true);
       api.schedules
@@ -155,6 +171,7 @@ function Schedule({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
+      console.log(values);
       handleUpdate(values);
     },
   });
@@ -188,7 +205,10 @@ function Schedule({
   const handleDelete = () => {
     if (slots.find((item) => item === slot)) {
       const newSlots = slots.filter((item) => item !== slot);
-      const newSlotsFormatted = newSlots.map((dateVal) => formatDateValue(new Date(dateVal)));
+      const newSlotsFormatted = newSlots.map((item) => ({
+        date: formatDateValue(new Date(item?.date)),
+        ...item,
+      }));
 
       return api.schedules
         .update({ slotsForSiteBooking: newSlotsFormatted }, batchId)
@@ -228,11 +248,16 @@ function Schedule({
             >
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'end' }}>
                 <Typography variant="h6" fontWeight={600}>
-                  Day
+                  {/* Day
                   {' '}
-                  {index + 1}
+                  {index + 1} */}
+                  {slot?.lessonTitle}
                 </Typography>
-                <Typography fontWeight={600} sx={{ fontSize: 14, pb: 0.2 }} color="text.secondary">
+                <Typography
+                  fontWeight={600}
+                  sx={{ fontSize: 14, pb: 0.2, width: 90 }}
+                  color="text.secondary"
+                >
                   Site visit
                 </Typography>
               </Box>
@@ -287,7 +312,8 @@ function Schedule({
                 {`${date.toLocaleDateString('en-GB', { day: 'numeric' })} ${date.toLocaleDateString(
                   'en-GB',
                   { month: 'long' },
-                )}, ${date.toLocaleDateString('en-GB', { year: 'numeric' })}`}
+                )}, ${date.toLocaleDateString('en-GB', { year: 'numeric' })}  `}
+                {time}
               </Typography>
             </Box>
           </Box>
@@ -332,32 +358,57 @@ function Schedule({
         </DialogTitle>
         <DialogContent sx={{ width: 400, display: 'flex' }}>
           <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
-            <FormControl fullWidth>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                component="label"
-                htmlFor="startDate"
-              >
-                Set a new date
-              </Typography>
-              <InputBase
-                type="date"
-                id="newDate"
-                name="newDate"
-                size="small"
-                sx={{ mt: 0.5 }}
-                fullWidth
-                color="secondary"
-                value={formik.values.newDate}
-                onChange={formik.handleChange}
-                error={formik.touched.newDate && Boolean(formik.errors.newDate)}
-                disabled={loadingUpdate}
-              />
-              <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.startDate && formik.errors.startDate}
-              </FormHelperText>
-            </FormControl>
+            <Box sx={{ gap: 1, display: 'flex', my: 1 }}>
+              <FormControl fullWidth>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  component="label"
+                  htmlFor="startDate"
+                >
+                  Set a new date
+                </Typography>
+                <InputBase
+                  type="date"
+                  id="newDate"
+                  name="newDate"
+                  size="small"
+                  sx={{ mt: 0.5 }}
+                  fullWidth
+                  color="secondary"
+                  value={formik.values.newDate}
+                  onChange={formik.handleChange}
+                  error={formik.touched.newDate && Boolean(formik.errors.newDate)}
+                  disabled={loadingUpdate}
+                />
+                <FormHelperText sx={{ color: '#dd0000' }}>
+                  {formik.touched.startDate && formik.errors.startDate}
+                </FormHelperText>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Typography variant="body1" color="text.secondary" component="label" htmlFor="time">
+                  Set Time
+                </Typography>
+                <InputBase
+                  type="time"
+                  id="newTime"
+                  name="newTime"
+                  size="small"
+                  sx={{ mt: 0.5 }}
+                  fullWidth
+                  color="secondary"
+                  value={formik.values.newTime}
+                  onChange={formik.handleChange}
+                  error={formik.touched.newTime && Boolean(formik.errors.newTime)}
+                  disabled={loadingUpdate}
+                />
+
+                <FormHelperText sx={{ color: '#dd0000' }}>
+                  {formik.touched.newTime && formik.errors.newTime}
+                </FormHelperText>
+              </FormControl>
+            </Box>
 
             <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
               <Button
