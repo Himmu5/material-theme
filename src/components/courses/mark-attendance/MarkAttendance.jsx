@@ -68,10 +68,13 @@ function MarkAttendance({ batchId }) {
       api.schedules
         .slots(batchId)
         .then((res) => {
-          const availableDates = res?.data ? res.data : [];
+          console.log('drop slots', res.data);
+          const availableDates = res?.data ? [...new Set(res.data)] : [];
           setDates(availableDates);
           setDate(
-            availableDates.length !== 0 ? availableDates[availableDates.length - 1] : 'no-options',
+            availableDates.length !== 0
+              ? availableDates[availableDates.length - 1]?.date
+              : 'no-options',
           );
           setLoading(false);
         })
@@ -202,8 +205,8 @@ function MarkAttendance({ batchId }) {
               >
                 {dates.length > 0
                   && dates.map((slot) => (
-                    <MenuItem value={slot} key={slot}>
-                      {formatDateView(slot)}
+                    <MenuItem value={slot.date} key={slot._id}>
+                      {formatDateView(slot.date)}
                     </MenuItem>
                   ))}
                 {loading && (

@@ -9,7 +9,7 @@ function CourseCard({ course }) {
     <Box
       sx={{
         width: 270,
-        height: 350,
+        // height: 350,
         overflow: 'hidden',
         bgcolor: '#fff',
         position: 'relative',
@@ -44,9 +44,9 @@ function CourseCard({ course }) {
           flexDirection: 'column',
         }}
       >
-        <Typography variant="body2" fontWeight={600} color="text.secondary" sx={{ mb: 0.4 }}>
+        {/* <Typography variant="body2" fontWeight={600} color="text.secondary" sx={{ mb: 0.4 }}>
           By Jinny Loan
-        </Typography>
+        </Typography> */}
         <Box
           sx={{
             display: 'flex',
@@ -55,21 +55,24 @@ function CourseCard({ course }) {
           }}
         >
           <Box display="flex" alignItems="end" color="text.primary" gap={0.3}>
-            <Typography variant="h6">20</Typography>
+            <Typography variant="h6">{course?.numberOfVideoLectures}</Typography>
             <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Videos
+              Video
+              {course?.numberOfVideoLectures && course.numberOfVideoLectures <= 1 ? '' : 's'}
             </Typography>
           </Box>
           <Box display="flex" alignItems="end" color="text.primary" gap={0.3}>
-            <Typography variant="h6">50</Typography>
+            <Typography variant="h6">{course?.totalSiteVisits}</Typography>
             <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              Visits
+              Visit
+              {course?.totalSiteVisits && course.totalSiteVisits <= 1 ? '' : 's'}
             </Typography>
           </Box>
           <Box display="flex" alignItems="end" color="text.primary" gap={0.3}>
             <Typography variant="h6">{course?.durationInMonths}</Typography>
             <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-              {course?.durationInMonths <= 1 ? 'Month' : 'Months'}
+              Month
+              {course?.durationInMonths && course.durationInMonths <= 1 ? '' : 's'}
             </Typography>
           </Box>
         </Box>

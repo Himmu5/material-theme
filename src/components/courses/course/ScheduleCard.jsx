@@ -1,5 +1,8 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
-import { Box, Paper, Typography } from '@mui/material';
+import {
+  Box, Paper, Skeleton, Typography,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -8,7 +11,8 @@ import api from '../../../utils/api';
 import { logout } from '../../../slices/adminAuth';
 
 function ScheduleCard({ batchId }) {
-  const [bookings, setBookings] = useState([]);
+  const [schedule, setSchedule] = useState(null);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,20 +22,44 @@ function ScheduleCard({ batchId }) {
   )}-${`0${today.getDate()}`.slice(-2)}`;
 
   useEffect(() => {
+    setLoading(true);
     if (batchId) {
       api.schedules
-        .bookings(batchId, dateString)
+        .slots(batchId)
         .then((res) => {
-          setBookings(res.data);
+          const searchResult = res?.data && res.data.length > 0
+            ? res.data.find((item) => {
+              const date = new Date(item?.date);
+              return date.toDateString() === today.toDateString();
+            })
+            : [];
+          if (searchResult) {
+            setSchedule(searchResult);
+            api.schedules
+              .bookings(batchId, dateString)
+              .then((response) => {
+                console.log(response);
+                setSchedule((prev) => ({
+                  ...prev,
+                  bookings: response?.data ? response.data.length : 0,
+                }));
+                setLoading(false);
+              })
+              .catch((err) => {
+                setLoading(false);
+                console.log(err);
+              });
+          } else setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
           if (err?.response?.status === 401) {
             dispatch(logout());
             navigate('/admin-login');
           }
         });
-    }
+    } else setLoading(false);
   }, [batchId]);
 
   return (
@@ -56,9 +84,17 @@ function ScheduleCard({ batchId }) {
         <Typography variant="h6" color="text.secondary">
           Today&apos;s Schedule
         </Typography>
-        <Typography variant="h3" fontWeight={600}>
-          Marking and Excavation
-        </Typography>
+        {schedule && schedule?.lessonTitle ? (
+          <Typography variant="h3" fontWeight={600}>
+            {schedule.lessonTitle}
+          </Typography>
+        ) : loading ? (
+          <Skeleton variant="text" sx={{ fontSize: 28, width: 200 }} animation="wave" />
+        ) : (
+          <Typography variant="h3" fontWeight={600}>
+            No schedule for today
+          </Typography>
+        )}
       </div>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -73,9 +109,17 @@ function ScheduleCard({ batchId }) {
           <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
             {today.toLocaleDateString('en-GB', { year: 'numeric' })}
           </Typography>
-          <Typography variant="h6" fontWeight={600}>
-            {String(bookings.length).padStart(2, '0')}
-          </Typography>
+          {schedule && schedule?.bookings ? (
+            <Typography variant="h6" fontWeight={600}>
+              {String(schedule.bookings).padStart(2, '0')}
+            </Typography>
+          ) : loading ? (
+            <Skeleton variant="text" sx={{ fontSize: 18, width: 30 }} animation="wave" />
+          ) : (
+            <Typography variant="h6" fontWeight={600}>
+              00
+            </Typography>
+          )}
           <Typography variant="body2" color="text.secondary">
             bookings
           </Typography>

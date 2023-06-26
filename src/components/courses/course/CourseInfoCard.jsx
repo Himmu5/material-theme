@@ -1,10 +1,11 @@
+/* eslint-disable no-nested-ternary */
 import {
   Box, Paper, Skeleton, Typography,
 } from '@mui/material';
 import React from 'react';
 import './text.css';
 
-function CourseInfoCard({ course }) {
+function CourseInfoCard({ course, loading }) {
   return (
     <Box
       component={Paper}
@@ -30,9 +31,9 @@ function CourseInfoCard({ course }) {
               objectFit: 'cover',
             }}
           />
-        ) : (
+        ) : loading ? (
           <Skeleton sx={{ width: '100%', height: '100%' }} variant="rectangular" animation="wave" />
-        )}
+        ) : null}
         <Box
           sx={{
             display: 'flex',
@@ -49,40 +50,43 @@ function CourseInfoCard({ course }) {
           }}
         >
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            {course?.courseIncludes?.numberOfVideoLectures ? (
+            {course?.numberOfVideoLectures ? (
               <>
-                <Typography variant="h6">{course.courseIncludes.numberOfVideoLectures}</Typography>
+                <Typography variant="h6">{course?.numberOfVideoLectures}</Typography>
                 <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-                  Videos
+                  Video
+                  {course.numberOfVideoLectures <= 1 ? '' : 's'}
                 </Typography>
               </>
-            ) : (
+            ) : loading ? (
               <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
-            )}
+            ) : null}
           </Box>
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
-            {course?.courseIncludes?.totalSiteVisits ? (
+            {course?.totalSiteVisits ? (
               <>
-                <Typography variant="h6">{course.courseIncludes.totalSiteVisits}</Typography>
+                <Typography variant="h6">{course.totalSiteVisits}</Typography>
                 <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-                  Visits
+                  Visit
+                  {course.totalSiteVisits <= 1 ? '' : 's'}
                 </Typography>
               </>
-            ) : (
+            ) : loading ? (
               <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
-            )}
+            ) : null}
           </Box>
           <Box display="flex" alignItems="end" color="white" gap={0.3}>
             {course?.durationInMonths ? (
               <>
                 <Typography variant="h6">{course.durationInMonths}</Typography>
                 <Typography variant="body2" fontSize="10px" sx={{ mb: 0.4 }}>
-                  {course.durationInMonths <= 1 ? 'Month' : 'Months'}
+                  Month
+                  {course.durationInMonths <= 1 ? '' : 's'}
                 </Typography>
               </>
-            ) : (
+            ) : loading ? (
               <Skeleton variant="text" sx={{ fontSize: 18, width: 60 }} animation="wave" />
-            )}
+            ) : null}
           </Box>
         </Box>
       </Box>
@@ -100,9 +104,7 @@ function CourseInfoCard({ course }) {
           {course?.name ? course.name : <Skeleton variant="text" animation="wave" />}
         </Typography>
         {course?.description ? (
-          <Typography className="multi-ellipsis">
-            {course.description}
-          </Typography>
+          <Typography className="multi-ellipsis">{course.description}</Typography>
         ) : (
           <>
             <Typography>

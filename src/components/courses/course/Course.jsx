@@ -40,6 +40,8 @@ function Course() {
     }
   }, []);
 
+  console.log(course);
+
   const handleBatchIdChange = (id) => setBatchId(id);
 
   return (
@@ -90,7 +92,7 @@ function Course() {
         viewport={{ once: true }}
         transition={{ type: 'tween' }}
       >
-        <CoursesInfoCard course={course} />
+        <CoursesInfoCard course={course} loading={loading} />
         <ScheduleCard batchId={batchId} courseId={course?._id} />
       </Box>
 
