@@ -13,6 +13,7 @@ const Vouchers = React.lazy(() => import('./pages/dashboard/Vouchers'));
 const Initial = React.lazy(() => import('./pages/Initial'));
 const Course = React.lazy(() => import('./components/courses/course/Course'));
 const E404 = React.lazy(() => import('./pages/E404'));
+const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 
 function WaitWhileLoad({ children }) {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
@@ -36,6 +37,15 @@ function App() {
           element={(
             <WaitWhileLoad>
               <AdminLogin />
+            </WaitWhileLoad>
+          )}
+        />
+
+        <Route
+          path="privacy-policy"
+          element={(
+            <WaitWhileLoad>
+              <PrivacyPolicy />
             </WaitWhileLoad>
           )}
         />
