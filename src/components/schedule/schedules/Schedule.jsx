@@ -84,10 +84,11 @@ function Schedule({
   batchId,
   updateList,
 }) {
-  console.log(slot, slots);
+  console.log(slot);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(false);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -110,8 +111,6 @@ function Schedule({
     newDate: dateString,
     newTime: time,
   };
-
-  console.log(initialValues);
 
   const handleClickOpen = (e) => {
     e.stopPropagation();
@@ -139,8 +138,6 @@ function Schedule({
         const dateB = new Date(slot2?.date);
         return dateA > dateB;
       });
-
-      console.log(newSlots, itemIndex);
 
       setLoadingUpdate(true);
       api.schedules
@@ -189,6 +186,7 @@ function Schedule({
         .bookings(batchId, dateString)
         .then((res) => {
           setLoading(false);
+          console.log(res.data);
           setBookings(res.data);
         })
         .catch((err) => {
@@ -200,7 +198,7 @@ function Schedule({
           }
         });
     }
-  }, [batchId]);
+  }, [batchId, forceUpdate]);
 
   const handleDelete = () => {
     if (slots.find((item) => item === slot)) {
@@ -220,9 +218,11 @@ function Schedule({
   const nameBriefing = () => {
     if (bookings.length > 0) {
       if (bookings.length > 3) {
-        return `${[bookings[0], bookings[1]].join(', ')} and ${bookings.length - 2}`;
+        return `${[bookings[0]?.name, bookings[1]?.name].join(', ')} and ${
+          bookings.length - 2
+        } others`;
       }
-      if (bookings.length === 1) return bookings[0].name;
+      if (bookings.length === 1) return bookings[0]?.name;
       return `${[
         bookings.map((booking, itemIndex) => {
           if (itemIndex < booking.length - 1) return booking.name;
@@ -289,6 +289,7 @@ function Schedule({
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
+                gap: 1,
                 alignItems: 'center',
               }}
             >
@@ -308,7 +309,12 @@ function Schedule({
                 </Typography>
               </Box>
 
-              <Typography variant="body2" fontWeight={500} color="text.secondary">
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                color="text.secondary"
+                sx={{ minWidth: 150 }}
+              >
                 {`${date.toLocaleDateString('en-GB', { day: 'numeric' })} ${date.toLocaleDateString(
                   'en-GB',
                   { month: 'long' },
@@ -319,7 +325,13 @@ function Schedule({
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SlotList rows={bookings} loading={loading} batchId={batchId} date={date} />
+          <SlotList
+            rows={bookings}
+            loading={loading}
+            batchId={batchId}
+            date={date}
+            updateList={() => setForceUpdate((prev) => !prev)}
+          />
         </AccordionDetails>
       </Accordion>
 

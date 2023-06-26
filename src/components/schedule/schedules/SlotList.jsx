@@ -35,23 +35,24 @@ import { logout } from '../../../slices/adminAuth';
 // }));
 
 function SlotList({
-  rows = [], loading, batchId, date,
+  rows = [], loading, batchId, date, updateList,
 }) {
-  const [loadingMarking, setLoadingMarking] = useState(false);
+  const [loadingMarking, setLoadingMarking] = useState({ state: false, id: null });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleMark = (id) => {
     if (batchId && date && id) {
-      setLoadingMarking(true);
+      setLoadingMarking({ state: true, id });
       api.schedules
         .markAttendance({ date, students: [id], batchId })
         .then(() => {
-          setLoadingMarking(false);
+          updateList();
+          setLoadingMarking({ state: false, id: null });
         })
         .catch((err) => {
           console.log(err);
-          setLoadingMarking(false);
+          setLoadingMarking({ state: false, id: null });
           if (err?.response?.status === 401) {
             dispatch(logout());
             navigate('/admin-login');
@@ -98,7 +99,11 @@ function SlotList({
                         size="small"
                         disableElevation
                         variant="contained"
-                        disabled={row?.mark || loadingMarking}
+                        disabled={
+                          row?.mark
+                          || (loadingMarking.id && loadingMarking.id === row?.id)
+                          || loading
+                        }
                         onClick={() => handleMark(row?.id)}
                       >
                         <Box
@@ -118,11 +123,13 @@ function SlotList({
                             mr: 0.7,
                           }}
                         >
-                          {loadingMarking ? (
+                          {loadingMarking.state
+                          && loadingMarking.id
+                          && loadingMarking.id === row?.id ? (
                             <CircularProgress size={14} />
-                          ) : row?.mark ? (
-                            <TiTick />
-                          ) : null}
+                            ) : row?.mark ? (
+                              <TiTick />
+                            ) : null}
                         </Box>
                         {row?.mark ? 'Marked' : 'Mark'}
                       </Button>
