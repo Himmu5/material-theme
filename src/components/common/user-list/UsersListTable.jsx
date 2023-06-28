@@ -259,6 +259,21 @@ function UsersListTable({
             </AnimatePresence>
           </TableBody>
         </Table>
+        {loading && (
+          <Paper
+            sx={{
+              borderRadius: '50%',
+              bgcolor: '#fff',
+              width: '2rem',
+              mx: 'auto',
+              height: '2rem',
+              p: 0.8,
+              mb: 1,
+            }}
+          >
+            <CircularProgress color="primary" size="small" sx={{ width: '100%' }} />
+          </Paper>
+        )}
       </TableContainer>
       {rows.length === 0 && !loading ? (
         <Typography
@@ -275,20 +290,6 @@ function UsersListTable({
           There are no registrations!
         </Typography>
       ) : null}
-      {loading && (
-        <Paper
-          sx={{
-            borderRadius: '50%',
-            bgcolor: '#fff',
-            width: '2rem',
-            mx: 'auto',
-            height: '2rem',
-            p: 0.8,
-          }}
-        >
-          <CircularProgress color="primary" size="small" sx={{ width: '100%' }} />
-        </Paper>
-      )}
 
       <CertificateUpload
         isOpen={upload.show}

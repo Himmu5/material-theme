@@ -43,7 +43,7 @@ const validationSchema = yup.object({
   purchaseAvailability: yup
     .date('Invalid date')
     .required('Purchase availability is required!')
-    .min(yup.ref('startDate'), 'Purchase Availability cannot be before start date'),
+    .max(yup.ref('endDate'), 'Purchase Availability cannot be after end date'),
 });
 
 function NewBatch({ course, updateBatches }) {
