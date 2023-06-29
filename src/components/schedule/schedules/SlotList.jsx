@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import api from '../../../utils/api';
 import { logout } from '../../../slices/adminAuth';
+import stringFunctions from '../../../utils/stringFunctions';
 
 // const TableRow = styled(MuiTableRow)(({ TableCelleme }) => ({
 //   '&.MuiTableRow-head': {
@@ -69,7 +70,7 @@ function SlotList({
             <TableRow sx={{ color: '#5c5c5c' }} className="slot-table-thead">
               <TableCell sx={{ color: 'inherit' }}>SI no.</TableCell>
               <TableCell sx={{ color: 'inherit' }}>Name</TableCell>
-              <TableCell sx={{ color: 'inherit' }}>Slot status</TableCell>
+              {/* <TableCell sx={{ color: 'inherit' }}>Slot status</TableCell> */}
               <TableCell sx={{ color: 'inherit' }}>Attendance</TableCell>
             </TableRow>
           </TableHead>
@@ -92,7 +93,7 @@ function SlotList({
                       <div style={{ color: 'black' }}>{row?.name}</div>
                       <div>{row?.email}</div>
                     </TableCell>
-                    <TableCell sx={{ color: 'inherit' }}>Confirmed</TableCell>
+                    {/* <TableCell sx={{ color: 'inherit' }}>Confirmed</TableCell> */}
                     <TableCell sx={{ color: 'inherit' }}>
                       <Button
                         sx={{ borderRadius: 2 }}

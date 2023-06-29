@@ -30,6 +30,7 @@ import api from '../../../utils/api';
 import DeleteSlot from './DeleteSlot';
 import { logout } from '../../../slices/adminAuth';
 import { ToastContext } from '../../contexts/ToastContext';
+import stringFunctions from '../../../utils/stringFunctions';
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} {...props} />)(() => ({
   '&:before': {
@@ -84,7 +85,6 @@ function Schedule({
   batchId,
   updateList,
 }) {
-  console.log(slot);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -216,6 +216,7 @@ function Schedule({
   };
 
   const nameBriefing = () => {
+    console.log('names', bookings);
     if (bookings.length > 0) {
       if (bookings.length > 3) {
         return `${[bookings[0]?.name, bookings[1]?.name].join(', ')} and ${
@@ -223,6 +224,7 @@ function Schedule({
         } others`;
       }
       if (bookings.length === 1) return bookings[0]?.name;
+      if (bookings.length === 2) return `${bookings[0]?.name} and ${bookings[1]?.name}`;
       return `${[
         bookings.map((booking, itemIndex) => {
           if (itemIndex < booking.length - 1) return booking.name;
@@ -246,7 +248,7 @@ function Schedule({
                 mb: 1,
               }}
             >
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'end' }}>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <Typography variant="h6" fontWeight={600}>
                   {/* Day
                   {' '}
@@ -318,8 +320,8 @@ function Schedule({
                 {`${date.toLocaleDateString('en-GB', { day: 'numeric' })} ${date.toLocaleDateString(
                   'en-GB',
                   { month: 'long' },
-                )}, ${date.toLocaleDateString('en-GB', { year: 'numeric' })}  `}
-                {time}
+                )} ${date.toLocaleDateString('en-GB', { year: 'numeric' })}, `}
+                {stringFunctions.twelveTo24(time)}
               </Typography>
             </Box>
           </Box>
