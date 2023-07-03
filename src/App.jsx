@@ -93,6 +93,22 @@ function App() {
               )}
             />
             <Route
+              path="internships"
+              element={(
+                <WaitWhileLoad>
+                  <Workshops />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="webinars"
+              element={(
+                <WaitWhileLoad>
+                  <Workshops />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
               path="courses/course/:id"
               element={(
                 <WaitWhileLoad>

@@ -158,7 +158,7 @@ function Signups({ loadingSheet, users }) {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignSelf: 'end', height: '100%' }}>
-        <GenerateSpreadsheet loading={loadingSheet} users={users} />
+        <GenerateSpreadsheet />
       </Box>
     </Box>
   );

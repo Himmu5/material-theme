@@ -120,7 +120,7 @@ function EditBatch({
           fontWeight={600}
         >
           <GroupAddIcon color="primary" />
-          Create a New Batch
+          Edit Batch {initialValues?.name}
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -141,7 +141,7 @@ function EditBatch({
               component="label"
               htmlFor="batchName"
             >
-              Enter Batch Name
+              Batch Name
             </Typography>
             <InputBase
               id="batchName"
@@ -191,7 +191,7 @@ function EditBatch({
               component="label"
               htmlFor="numberOfIntakes"
             >
-              Enter the No. of Intakes
+              No. of Intakes
             </Typography>
             <InputBase
               id="numberOfIntakes"
@@ -313,7 +313,7 @@ function EditBatch({
               disabled={loading}
               endIcon={loading ? <CircularProgress size={14} /> : undefined}
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? 'Updating...' : 'Update'}
             </Button>
           </Box>
         </form>

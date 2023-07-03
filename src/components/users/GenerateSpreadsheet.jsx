@@ -4,9 +4,29 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { SiMicrosoftexcel } from 'react-icons/si';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { utils, writeFile } from 'xlsx';
+import api from '../../utils/api';
 
-function GenerateSpreadsheet({ loading, users }) {
+function GenerateSpreadsheet() {
   const [sheetData, setSheetData] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    api.users
+      .list(0, true)
+      .then((res) => {
+        console.log('excel uers', res.data);
+        if (res?.data && res.data?.students && res.data.students.length > 0) {
+          setUsers(res.data.students);
+          setLoading(false);
+        } else setUsers([]);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     const bakedUsers = users && users.length > 0

@@ -4,8 +4,8 @@ import { S3_BUCKET_URL } from './config';
 
 const api = {
   users: {
-    list: (page) => {
-      const path = `/admin/all-students?page=${page}`;
+    list: (page = 0, all = false) => {
+      const path = `/admin/all-students?page=${page}${all ? '&all=true' : ''}`;
       return axiosInstance.get(path).then((res) => res.data);
     },
     glance: () => {

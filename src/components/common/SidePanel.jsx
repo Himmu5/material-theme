@@ -6,8 +6,9 @@ import React from 'react';
 import { FaUser, FaTools } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
-import { HiTicket } from 'react-icons/hi';
+import { HiTicket, HiPresentationChartBar } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MdWorkHistory } from 'react-icons/md';
 import textLogo from '../../../assets/text_logo.svg';
 import Notifications from './Notifications';
 import Logout from './logout/Logout';
@@ -50,6 +51,8 @@ const pages = [
   { icon: <FaUser />, name: 'Users', path: 'users' },
   { name: 'Courses', icon: <GiOpenBook />, path: 'courses' },
   { name: 'Workshops', icon: <FaTools />, path: 'workshops' },
+  { icon: <MdWorkHistory />, name: 'Internships', path: 'internships' },
+  { icon: <HiPresentationChartBar />, name: 'Webinars', path: 'webinars' },
   { name: 'Scheduled Slots', icon: <IoCalendarNumberSharp />, path: 'scheduled-slots' },
   { icon: <HiTicket />, name: 'Vouchers', path: 'vouchers' },
 ];
