@@ -29,7 +29,7 @@ import { ToastContext } from '../../contexts/ToastContext';
 const Dialog = styled(MuiDialog)(() => ({
   '& .MuiDialog-paper': {
     borderRadius: 16,
-    width: 600,
+    width: 700,
     overflowX: 'hidden',
   },
 }));
@@ -160,7 +160,7 @@ function MarkAttendance({ batchId }) {
         Mark Attendance
       </Button>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm">
+      <Dialog open={open} onClose={handleClose} maxWidth="lg">
         <DialogTitle>
           {handleClose ? (
             <Box
@@ -222,10 +222,9 @@ function MarkAttendance({ batchId }) {
               </Select>
             </FormControl>
           </Box>
+          <AttendanceSearch />
         </DialogTitle>
         <DialogContent sx={{ height: 300, overflowY: 'auto' }}>
-          <AttendanceSearch />
-
           <StudentsList
             loading={loadingStudents}
             rows={bookings}

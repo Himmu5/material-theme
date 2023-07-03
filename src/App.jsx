@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import Loading from './components/common/Loading';
 import ProtectedRoutes from './components/common/ProtectedRoutes';
+import Workshops from './pages/dashboard/Workshops';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
@@ -80,6 +81,14 @@ function App() {
               element={(
                 <WaitWhileLoad>
                   <Courses />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="workshops"
+              element={(
+                <WaitWhileLoad>
+                  <Workshops />
                 </WaitWhileLoad>
               )}
             />

@@ -3,7 +3,7 @@ import {
   Box, List, ListItemButton, Typography,
 } from '@mui/material';
 import React from 'react';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaTools } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
 import { HiTicket } from 'react-icons/hi';
@@ -49,6 +49,7 @@ function ListItem({ isActive = false, children, ...props }) {
 const pages = [
   { icon: <FaUser />, name: 'Users', path: 'users' },
   { name: 'Courses', icon: <GiOpenBook />, path: 'courses' },
+  { name: 'Workshops', icon: <FaTools />, path: 'workshops' },
   { name: 'Scheduled Slots', icon: <IoCalendarNumberSharp />, path: 'scheduled-slots' },
   { icon: <HiTicket />, name: 'Vouchers', path: 'vouchers' },
 ];

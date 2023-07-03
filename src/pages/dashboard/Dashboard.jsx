@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import SidePanel from '../../components/common/SidePanel';
+import ErrorBoundary from '../../components/common/ErrorBoundry';
 
 function Dashboard() {
   const location = useLocation();
@@ -14,7 +15,9 @@ function Dashboard() {
   return (
     <Box sx={{ display: 'flex', bgcolor: '#e8edf4' }}>
       <SidePanel />
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
     </Box>
   );
 }
