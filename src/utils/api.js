@@ -26,6 +26,10 @@ const api = {
       const path = `/admin/all-batches/${id}`;
       return axiosInstance.get(path).then((res) => res.data);
     },
+    update: (batchData,id) => {
+      const path = `/admin/edit-batch/${id}`;
+      return axiosInstance.put(path, batchData).then((res) => res.data);
+    },
   },
   voucher: {
     add: (voucher) => {
