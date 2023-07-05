@@ -4,6 +4,7 @@ import {
 import React, { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import WorkshopList from '../../components/workshops/WorkshopList';
+import AddWorkshop from '../../components/workshops/AddWorkshop';
 
 function Workshops() {
   const [loading, setLoading] = useState(false);
@@ -41,14 +42,7 @@ function Workshops() {
             Workshops
           </Typography>
 
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            // onClick={handleClickOpen}
-            // disabled={!course}
-          >
-            Add Workshop
-          </Button>
+          <AddWorkshop />
         </Box>
 
         <WorkshopList />
