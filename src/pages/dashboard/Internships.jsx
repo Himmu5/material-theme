@@ -2,8 +2,10 @@ import { Box, LinearProgress, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import WorkshopList from '../../components/workshops/WorkshopList';
 import AddWorkshop from '../../components/workshops/AddWorkshop';
+import AddInternship from '../../components/internships/AddInternship';
+import InternshipList from '../../components/internships/InternshipList';
 
-function Workshops() {
+function Internships() {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -36,16 +38,16 @@ function Workshops() {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography typography="h3" fontWeight={600}>
-            Workshops
+            Internships
           </Typography>
 
-          <AddWorkshop />
+          <AddInternship />
         </Box>
 
-        <WorkshopList />
+        <InternshipList />
       </Box>
     </Box>
   );
 }
 
-export default Workshops;
+export default Internships;

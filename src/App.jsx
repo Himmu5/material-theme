@@ -3,6 +3,8 @@ import { Route, Routes } from 'react-router';
 import Loading from './components/common/Loading';
 import ProtectedRoutes from './components/common/ProtectedRoutes';
 import Workshops from './pages/dashboard/Workshops';
+import Internships from './pages/dashboard/Internships';
+import Webinars from './pages/dashboard/Webinars';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
@@ -96,7 +98,7 @@ function App() {
               path="internships"
               element={(
                 <WaitWhileLoad>
-                  <Workshops />
+                  <Internships />
                 </WaitWhileLoad>
               )}
             />
@@ -104,7 +106,7 @@ function App() {
               path="webinars"
               element={(
                 <WaitWhileLoad>
-                  <Workshops />
+                  <Webinars />
                 </WaitWhileLoad>
               )}
             />
