@@ -1,23 +1,30 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import { CircularProgress } from '@mui/material';
-import Dashboard from './pages/dashboard/Dashboard';
-import Users from './pages/dashboard/Users';
-import Courses from './pages/dashboard/Courses';
-import ScheduledSlots from './pages/dashboard/ScheduledSlots';
-import Vouchers from './pages/dashboard/Vouchers';
-import Initial from './pages/Initial';
+import Loading from './components/common/Loading';
+import ProtectedRoutes from './components/common/ProtectedRoutes';
+import Workshops from './pages/dashboard/Workshops';
+import Internships from './pages/dashboard/Internships';
+import Webinars from './pages/dashboard/Webinars';
 
 // pages for lazy load
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
+const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
+const Users = React.lazy(() => import('./pages/dashboard/Users'));
+const Courses = React.lazy(() => import('./pages/dashboard/Courses'));
+const ScheduledSlots = React.lazy(() => import('./pages/dashboard/ScheduledSlots'));
+const Vouchers = React.lazy(() => import('./pages/dashboard/Vouchers'));
+const Initial = React.lazy(() => import('./pages/Initial'));
+const Course = React.lazy(() => import('./components/courses/course/Course'));
+const E404 = React.lazy(() => import('./pages/E404'));
+const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 
 function WaitWhileLoad({ children }) {
-  return <Suspense fallback={<CircularProgress size="small" />}>{children}</Suspense>;
+  return <Suspense fallback={<Loading />}>{children}</Suspense>;
 }
 
 function App() {
   return (
-    <Suspense fallback={<CircularProgress size="small" />}>
+    <Suspense fallback={<Loading />}>
       <Routes>
         <Route
           index
@@ -38,14 +45,24 @@ function App() {
         />
 
         <Route
-          path="/dashboard"
+          path="privacy-policy"
           element={(
             <WaitWhileLoad>
-              <Dashboard />
+              <PrivacyPolicy />
             </WaitWhileLoad>
           )}
-        >
-          {/* <Route
+        />
+
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            path="/dashboard"
+            element={(
+              <WaitWhileLoad>
+                <Dashboard />
+              </WaitWhileLoad>
+            )}
+          >
+            {/* <Route
             index
             element={(
               <WaitWhileLoad>
@@ -53,39 +70,82 @@ function App() {
               </WaitWhileLoad>
             )}
           /> */}
-          <Route
-            path="users"
-            element={(
-              <WaitWhileLoad>
-                <Users />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="courses"
-            element={(
-              <WaitWhileLoad>
-                <Courses />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="scheduled-slots"
-            element={(
-              <WaitWhileLoad>
-                <ScheduledSlots />
-              </WaitWhileLoad>
-            )}
-          />
-          <Route
-            path="vouchers"
-            element={(
-              <WaitWhileLoad>
-                <Vouchers />
-              </WaitWhileLoad>
-            )}
-          />
+            <Route
+              path="users"
+              element={(
+                <WaitWhileLoad>
+                  <Users />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="courses"
+              element={(
+                <WaitWhileLoad>
+                  <Courses />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="workshops"
+              element={(
+                <WaitWhileLoad>
+                  <Workshops />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="internships"
+              element={(
+                <WaitWhileLoad>
+                  <Internships />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="webinars"
+              element={(
+                <WaitWhileLoad>
+                  <Webinars />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="courses/course/:id"
+              element={(
+                <WaitWhileLoad>
+                  <Course />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="scheduled-slots"
+              element={(
+                <WaitWhileLoad>
+                  <ScheduledSlots />
+                </WaitWhileLoad>
+              )}
+            />
+            <Route
+              path="vouchers"
+              element={(
+                <WaitWhileLoad>
+                  <Vouchers />
+                </WaitWhileLoad>
+              )}
+            />
+            {/* <Route path="loading" element={<Loading />} /> */}
+          </Route>
         </Route>
+
+        <Route
+          path="*"
+          element={(
+            <WaitWhileLoad>
+              <E404 />
+            </WaitWhileLoad>
+          )}
+        />
       </Routes>
     </Suspense>
   );

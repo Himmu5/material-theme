@@ -1,21 +1,25 @@
+/* eslint-disable no-use-before-define */
 import { Box } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
+import React, { useContext, useEffect, useState } from 'react';
+import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import textLogo from '../../assets/text_logo.svg';
 import LoginForm from '../components/admin-login/LoginForm';
 import { login } from '../slices/adminAuth';
+import loginSvg from '../../assets/login.svg';
+import loginVector from '../../assets/loginvector.svg';
+import { ToastContext } from '../components/contexts/ToastContext';
 
 const initialValues = {
   email: '',
   password: '',
 };
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Enter a valid email!').required('This field is required!'),
-  password: Yup.string().required('This field is required!'),
+const validationSchema = yup.object().shape({
+  email: yup.string().email('Enter a valid email!').required('Email is required!'),
+  password: yup.string().required('Password is required!'),
 });
 
 export default function AdminLogin() {
@@ -23,23 +27,34 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { isLoggedIn } = useSelector((state) => state.adminAuth);
   const [loading, setLoading] = useState(false);
+  const { createToast } = useContext(ToastContext);
+
   const handleLogin = (formValue) => {
     const { email, password } = formValue;
-    // console.log(formValue)
+    // console.(formValue)
     setLoading(true);
 
     dispatch(login({ email, password }))
       .unwrap()
       .then(() => {
-        navigate('/');
-        window.location.reload();
-        // toast.success('Succesfully logged in');
+        createToast({ type: 'success', message: `Welcome back ${formik?.values?.email}` });
+        setTimeout(() => {
+          navigate('/');
+          window.location.reload();
+        }, [1000]);
         setLoading(false);
-        console.log('logged in!');
       })
       .catch((err) => {
-        // toast.error(Errormessage.message);
+        if (err?.code === 'ERR_NETWORK') {
+          createToast({ type: 'error', message: 'Network error, try again!' });
+        }
         console.log(err);
+        if (
+          err?.response
+          && err.response?.data
+          && err.response.data?.message
+          && err.response.data.message
+        ) createToast({ type: 'error', message: err.response.data.message });
         setLoading(false);
       });
   };
@@ -61,10 +76,65 @@ export default function AdminLogin() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
-      <Box sx={{ flex: '0 0 50%', bgcolor: 'primary.main' }} />
       <Box
         sx={{
-          flex: '0 0 50%',
+          width: '50vw',
+          bgcolor: 'primary.main',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            width: '40vw',
+            height: '43vw',
+            border: 2,
+            opacity: 0.7,
+            borderRadius: '50%',
+            borderColor: '#E8EDF4',
+            position: 'absolute',
+            left: '-10vw',
+            top: '-30vw',
+          }}
+        />
+        <Box
+          sx={{
+            width: 'min(30vw,450px)',
+            height: '12vw',
+            position: 'relative',
+          }}
+        >
+          <img
+            src={textLogo}
+            alt="logo"
+            style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            width: '45vw',
+            height: '50vw',
+            position: 'absolute',
+            bottom: '-5vw',
+            right: '-4vw',
+            opacity: 0.8,
+          }}
+        >
+          <img
+            src={loginVector}
+            alt="shape"
+            style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+          />
+        </Box>
+      </Box>
+
+      <Box
+        sx={{
+          flexGrow: 1,
           p: 10,
           bgcolor: '#E8EDF4',
         }}
@@ -84,15 +154,18 @@ export default function AdminLogin() {
         >
           <Box
             sx={{
-              width: 'min(35vw,440px)',
-              height: 'min(15vw,180px)',
+              width: 'min(18vw,200px)',
+              display: 'flex',
+              justifyContent: 'center',
+              mb: 2,
+              height: 'min(18vw,200px)',
               position: 'relative',
             }}
           >
             <img
-              src={textLogo}
-              alt="logo"
-              style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+              src={loginSvg}
+              alt="login"
+              style={{ objectFit: 'contain', width: 'auto', height: '100%' }}
             />
           </Box>
 

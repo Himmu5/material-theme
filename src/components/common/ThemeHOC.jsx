@@ -1,12 +1,15 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import React from 'react';
 import theme from '../../themes/theme';
+import { ToastProvider } from '../contexts/ToastContext';
 
 function ThemeHOC({ children }) {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
+      <ToastProvider>
+        <CssBaseline />
+        {children}
+      </ToastProvider>
     </ThemeProvider>
   );
 }

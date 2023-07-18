@@ -3,12 +3,15 @@ import {
   Box, List, ListItemButton, Typography,
 } from '@mui/material';
 import React from 'react';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaTools } from 'react-icons/fa';
 import { IoCalendarNumberSharp } from 'react-icons/io5';
 import { GiOpenBook } from 'react-icons/gi';
-import { HiTicket } from 'react-icons/hi';
+import { HiTicket, HiPresentationChartBar } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MdWorkHistory } from 'react-icons/md';
 import textLogo from '../../../assets/text_logo.svg';
+import Notifications from './Notifications';
+import Logout from './logout/Logout';
 
 function ListItem({ isActive = false, children, ...props }) {
   return (
@@ -47,6 +50,9 @@ function ListItem({ isActive = false, children, ...props }) {
 const pages = [
   { icon: <FaUser />, name: 'Users', path: 'users' },
   { name: 'Courses', icon: <GiOpenBook />, path: 'courses' },
+  { name: 'Workshops', icon: <FaTools />, path: 'workshops' },
+  { icon: <MdWorkHistory />, name: 'Internships', path: 'internships' },
+  { icon: <HiPresentationChartBar />, name: 'Webinars', path: 'webinars' },
   { name: 'Scheduled Slots', icon: <IoCalendarNumberSharp />, path: 'scheduled-slots' },
   { icon: <HiTicket />, name: 'Vouchers', path: 'vouchers' },
 ];
@@ -58,11 +64,14 @@ function SidePanel() {
   return (
     <Box
       sx={{
-        width: 'min(280px,20vw)',
+        width: 250,
+        minWidth: 250,
         borderTopRightRadius: 32,
         bgcolor: 'primary.main',
         height: '100vh',
         overflow: 'hidden',
+        position: 'relative',
+        zIndex: 1,
       }}
     >
       <Box
@@ -72,6 +81,8 @@ function SidePanel() {
           py: 3,
           position: 'relative',
           bgcolor: 'primary.dark',
+          display: 'flex',
+          alignItems: 'start',
         }}
       >
         <img
@@ -79,6 +90,8 @@ function SidePanel() {
           alt="logo"
           style={{ objectFit: 'contain', width: '100%', height: '100%' }}
         />
+
+        <Notifications />
       </Box>
 
       <Box sx={{ pl: 'min(24px,5vw)', py: 3 }}>
@@ -95,6 +108,17 @@ function SidePanel() {
               </ListItem>
             ))}
         </List>
+      </Box>
+
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '1.5rem',
+          left: 0,
+          right: 0,
+        }}
+      >
+        <Logout />
       </Box>
     </Box>
   );

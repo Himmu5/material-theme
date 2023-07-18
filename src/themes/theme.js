@@ -80,16 +80,22 @@ const themeBefore = createTheme({
     },
     caption: {
       fontSize: '12px',
-      lineHeight: 1.5,
+      lineHeight: 1.2,
     },
     overline: { fontSize: '16px', lineHeight: 1.5 },
-    button: { fontSize: '16px' },
+    button: { fontSize: '16px', fontWeight: 500 },
   },
   components: {
     MuiButton: {
       variants: [
         {
           props: { variant: 'contained' },
+          style: {
+            borderRadius: '8px',
+          },
+        },
+        {
+          props: { variant: 'outlined' },
           style: {
             borderRadius: '8px',
           },
