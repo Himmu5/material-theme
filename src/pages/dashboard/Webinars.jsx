@@ -1,12 +1,24 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import WorkshopList from '../../components/workshops/WorkshopList';
 import AddWorkshop from '../../components/workshops/AddWorkshop';
 import AddWebinar from '../../components/webinars/AddWebinar';
 import WebinarList from '../../components/webinars/WebinarList';
+import { getEvents } from '../../utils/api'
 
 function Webinars() {
   const [loading, setLoading] = useState(false);
+  const [webinars , setWebinars] = useState([]);
+  
+  useEffect(()=>{
+    setLoading(true);
+    getEvents("webinar").then((res)=>{
+      console.log("response : ",res.data.webinars);
+      setWebinars(res.data.webinars);
+      setLoading(false);
+    }).catch(()=>{
+    })
+  },[])
 
   return (
     <Box
@@ -44,7 +56,7 @@ function Webinars() {
           <AddWebinar />
         </Box>
 
-        <WebinarList />
+        <WebinarList webinars={webinars} />
       </Box>
     </Box>
   );

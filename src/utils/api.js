@@ -112,4 +112,15 @@ export function createEvents(formData) {
   })
 }
 
+export function getEvents(pageName){
+  let page = 1;
+  let limit = 10
+  const path = "/"+pageName+`?page=${page}&limit=${limit}`;
+  return axiosInstance.get(path).then((res)=>{
+    return res.data;
+  }).catch((err)=>{
+    return { "success": false, err }
+  })
+}
+
 export default api;
