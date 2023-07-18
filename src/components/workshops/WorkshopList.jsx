@@ -83,7 +83,7 @@ function WorkshopList({Workshop}) {
                       <Typography variant="body2" color="text.secondary">
                         From
                       </Typography>
-                      <Typography variant="body2">{row.startDate}</Typography>
+                      <Typography variant="body2">{row.startDate.slice(0 ,10)}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -91,7 +91,7 @@ function WorkshopList({Workshop}) {
                       <Typography variant="body2" color="text.secondary">
                         To
                       </Typography>
-                      <Typography variant="body2">{row.endDate}</Typography>
+                      <Typography variant="body2">{row.endDate.slice(0 ,10)}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell sx={{ color: 'inherit' }}>

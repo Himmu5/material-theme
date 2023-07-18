@@ -78,7 +78,7 @@ function AddWorkshop({ course, updateBatches }) {
       const formData = { ...values };
       setLoading(true);
       console.log(formData);
-      const res = await createEvents({ ...formData, learningType: "webinar" })
+      const res = await createEvents({ ...formData, learningType: "workshop" })
         
       
         if(res.success === true){

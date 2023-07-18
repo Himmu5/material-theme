@@ -62,7 +62,7 @@ function AddInternship({ course, updateBatches }) {
     setOpen(true);
   };
 
-  const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
+  // const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
 
   const formik = useFormik({
     initialValues,
