@@ -22,6 +22,17 @@ function Internships() {
       .catch(() => {});
   }, []);
 
+  function refreshInternship(){
+    setLoading(true);
+    getEvents("internship")
+      .then((res) => {
+        console.log("response : ", res.data.internships);
+        setInternship(res.data.internships);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }
+
   return (
     <Box
       sx={{
@@ -55,7 +66,7 @@ function Internships() {
             Internships
           </Typography>
 
-          <AddInternship />
+          <AddInternship refreshInternship={refreshInternship}/>
         </Box>
 
         <InternshipList Internship={Internship}/>

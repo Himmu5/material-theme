@@ -43,7 +43,7 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddInternship({ course, updateBatches }) {
+function AddInternship({ course, refreshInternship }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ function AddInternship({ course, updateBatches }) {
             type: 'success',
             message: `Created new Internship successfully`,
           });
-          updateBatches();
+          refreshInternship();
           formik.resetForm();
           setLoading(false);
         }
