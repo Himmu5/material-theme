@@ -1,10 +1,23 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import WorkshopList from '../../components/workshops/WorkshopList';
 import AddWorkshop from '../../components/workshops/AddWorkshop';
+import { getEvents } from '../../utils/api';
 
 function Workshops() {
   const [loading, setLoading] = useState(false);
+
+  const [Workshop , setWorkshop] = useState([]);
+  
+  useEffect(()=>{
+    setLoading(true);
+    getEvents("workshop").then((res)=>{
+      console.log("response : ",res.data.workshops);
+      setWorkshop(res.data.workshops);
+      setLoading(false);
+    }).catch(()=>{
+    })
+  },[])
 
   return (
     <Box
@@ -42,7 +55,7 @@ function Workshops() {
           <AddWorkshop />
         </Box>
 
-        <WorkshopList />
+        <WorkshopList Workshop={Workshop} />
       </Box>
     </Box>
   );

@@ -17,7 +17,7 @@ import { SiMicrosoftexcel } from 'react-icons/si';
 import { FiMoreVertical } from 'react-icons/fi';
 import Options from './Options';
 
-function WorkshopList() {
+function WorkshopList({Workshop}) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOptionsClick = (event) => {
@@ -48,7 +48,7 @@ function WorkshopList() {
           </TableHead>
           <TableBody className="worshop-tbody">
             <AnimatePresence>
-              {[...new Array(10)].map((row, index) => (
+              {Workshop.map((row, index) => (
                 <TableRow
                   component={motion.tr}
                   initial={{ y: 10, opacity: 0 }}
@@ -68,23 +68,22 @@ function WorkshopList() {
                       }}
                     >
                       <Typography variant="body2">
-                        Sustainable Infrastructure Workshop: Towards a G...
+                        {row.title}
                       </Typography>
                       <Typography variant="body2" fontWeight={600}>
-                        ₹200
+                        ₹{row.price}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell sx={{ color: 'inherit', maxWidth: '20vw' }}>
-                    Lorem ipsum dolor sit amet consectetur. Vitae ut feugiat malesuada vulputate.
-                    dolor sit amet see more
+                    {row.description}
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                       <Typography variant="body2" color="text.secondary">
                         From
                       </Typography>
-                      <Typography variant="body2">From</Typography>
+                      <Typography variant="body2">{row.startDate}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -92,7 +91,7 @@ function WorkshopList() {
                       <Typography variant="body2" color="text.secondary">
                         To
                       </Typography>
-                      <Typography variant="body2">From</Typography>
+                      <Typography variant="body2">{row.endDate}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell sx={{ color: 'inherit' }}>
