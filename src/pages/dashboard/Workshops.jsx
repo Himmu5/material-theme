@@ -19,6 +19,17 @@ function Workshops() {
     })
   },[])
 
+  function updateWorkShops(){
+    setLoading(true);
+    getEvents("workshop").then((res)=>{
+      console.log("response : ",res.data.workshops);
+      setWorkshop(res.data.workshops);
+      setLoading(false);
+    }).catch(()=>{
+      setLoading(false);
+    })
+  }
+
   return (
     <Box
       sx={{
@@ -52,7 +63,7 @@ function Workshops() {
             Workshops
           </Typography>
 
-          <AddWorkshop />
+          <AddWorkshop updateWorkshops={updateWorkShops} />
         </Box>
 
         <WorkshopList Workshop={Workshop} />
