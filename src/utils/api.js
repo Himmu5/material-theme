@@ -1,21 +1,21 @@
-import axios from 'axios';
-import axiosInstance from './axios';
-import { S3_BUCKET_URL } from './config';
+import axios from "axios";
+import axiosInstance from "./axios";
+import { S3_BUCKET_URL } from "./config";
 
 const api = {
   users: {
     list: (page = 0, all = false) => {
-      const path = `/admin/all-students?page=${page}${all ? '&all=true' : ''}`;
+      const path = `/admin/all-students?page=${page}${all ? "&all=true" : ""}`;
       return axiosInstance.get(path).then((res) => res.data);
     },
     glance: () => {
-      const path = '/admin/students-glance';
+      const path = "/admin/students-glance";
       return axiosInstance.get(path).then((res) => res.data);
     },
   },
   batch: {
     createBatch: (batchData) => {
-      const path = '/admin/add-batch';
+      const path = "/admin/add-batch";
       return axiosInstance.post(path, batchData).then((res) => res.data);
     },
     list: (id) => {
@@ -33,11 +33,11 @@ const api = {
   },
   voucher: {
     add: (voucher) => {
-      const path = '/admin/add-voucher';
+      const path = "/admin/add-voucher";
       return axiosInstance.post(path, voucher).then((res) => res.data);
     },
     list: () => {
-      const path = '/admin/all-vouchers';
+      const path = "/admin/all-vouchers";
       return axiosInstance.get(path).then((res) => res.data);
     },
     deleteList: (vouchers, id) => {
@@ -47,7 +47,7 @@ const api = {
   },
   course: {
     list: () => {
-      const path = '/admin/all-courses';
+      const path = "/admin/all-courses";
       return axiosInstance.get(path).then((res) => res.data);
     },
     getById: (id) => {
@@ -57,7 +57,7 @@ const api = {
   },
   schedules: {
     slots: (id) => {
-      const path = '/admin/available-slots';
+      const path = "/admin/available-slots";
       return axiosInstance.post(path, { batchId: id }).then((res) => res.data);
     },
     chapters: (id) => {
@@ -73,20 +73,23 @@ const api = {
       return axiosInstance.post(path, slots).then((res) => res.data);
     },
     markAttendance: (attendance) => {
-      const path = '/admin/mark-attendance';
+      const path = "/admin/mark-attendance";
       return axiosInstance.post(path, attendance).then((res) => res.data);
     },
   },
   certificate: {
     s3url: (files) => {
-      const path = '/s3url';
+      const path = "/s3url";
       return axiosInstance.post(path, files).then((res) => res.data);
     },
-    upload: (url, files) => axios.put(url, files, { 'Content-Type': 'multipart/form-data' }).then((res) => res),
+    upload: (url, files) =>
+      axios
+        .put(url, files, { "Content-Type": "multipart/form-data" })
+        .then((res) => res),
     save: (courseId, studentId, s3url) => {
       const path = `/admin/add-certificate/${courseId}/${studentId}`;
-      const urlWithoutParams = String(s3url).split('?')[0];
-      const fileName = String(urlWithoutParams).split('/').pop();
+      const urlWithoutParams = String(s3url).split("?")[0];
+      const fileName = String(urlWithoutParams).split("/").pop();
       return axiosInstance
         .post(path, { certificate: `http://${S3_BUCKET_URL}/${fileName}` })
         .then((res) => res.data);
@@ -94,10 +97,19 @@ const api = {
   },
   notification: {
     list_new: () => {
-      const path = '/admin/notification/1';
+      const path = "/admin/notification/1";
       return axiosInstance.get(path).then((res) => res.data);
     },
   },
 };
+
+export function createEvents(formData) {
+  const path = "/internship/";
+  return axiosInstance.post(path, formData).then((res) => {
+    return res.data;
+  }).catch((err)=>{
+    return { "success": false, err }
+  })
+}
 
 export default api;

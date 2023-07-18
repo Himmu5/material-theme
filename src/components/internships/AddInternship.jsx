@@ -21,7 +21,7 @@ import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { MdWorkHistory } from 'react-icons/md';
-import api from '../../utils/api';
+import api, { createEvents } from '../../utils/api';
 import { logout } from '../../slices/adminAuth';
 import { ToastContext } from '../contexts/ToastContext';
 
@@ -33,17 +33,14 @@ const Dialog = styled(MuiDialog)(() => ({
 }));
 
 const validationSchema = yup.object({
-  batchName: yup.string().required('Batch name is required!'),
-  numberOfIntakes: yup.number('Enter a number'),
-  startDate: yup.date('Invalid date').required('Start date is required!'),
+  title: yup.string().required("title is required!"),
+  description: yup.string().required("Enter the description"),
+  startDate: yup.date("Invalid date").required("Start date is required!"),
   endDate: yup
-    .date('Invalid date')
-    .required('End date is required!')
-    .min(yup.ref('startDate'), 'End date cannot be before start date'),
-  purchaseAvailability: yup
-    .date('Invalid date')
-    .required('Purchase availability is required!')
-    .max(yup.ref('endDate'), 'Purchase Availability cannot be after end date'),
+    .date("Invalid date")
+    .required("End date is required!")
+    .min(yup.ref("startDate"), "End date cannot be before start date"),
+  price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
 function AddInternship({ course, updateBatches }) {
@@ -54,11 +51,11 @@ function AddInternship({ course, updateBatches }) {
   const { createToast } = useContext(ToastContext);
 
   const initialValues = {
-    batchName: '',
-    numberOfIntakes: '',
+    title: "",
+    description: "",
     startDate: null,
     endDate: null,
-    purchaseAvailability: '',
+    price: "",
   };
 
   const handleClickOpen = () => {
@@ -70,31 +67,32 @@ function AddInternship({ course, updateBatches }) {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const formData = { ...values, courseID: course?._id };
       setLoading(true);
       console.log(formData);
-      submitBatch(formData)
-        .then(() => {
+      const response = await createEvents({...formData ,  learningType: "internship"})
+        if(response.success === true){
           setOpen(false);
           createToast({
             type: 'success',
-            message: `Created batch ${formik.values.batchName} successfully`,
+            message: `Created new Internship successfully`,
           });
           updateBatches();
           formik.resetForm();
           setLoading(false);
-        })
-        .catch((err) => {
+        }
+          
+        else if(response.status === false){
           console.log(err);
           formik.resetForm();
           setLoading(false);
-          createToast({ type: 'error', message: 'Failed to create to new batch, try again!' });
+          createToast({ type: 'error', message: 'Failed to create new Internship, try again!' });
           if (err?.response?.status === 401) {
             dispatch(logout());
             navigate('/admin-login');
           }
-        });
+        }
     },
   });
 
@@ -157,24 +155,24 @@ function AddInternship({ course, updateBatches }) {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="batchName"
+                htmlFor="title"
               >
                 Enter Title
               </Typography>
               <InputBase
-                id="batchName"
-                name="batchName"
+                id="title"
+                name="title"
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.batchName}
+                value={formik.values.title}
                 onChange={formik.handleChange}
-                error={formik.touched.batchName && Boolean(formik.errors.batchName)}
+                error={formik.touched.title && Boolean(formik.errors.title)}
               />
               <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.batchName && formik.errors.batchName}
+                {formik.touched.title && formik.errors.title}
               </FormHelperText>
             </FormControl>
 
@@ -207,26 +205,26 @@ function AddInternship({ course, updateBatches }) {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="numberOfIntakes"
+                htmlFor="description"
               >
                 Enter Description
               </Typography>
               <InputBase
                 multiline
-                id="numberOfIntakes"
-                name="numberOfIntakes"
+                id="description"
+                name="description"
                 size="small"
                 rows={4}
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.numberOfIntakes}
+                value={formik.values.description}
                 onChange={formik.handleChange}
-                error={formik.touched.numberOfIntakes && Boolean(formik.errors.numberOfIntakes)}
+                error={formik.touched.description && Boolean(formik.errors.description)}
               />
               <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
+                {formik.touched.description && formik.errors.description}
               </FormHelperText>
             </FormControl>
 
@@ -296,21 +294,21 @@ function AddInternship({ course, updateBatches }) {
                 Price in Rupees(₹)
               </Typography>
               <InputBase
-                id="purchaseAvailability"
-                name="purchaseAvailability"
+                id="price"
+                name="price"
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.purchaseAvailability}
+                value={formik.values.price}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.purchaseAvailability && Boolean(formik.errors.purchaseAvailability)
+                  formik.touched.price && Boolean(formik.errors.price)
                 }
               />
               <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.purchaseAvailability && formik.errors.purchaseAvailability}
+                {formik.touched.price && formik.errors.price}
               </FormHelperText>
             </FormControl>
             <Box

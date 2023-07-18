@@ -12,39 +12,36 @@ import {
   styled,
   FormHelperText,
   CircularProgress,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import React, { useContext, useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { FaTools } from 'react-icons/fa';
-import api from '../../utils/api';
-import { logout } from '../../slices/adminAuth';
-import { ToastContext } from '../contexts/ToastContext';
-import { HiPresentationChartBar } from 'react-icons/hi';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import React, { useContext, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { FaTools } from "react-icons/fa";
+import api, { createEvents } from "../../utils/api";
+import { logout } from "../../slices/adminAuth";
+import { ToastContext } from "../contexts/ToastContext";
+import { HiPresentationChartBar } from "react-icons/hi";
 
 const Dialog = styled(MuiDialog)(() => ({
-  '& .MuiDialog-paper': {
+  "& .MuiDialog-paper": {
     borderRadius: 16,
-    overflowX: 'hidden',
+    overflowX: "hidden",
   },
 }));
 
 const validationSchema = yup.object({
-  batchName: yup.string().required('Batch name is required!'),
-  numberOfIntakes: yup.number('Enter a number'),
-  startDate: yup.date('Invalid date').required('Start date is required!'),
+  title: yup.string().required("title is required!"),
+  description: yup.string().required("Enter the description"),
+  startDate: yup.date("Invalid date").required("Start date is required!"),
   endDate: yup
-    .date('Invalid date')
-    .required('End date is required!')
-    .min(yup.ref('startDate'), 'End date cannot be before start date'),
-  purchaseAvailability: yup
-    .date('Invalid date')
-    .required('Purchase availability is required!')
-    .max(yup.ref('endDate'), 'Purchase Availability cannot be after end date'),
+    .date("Invalid date")
+    .required("End date is required!")
+    .min(yup.ref("startDate"), "End date cannot be before start date"),
+  price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
 function AddWebinar({ course, updateBatches }) {
@@ -55,47 +52,51 @@ function AddWebinar({ course, updateBatches }) {
   const { createToast } = useContext(ToastContext);
 
   const initialValues = {
-    batchName: '',
-    numberOfIntakes: '',
+    title: "",
+    description: "",
     startDate: null,
     endDate: null,
-    purchaseAvailability: '',
+    price: "",
   };
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
+  // const submitBatch = (formData) =>
+  //   api.batch.createBatch(formData).then((res) => res);
 
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values) => {
-      const formData = { ...values, courseID: course?._id };
+    onSubmit: async (values) => {
+      const formData = { ...values };
       setLoading(true);
       console.log(formData);
-      submitBatch(formData)
-        .then(() => {
+      const response = await createEvents({...formData , learningType: "webinar"})
+        if(response.success === true){
           setOpen(false);
           createToast({
-            type: 'success',
-            message: `Created batch ${formik.values.batchName} successfully`,
+            type: "success",
+            message: `Created the webinar successfully`,
           });
           updateBatches();
           formik.resetForm();
           setLoading(false);
-        })
-        .catch((err) => {
+        }
+        else if(response.success === false){
           console.log(err);
           formik.resetForm();
           setLoading(false);
-          createToast({ type: 'error', message: 'Failed to create to new batch, try again!' });
+          createToast({
+            type: "error",
+            message: "Failed to create new webinar, try again!",
+          });
           if (err?.response?.status === 401) {
             dispatch(logout());
-            navigate('/admin-login');
+            navigate("/admin-login");
           }
-        });
+        }
     },
   });
 
@@ -123,7 +124,7 @@ function AddWebinar({ course, updateBatches }) {
               onClick={handleClose}
               size="small"
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
                 top: 8,
                 color: (theme) => theme.palette.grey[500],
@@ -134,7 +135,7 @@ function AddWebinar({ course, updateBatches }) {
           ) : null}
 
           <Typography
-            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
             variant="h4"
             fontWeight={600}
           >
@@ -146,11 +147,11 @@ function AddWebinar({ course, updateBatches }) {
           <form
             onSubmit={formik.handleSubmit}
             style={{
-              marginTop: '0.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.8rem',
-              width: '550px',
+              marginTop: "0.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.8rem",
+              width: "550px",
             }}
           >
             <FormControl fullWidth>
@@ -158,24 +159,26 @@ function AddWebinar({ course, updateBatches }) {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="batchName"
+                htmlFor="title"
               >
                 Enter Title
               </Typography>
               <InputBase
-                id="batchName"
-                name="batchName"
+                id="title"
+                name="title"
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.batchName}
+                value={formik.values.title}
                 onChange={formik.handleChange}
-                error={formik.touched.batchName && Boolean(formik.errors.batchName)}
+                error={
+                  formik.touched.title && Boolean(formik.errors.title)
+                }
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.batchName && formik.errors.batchName}
+              <FormHelperText sx={{ color: "#dd0000" }}>
+                {formik.touched.title && formik.errors.title}
               </FormHelperText>
             </FormControl>
 
@@ -208,30 +211,34 @@ function AddWebinar({ course, updateBatches }) {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="numberOfIntakes"
+                htmlFor="description"
               >
                 Enter Description
               </Typography>
               <InputBase
                 multiline
-                id="numberOfIntakes"
-                name="numberOfIntakes"
+                id="description"
+                name="description"
                 size="small"
                 rows={4}
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.numberOfIntakes}
+                value={formik.values.description}
                 onChange={formik.handleChange}
-                error={formik.touched.numberOfIntakes && Boolean(formik.errors.numberOfIntakes)}
+                error={
+                  formik.touched.description &&
+                  Boolean(formik.errors.description)
+                }
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.numberOfIntakes && formik.errors.numberOfIntakes}
+              <FormHelperText sx={{ color: "#dd0000" }}>
+                {formik.touched.description &&
+                  formik.errors.description}
               </FormHelperText>
             </FormControl>
 
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <Box sx={{ display: "flex", gap: 1.5 }}>
               <FormControl fullWidth>
                 <Typography
                   variant="body1"
@@ -252,9 +259,11 @@ function AddWebinar({ course, updateBatches }) {
                   disabled={loading}
                   value={formik.values.startDate}
                   onChange={formik.handleChange}
-                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                  error={
+                    formik.touched.startDate && Boolean(formik.errors.startDate)
+                  }
                 />
-                <FormHelperText sx={{ color: '#dd0000' }}>
+                <FormHelperText sx={{ color: "#dd0000" }}>
                   {formik.touched.startDate && formik.errors.startDate}
                 </FormHelperText>
               </FormControl>
@@ -279,9 +288,11 @@ function AddWebinar({ course, updateBatches }) {
                   disabled={loading}
                   value={formik.values.endDate}
                   onChange={formik.handleChange}
-                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                  error={
+                    formik.touched.endDate && Boolean(formik.errors.endDate)
+                  }
                 />
-                <FormHelperText sx={{ color: '#dd0000' }}>
+                <FormHelperText sx={{ color: "#dd0000" }}>
                   {formik.touched.endDate && formik.errors.endDate}
                 </FormHelperText>
               </FormControl>
@@ -292,26 +303,28 @@ function AddWebinar({ course, updateBatches }) {
                 variant="body1"
                 color="text.secondary"
                 component="label"
-                htmlFor="purchaseAvailability"
+                htmlFor="price"
               >
                 Price in Rupees(₹)
               </Typography>
               <InputBase
-                id="purchaseAvailability"
-                name="purchaseAvailability"
+                id="price"
+                name="price"
                 size="small"
                 sx={{ mt: 1 }}
                 fullWidth
                 color="secondary"
                 disabled={loading}
-                value={formik.values.purchaseAvailability}
+                value={formik.values.price}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.purchaseAvailability && Boolean(formik.errors.purchaseAvailability)
+                  formik.touched.price &&
+                  Boolean(formik.errors.price)
                 }
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
-                {formik.touched.purchaseAvailability && formik.errors.purchaseAvailability}
+              <FormHelperText sx={{ color: "#dd0000" }}>
+                {formik.touched.price &&
+                  formik.errors.price}
               </FormHelperText>
             </FormControl>
             <Box
@@ -319,7 +332,7 @@ function AddWebinar({ course, updateBatches }) {
                 mb: 0,
                 mt: 3,
                 gap: 1.5,
-                display: 'flex',
+                display: "flex",
               }}
             >
               <Button
@@ -338,7 +351,7 @@ function AddWebinar({ course, updateBatches }) {
                 disabled={loading}
                 endIcon={loading ? <CircularProgress size={14} /> : undefined}
               >
-                {loading ? 'Saving...' : 'Save'}
+                {loading ? "Saving..." : "Save"}
               </Button>
             </Box>
           </form>
