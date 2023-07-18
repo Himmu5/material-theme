@@ -20,6 +20,17 @@ function Webinars() {
     })
   },[])
 
+  function refreshWebinars(){
+    setLoading(true);
+    getEvents("webinar").then((res)=>{
+      console.log("response : ",res.data.webinars);
+      setWebinars(res.data.webinars);
+      setLoading(false);
+    }).catch(()=>{
+      setLoading(false);
+    })
+  }
+
   return (
     <Box
       sx={{
@@ -53,7 +64,7 @@ function Webinars() {
             Webinars
           </Typography>
 
-          <AddWebinar />
+          <AddWebinar refreshWebinars={refreshWebinars}/>
         </Box>
 
         <WebinarList webinars={webinars} />

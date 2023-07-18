@@ -44,7 +44,7 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddWebinar({ course, updateBatches }) {
+function AddWebinar({ course, refreshWebinars }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -80,7 +80,7 @@ function AddWebinar({ course, updateBatches }) {
             type: "success",
             message: `Created the webinar successfully`,
           });
-          updateBatches();
+          refreshWebinars();
           formik.resetForm();
           setLoading(false);
         }
