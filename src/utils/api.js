@@ -2,6 +2,7 @@ import axios from "axios";
 import axiosInstance from "./axios";
 import { S3_BUCKET_URL } from "./config";
 import FileDownload from "js-file-download";
+import { BACKEND_BASE_URL } from "./config";
 
 const api = {
   users: {
@@ -167,10 +168,17 @@ export function updateEvent(data, id) {
 }
 
 export function exportEvent(eventType, id) {
-  const path = `/${eventType}/${eventType}/export/` + id;
-  return axiosInstance.get(path).then((res) => {
-    FileDownload(res.data, `${eventType}.xlsx`);
-  });
+  const token = JSON.parse(localStorage.getItem("admin"));
+
+  return axios
+    .get(BACKEND_BASE_URL + `/${eventType}/${eventType}/export/` + id, {
+      responseType: "blob",
+      headers: { Authorization: "Bearer "+ token.token },
+    })
+    .then((res) => {
+      FileDownload(res.data, `${eventType}.xlsx`);
+    });
+
 }
 
 export default api;
