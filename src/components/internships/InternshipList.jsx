@@ -19,6 +19,7 @@ import Options from './Options';
 
 function InternshipList({Internship ,setOpen , setDeleteId ,setMode}) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showDetails ,setShowDetails ] = useState(false);
 
   const handleOptionsClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -74,7 +75,16 @@ function InternshipList({Internship ,setOpen , setDeleteId ,setMode}) {
                     </Box>
                   </TableCell>
                   <TableCell sx={{ color: 'inherit', maxWidth: '20vw' }}>
-                    {row.description}
+                  {row.description.length > 150 ? (
+                      <div style={{ display: "flex", gap: 2 }}>
+                        <p>
+                          { showDetails===true ? row.description : row.description.slice(0, 149)}
+                          {showDetails===false && <span style={{ color: "blue" , cursor:"pointer" }} onClick={()=>setShowDetails(!showDetails)}> see more</span> }
+                        </p>
+                      </div>
+                    ) : (
+                      row.description
+                    )}
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
