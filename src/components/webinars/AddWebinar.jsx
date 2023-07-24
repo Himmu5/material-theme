@@ -14,17 +14,18 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { FaTools } from "react-icons/fa";
-import api, { createEvents } from "../../utils/api";
+import api, { createEvents , getEventById } from "../../utils/api";
 import { logout } from "../../slices/adminAuth";
 import { ToastContext } from "../contexts/ToastContext";
 import { HiPresentationChartBar } from "react-icons/hi";
+import { updateEvent } from "../../utils/api"; 
 
 const Dialog = styled(MuiDialog)(() => ({
   "& .MuiDialog-paper": {
@@ -44,23 +45,54 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddWebinar({ course, refreshWebinars }) {
+function AddWebinar({
+  course,
+  refreshWebinars,
+  mode,
+  setMode,
+  oldData,
+  webinars,
+  id,
+}) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
+  const [ previous , setPreviousData ] = useState(null);
+
+  useEffect(() => {
+    setOpen(mode === "update");
+  }, [mode]);
+
+  if(mode === "update") {
+    getEventById(id).then((res)=>{
+      const response = res.data;
+      setPreviousData(response);
+      formik.values.title = response.title;
+      formik.values.description = response.description;
+      formik.values.startDate = response.startDate.slice(0 , 10);
+      formik.values.endDate = response.endDate.slice(0 , 10);
+      formik.values.price = response.price;
+    })
+  }
+  
+
+  const data = webinars.filter((webinar) => {
+    return webinars._id === id;
+  });
 
   const initialValues = {
-    title: "",
-    description: "",
-    startDate: null,
-    endDate: null,
+    title:  "",
+    description : "",
+    startDate:  null,
+    endDate:  null,
     price: "",
   };
 
   const handleClickOpen = () => {
     setOpen(true);
+    setMode("normal");
   };
 
   // const submitBatch = (formData) =>
@@ -73,8 +105,13 @@ function AddWebinar({ course, refreshWebinars }) {
       const formData = { ...values };
       setLoading(true);
       console.log(formData);
-      const response = await createEvents({...formData , learningType: "webinar"})
-        if(response.success === true){
+
+      if (mode === "normal") {
+        const response = await createEvents({
+          ...formData,
+          learningType: "webinar",
+        });
+        if (response.success === true) {
           setOpen(false);
           createToast({
             type: "success",
@@ -83,8 +120,7 @@ function AddWebinar({ course, refreshWebinars }) {
           refreshWebinars();
           formik.resetForm();
           setLoading(false);
-        }
-        else if(response.success === false){
+        } else if (response.success === false) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
@@ -97,15 +133,42 @@ function AddWebinar({ course, refreshWebinars }) {
             navigate("/admin-login");
           }
         }
+      } else if (mode === "update") {
+        console.log("Update mode");
+        const res = await updateEvent(formik.values);
+        if(res.success === true){
+          setOpen(false);
+          createToast({
+            type: "success",
+            message: `Webinar updated successfully`,
+          });
+          refreshWebinars();
+          formik.resetForm();
+          setLoading(false);
+        } else if (res.success === false) {
+          console.log(err);
+          formik.resetForm();
+          setLoading(false);
+          createToast({
+            type: "error",
+            message: "Failed to update the webinar, try again!",
+          });
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate("/admin-login");
+          }
+      }
+    }
     },
   });
 
   const handleClose = () => {
     setOpen(false);
     formik.resetForm();
+    setMode("normal");
   };
 
-  return (
+  return open===true && (
     <>
       <Button
         variant="contained"
@@ -140,7 +203,7 @@ function AddWebinar({ course, refreshWebinars }) {
             fontWeight={600}
           >
             <HiPresentationChartBar color="#19488C" />
-            Add a New Webinar
+            {mode === "update" ? "Update the webinar" : "Add a New Webinar"}
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -173,9 +236,7 @@ function AddWebinar({ course, refreshWebinars }) {
                 disabled={loading}
                 value={formik.values.title}
                 onChange={formik.handleChange}
-                error={
-                  formik.touched.title && Boolean(formik.errors.title)
-                }
+                error={formik.touched.title && Boolean(formik.errors.title)}
               />
               <FormHelperText sx={{ color: "#dd0000" }}>
                 {formik.touched.title && formik.errors.title}
@@ -233,8 +294,7 @@ function AddWebinar({ course, refreshWebinars }) {
                 }
               />
               <FormHelperText sx={{ color: "#dd0000" }}>
-                {formik.touched.description &&
-                  formik.errors.description}
+                {formik.touched.description && formik.errors.description}
               </FormHelperText>
             </FormControl>
 
@@ -317,14 +377,10 @@ function AddWebinar({ course, refreshWebinars }) {
                 disabled={loading}
                 value={formik.values.price}
                 onChange={formik.handleChange}
-                error={
-                  formik.touched.price &&
-                  Boolean(formik.errors.price)
-                }
+                error={formik.touched.price && Boolean(formik.errors.price)}
               />
               <FormHelperText sx={{ color: "#dd0000" }}>
-                {formik.touched.price &&
-                  formik.errors.price}
+                {formik.touched.price && formik.errors.price}
               </FormHelperText>
             </FormControl>
             <Box

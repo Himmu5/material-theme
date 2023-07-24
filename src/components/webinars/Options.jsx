@@ -1,7 +1,15 @@
 import { Menu, MenuItem } from '@mui/material';
 import React from 'react';
 
-function Options({ anchorEl, close }) {
+function Options({ anchorEl, open , setMode , setOpen , id , getDeleteItem}) {
+  function handleDelete(){
+    setOpen(true);
+    getDeleteItem(id);
+    open();
+  }
+  function editButton(){
+    setMode("update");
+  }
   return (
     <Menu
       id="menu-appbar"
@@ -16,10 +24,10 @@ function Options({ anchorEl, close }) {
         horizontal: 'right',
       }}
       open={Boolean(anchorEl)}
-      onClose={close}
+      onClose={open}
     >
-      <MenuItem onClick={close}>Edit</MenuItem>
-      <MenuItem onClick={close}>Delete</MenuItem>
+      <MenuItem onClick={editButton}>Edit</MenuItem>
+      <MenuItem onClick={handleDelete}>Delete</MenuItem>
     </Menu>
   );
 }

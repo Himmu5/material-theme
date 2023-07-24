@@ -17,7 +17,7 @@ import { SiMicrosoftexcel } from 'react-icons/si';
 import { FiMoreVertical } from 'react-icons/fi';
 import Options from './Options';
 
-function WebinarList({webinars}) {
+function WebinarList({webinars ,setOpen , setDeleteId ,setMode}) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOptionsClick = (event) => {
@@ -101,7 +101,7 @@ function WebinarList({webinars}) {
                       Export
                     </Button>
                   </TableCell>
-                  <TableCell sx={{ color: 'inherit' }}>
+                  <TableCell sx={{ color: 'inherit' }} onClick={()=>setDeleteId(row._id)}>
                     <IconButton size="small" onClick={handleOptionsClick}>
                       <FiMoreVertical />
                     </IconButton>
@@ -113,7 +113,7 @@ function WebinarList({webinars}) {
         </Table>
       </TableContainer>
 
-      <Options anchorEl={anchorEl} close={() => setAnchorEl(null)} />
+      <Options anchorEl={anchorEl} open={()=>setAnchorEl(null)} setMode={setMode} setOpen={setOpen} />
     </>
   );
 }

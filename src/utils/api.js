@@ -105,22 +105,64 @@ const api = {
 
 export function createEvents(formData) {
   const path = "/internship/";
-  return axiosInstance.post(path, formData).then((res) => {
-    return res.data;
-  }).catch((err)=>{
-    return { "success": false, err }
-  })
+  return axiosInstance
+    .post(path, formData)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return { success: false, err };
+    });
 }
 
-export function getEvents(pageName){
+export function getEvents(pageName) {
   let page = 1;
-  let limit = 10
-  const path = "/"+pageName+`?page=${page}&limit=${limit}`;
-  return axiosInstance.get(path).then((res)=>{
-    return res.data;
-  }).catch((err)=>{
-    return { "success": false, err }
-  })
+  let limit = 10;
+  const path = "/" + pageName + `?page=${page}&limit=${limit}`;
+  return axiosInstance
+    .get(path)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return { success: false, err };
+    });
+}
+
+export function deleteEvent(eventType, eventId) {
+  const path = `/${eventType}/${eventType}/` + eventId;
+  return axiosInstance
+    .delete(path)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return { success: false, err };
+    });
+}
+
+export function getEventById(id) {
+  const path = "/webinar/webinar/" + id;
+  return axiosInstance
+    .get(path)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return { success: false, err };
+    });
+}
+
+export function updateEvent(data) {
+  const path = "/webinar/webinar/";
+  return axiosInstance
+    .put(path, data)
+    .then((res) => {
+      return res.data;
+    })
+    .catch(() => {
+      return { success: false, err };
+    });
 }
 
 export default api;

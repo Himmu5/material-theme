@@ -15,8 +15,8 @@ function Internships() {
     setLoading(true);
     getEvents("internship")
       .then((res) => {
-        console.log("response : ", res.data.internships);
-        setInternship(res.data.internships);
+        console.log("response : ", res.data.result);
+        setInternship(res.data.result);
         setLoading(false);
       })
       .catch(() => {});
@@ -26,8 +26,8 @@ function Internships() {
     setLoading(true);
     getEvents("internship")
       .then((res) => {
-        console.log("response : ", res.data.internships);
-        setInternship(res.data.internships);
+        console.log("response : ", res.data.result);
+        setInternship(res.data.result);
         setLoading(false);
       })
       .catch(() => {});
