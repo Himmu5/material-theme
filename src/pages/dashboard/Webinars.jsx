@@ -24,7 +24,7 @@ function Webinars() {
   console.log("Webinars loaded : ", webinars);
   const [open, setOpen] = useState(false);
   const [deleteId, setId] = useState("");
-  // const [previous, setPrevious] = useState(undefined);
+  
   const { createToast } = useContext(ToastContext);
   function handleClose() {
     setOpen(false);

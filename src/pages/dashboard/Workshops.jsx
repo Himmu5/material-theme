@@ -1,8 +1,19 @@
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { Box, LinearProgress, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import WorkshopList from "../../components/workshops/WorkshopList";
 import AddWorkshop from "../../components/workshops/AddWorkshop";
-import { getEvents } from "../../utils/api";
+import { getEvents, deleteEvent } from "../../utils/api";
+import { ToastContext } from "../../components/contexts/ToastContext";
 
 function Workshops() {
   const [loading, setLoading] = useState(false);
@@ -11,6 +22,30 @@ function Workshops() {
 
   const [mode, setMode] = useState("normal");
   const [Workshop, setWorkshop] = useState([]);
+  const { createToast } = useContext(ToastContext);
+
+  function handleClose() {
+    setOpen(false);
+  }
+
+  function handleDelete() {
+    console.log("id :", deleteId);
+    deleteEvent("workshop", deleteId)
+      .then(() => {
+        createToast({
+          type: "success",
+          message: `Webinar deleted successfully`,
+        });
+        refreshWorkShops();
+        setOpen(false);
+      })
+      .catch((err) => {
+        createToast({
+          type: "error",
+          message: `Failed to delete webinar`,
+        });
+      });
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -23,7 +58,7 @@ function Workshops() {
       .catch(() => {});
   }, []);
 
-  function updateWorkShops() {
+  function refreshWorkShops() {
     setLoading(true);
     getEvents("workshop")
       .then((res) => {
@@ -69,8 +104,69 @@ function Workshops() {
             Workshops
           </Typography>
 
-          <AddWorkshop updateWorkshops={updateWorkShops} />
+          <AddWorkshop
+            refreshWorkshops={refreshWorkShops}
+            mode={mode}
+            setMode={setMode}
+            Workshop={Workshop}
+            id={deleteId}
+          />
         </Box>
+
+        <Dialog open={open} onClose={handleClose} maxWidth="sm">
+          <DialogTitle sx={{ mt: 2, mx: 2 }}>
+            {handleClose ? (
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                size="small"
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            ) : null}
+
+            <Typography variant="h4" align="center" fontWeight={600}>
+              Are you sure?
+            </Typography>
+          </DialogTitle>
+          <DialogContent
+            sx={{ width: 350, display: "flex", justifyContent: "center" }}
+          >
+            <Typography
+              variant="body1"
+              align="center"
+              fontWeight={500}
+              color="text.secondary"
+            >
+              Do you really wish to delete
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ mb: 2, mx: 2 }}>
+            <Button
+              onClick={handleClose}
+              type="button"
+              variant="outlined"
+              fullWidth
+            >
+              No
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              fullWidth
+              onClick={handleDelete}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+
 
         <WorkshopList
           Workshop={Workshop}

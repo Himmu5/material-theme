@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -24,7 +24,7 @@ import { FaTools } from "react-icons/fa";
 import api from "../../utils/api";
 import { logout } from "../../slices/adminAuth";
 import { ToastContext } from "../contexts/ToastContext";
-import { createEvents } from "../../utils/api";
+import { createEvents, updateEvent, getEventById } from "../../utils/api";
 
 const Dialog = styled(MuiDialog)(() => ({
   "& .MuiDialog-paper": {
@@ -44,12 +44,28 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddWorkshop({ course, updateWorkshops }) {
+function AddWorkshop({ course, refreshWorkshops, mode, setMode, id }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
+
+  useEffect(() => {
+    setOpen(mode === "update");
+    if (mode === "update") {
+      setLoading(true);
+      getEventById("workshop", id).then((res) => {
+        setLoading(false);
+        const response = res.data;
+        formik.values.title = response.title;
+        formik.values.description = response.description;
+        formik.values.startDate = response.startDate.slice(0, 10);
+        formik.values.endDate = response.endDate.slice(0, 10);
+        formik.values.price = response.price;
+      });
+    }
+  }, [mode]);
 
   const initialValues = {
     title: "",
@@ -74,29 +90,33 @@ function AddWorkshop({ course, updateWorkshops }) {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit:async (values) => {
+    onSubmit: async (values) => {
       const formData = { ...values };
       setLoading(true);
       console.log(formData);
-      const res = await createEvents({ ...formData, learningType: "workshop" })
-        
-      
-        if(res.success === true){
+      if (mode === "normal") {
+        const res = await createEvents({
+          ...formData,
+          learningType: "workshop",
+        });
+
+        if (res.success === true) {
           console.log("Resonse : ", res);
           setOpen(false);
           createToast({
             type: "success",
             message: `Workshop created successfully`,
           });
-          updateWorkshops();
+          refreshWorkshops();
           formik.resetForm();
           setLoading(false);
         }
-         
-        if(res.success === false){
+
+        if (res.success === false) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
+          setMode("normal");
           createToast({
             type: "error",
             message: "Failed to create workshop, try again!",
@@ -105,14 +125,40 @@ function AddWorkshop({ course, updateWorkshops }) {
             dispatch(logout());
             navigate("/admin-login");
           }
-        } 
-          
+        }
+      } else if (mode === "update") {
+        console.log("Update mode");
+        const res = await updateEvent(formik.values, id);
+        if (res.success === true) {
+          setOpen(false);
+          createToast({
+            type: "success",
+            message: `Workshop updated successfully`,
+          });
+          refreshWorkshops();
+          formik.resetForm();
+          setLoading(false);
+        } else if (res.success === false) {
+          console.log(err);
+          formik.resetForm();
+          setLoading(false);
+          createToast({
+            type: "error",
+            message: "Failed to update the Workshop, try again!",
+          });
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate("/admin-login");
+          }
+        }
+      }
     },
   });
 
   const handleClose = () => {
     setOpen(false);
     formik.resetForm();
+    setMode("normal");
   };
 
   return (
@@ -150,7 +196,7 @@ function AddWorkshop({ course, updateWorkshops }) {
             fontWeight={600}
           >
             <FaTools color="#19488C" />
-            Add a New Workshop
+            {mode === "normal" ? "Add a New Workshop" : "Update Workshop"}
           </Typography>
         </DialogTitle>
         <DialogContent>
