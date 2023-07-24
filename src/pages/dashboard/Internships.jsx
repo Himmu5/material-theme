@@ -1,36 +1,71 @@
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import WorkshopList from "../../components/workshops/WorkshopList";
 import AddWorkshop from "../../components/workshops/AddWorkshop";
 import AddInternship from "../../components/internships/AddInternship";
 import InternshipList from "../../components/internships/InternshipList";
-import { getEvents } from "../../utils/api";
+import { getEvents, deleteEvent } from "../../utils/api";
 
 function Internships() {
   const [loading, setLoading] = useState(false);
+  const [deleteId, setId] = useState("");
+  const [open, setOpen] = useState(false);
 
   const [Internship, setInternship] = useState([]);
+  const [mode, setMode] = useState("normal");
 
   useEffect(() => {
     setLoading(true);
     getEvents("internship")
       .then((res) => {
-        console.log("response : ", res.data.result);
-        setInternship(res.data.result);
+        console.log("response : ", res.data.internships);
+        setInternship(res.data.internships);
         setLoading(false);
       })
       .catch(() => {});
   }, []);
 
-  function refreshInternship(){
+  function refreshInternship() {
     setLoading(true);
     getEvents("internship")
       .then((res) => {
-        console.log("response : ", res.data.result);
-        setInternship(res.data.result);
+        console.log("response : ", res.data.internships);
+        setInternship(res.data.internships);
         setLoading(false);
       })
       .catch(() => {});
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
+  function handleDelete() {
+    console.log("id :", deleteId);
+    deleteEvent("internship", deleteId)
+      .then(() => {
+        createToast({
+          type: "success",
+          message: `internship deleted successfully`,
+        });
+        refreshInternship();
+        setOpen(false);
+      })
+      .catch((err) => {
+        createToast({
+          type: "error",
+          message: `Failed to delete internship`,
+        });
+      });
   }
 
   return (
@@ -66,10 +101,15 @@ function Internships() {
             Internships
           </Typography>
 
-          <AddInternship refreshInternship={refreshInternship}/>
+          <AddInternship id={deleteId} mode={mode} setMode={setMode} refreshInternship={refreshInternship} />
         </Box>
 
-        <InternshipList Internship={Internship}/>
+        <InternshipList
+          Internship={Internship}
+          setDeleteId={setId}
+          setOpen={setOpen}
+          setMode={setMode}
+        />
       </Box>
     </Box>
   );

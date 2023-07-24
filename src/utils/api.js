@@ -141,8 +141,8 @@ export function deleteEvent(eventType, eventId) {
     });
 }
 
-export function getEventById(id) {
-  const path = "/webinar/webinar/" + id;
+export function getEventById(everyType,id) {
+  const path = `/${everyType}/${everyType}/` + id;
   return axiosInstance
     .get(path)
     .then((res) => {

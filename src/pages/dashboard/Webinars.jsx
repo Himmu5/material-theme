@@ -53,8 +53,8 @@ function Webinars() {
     setLoading(true);
     getEvents("webinar")
       .then((res) => {
-        console.log("response : ", res.data.result);
-        setWebinars(res.data.result);
+        console.log("response : ", res.data.webinars);
+        setWebinars(res.data.webinars);
         setLoading(false);
       })
       .catch(() => {});
@@ -64,8 +64,8 @@ function Webinars() {
     setLoading(true);
     getEvents("webinar")
       .then((res) => {
-        console.log("response : ", res.data.result);
-        setWebinars(res.data.result);
+        console.log("response : ", res.data.webinars);
+        setWebinars(res.data.webinars);
         setLoading(false);
       })
       .catch(() => {

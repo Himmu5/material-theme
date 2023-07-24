@@ -12,8 +12,8 @@ function Workshops() {
   useEffect(()=>{
     setLoading(true);
     getEvents("workshop").then((res)=>{
-      console.log("response : ",res.data.result);
-      setWorkshop(res.data.result);
+      console.log("response : ",res.data.workshops);
+      setWorkshop(res.data.workshops);
       setLoading(false);
     }).catch(()=>{
     })
@@ -22,8 +22,8 @@ function Workshops() {
   function updateWorkShops(){
     setLoading(true);
     getEvents("workshop").then((res)=>{
-      console.log("response : ",res.data.result);
-      setWorkshop(res.data.result);
+      console.log("response : ",res.data.workshops);
+      setWorkshop(res.data.workshops);
       setLoading(false);
     }).catch(()=>{
       setLoading(false);

@@ -59,16 +59,14 @@ function AddWebinar({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
-  const [ previous , setPreviousData ] = useState(null);
 
   useEffect(() => {
     setOpen(mode === "update");
   }, [mode]);
 
   if(mode === "update") {
-    getEventById(id).then((res)=>{
+    getEventById("webinar" ,id).then((res)=>{
       const response = res.data;
-      setPreviousData(response);
       formik.values.title = response.title;
       formik.values.description = response.description;
       formik.values.startDate = response.startDate.slice(0 , 10);
@@ -77,10 +75,6 @@ function AddWebinar({
     })
   }
   
-
-  const data = webinars.filter((webinar) => {
-    return webinars._id === id;
-  });
 
   const initialValues = {
     title:  "",

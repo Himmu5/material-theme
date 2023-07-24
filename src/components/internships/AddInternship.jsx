@@ -12,23 +12,23 @@ import {
   styled,
   FormHelperText,
   CircularProgress,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import React, { useContext, useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { MdWorkHistory } from 'react-icons/md';
-import api, { createEvents } from '../../utils/api';
-import { logout } from '../../slices/adminAuth';
-import { ToastContext } from '../contexts/ToastContext';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import React, { useContext, useState, useEffect } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { MdWorkHistory } from "react-icons/md";
+import api, { createEvents , getEventById } from "../../utils/api";
+import { logout } from "../../slices/adminAuth";
+import { ToastContext } from "../contexts/ToastContext";
 
 const Dialog = styled(MuiDialog)(() => ({
-  '& .MuiDialog-paper': {
+  "& .MuiDialog-paper": {
     borderRadius: 16,
-    overflowX: 'hidden',
+    overflowX: "hidden",
   },
 }));
 
@@ -43,12 +43,27 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddInternship({ course, refreshInternship }) {
+function AddInternship({ course, refreshInternship, mode , id , setMode }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createToast } = useContext(ToastContext);
+
+  useEffect(() => {
+    setOpen(mode === "update");
+  }, [mode]);
+
+  if (mode === "update") {
+    getEventById("internship" , id).then((res) => {
+      const response = res.data;
+      formik.values.title = response.title;
+      formik.values.description = response.description;
+      formik.values.startDate = response.startDate.slice(0, 10);
+      formik.values.endDate = response.endDate.slice(0, 10);
+      formik.values.price = response.price;
+    });
+  }
 
   const initialValues = {
     title: "",
@@ -60,6 +75,7 @@ function AddInternship({ course, refreshInternship }) {
 
   const handleClickOpen = () => {
     setOpen(true);
+    setMode("update")
   };
 
   // const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
@@ -71,33 +87,67 @@ function AddInternship({ course, refreshInternship }) {
       const formData = { ...values, courseID: course?._id };
       setLoading(true);
       console.log(formData);
-      const response = await createEvents({...formData ,  learningType: "internship"})
-        if(response.success === true){
+      setMode("update")
+      if (mode === "normal") {
+        const response = await createEvents({
+          ...formData,
+          learningType: "internship",
+        });
+        if (response.success === true) {
           setOpen(false);
           createToast({
-            type: 'success',
+            type: "success",
             message: `Created new Internship successfully`,
           });
           refreshInternship();
           formik.resetForm();
           setLoading(false);
-        }
-          
-        else if(response.status === false){
+        } else if (response.status === false) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
-          createToast({ type: 'error', message: 'Failed to create new Internship, try again!' });
+          createToast({
+            type: "error",
+            message: "Failed to create new Internship, try again!",
+          });
           if (err?.response?.status === 401) {
             dispatch(logout());
-            navigate('/admin-login');
+            navigate("/admin-login");
           }
         }
+      } else if (mode === "update") {
+        console.log("Update mode");
+        const res = await updateEvent(formik.values);
+        if (res.success === true) {
+          setOpen(false);
+          createToast({
+            type: "success",
+            message: `Webinar updated successfully`,
+          });
+          refreshWebinars();
+          setMode("update");
+          formik.resetForm();
+          setLoading(false);
+        } else if (res.success === false) {
+          console.log(err);
+          formik.resetForm();
+          setLoading(false);
+          createToast({
+            type: "error",
+            message: "Failed to update the webinar, try again!",
+          });
+          if (err?.response?.status === 401) {
+            dispatch(logout());
+            navigate("/admin-login");
+          }
+        }
+      }
     },
   });
 
   const handleClose = () => {
     setOpen(false);
+    setMode("normal")
     formik.resetForm();
   };
 
@@ -120,7 +170,7 @@ function AddInternship({ course, refreshInternship }) {
               onClick={handleClose}
               size="small"
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
                 top: 8,
                 color: (theme) => theme.palette.grey[500],
@@ -131,23 +181,23 @@ function AddInternship({ course, refreshInternship }) {
           ) : null}
 
           <Typography
-            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
             variant="h4"
             fontWeight={600}
           >
             <MdWorkHistory color="#19488C" />
-            Add a New Internship
+            {mode ==="normal" ? "Add a New Internship" : "Update the Internship"}
           </Typography>
         </DialogTitle>
         <DialogContent>
           <form
             onSubmit={formik.handleSubmit}
             style={{
-              marginTop: '0.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.8rem',
-              width: '550px',
+              marginTop: "0.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.8rem",
+              width: "550px",
             }}
           >
             <FormControl fullWidth>
@@ -171,7 +221,7 @@ function AddInternship({ course, refreshInternship }) {
                 onChange={formik.handleChange}
                 error={formik.touched.title && Boolean(formik.errors.title)}
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
+              <FormHelperText sx={{ color: "#dd0000" }}>
                 {formik.touched.title && formik.errors.title}
               </FormHelperText>
             </FormControl>
@@ -221,14 +271,17 @@ function AddInternship({ course, refreshInternship }) {
                 disabled={loading}
                 value={formik.values.description}
                 onChange={formik.handleChange}
-                error={formik.touched.description && Boolean(formik.errors.description)}
+                error={
+                  formik.touched.description &&
+                  Boolean(formik.errors.description)
+                }
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
+              <FormHelperText sx={{ color: "#dd0000" }}>
                 {formik.touched.description && formik.errors.description}
               </FormHelperText>
             </FormControl>
 
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <Box sx={{ display: "flex", gap: 1.5 }}>
               <FormControl fullWidth>
                 <Typography
                   variant="body1"
@@ -249,9 +302,11 @@ function AddInternship({ course, refreshInternship }) {
                   disabled={loading}
                   value={formik.values.startDate}
                   onChange={formik.handleChange}
-                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                  error={
+                    formik.touched.startDate && Boolean(formik.errors.startDate)
+                  }
                 />
-                <FormHelperText sx={{ color: '#dd0000' }}>
+                <FormHelperText sx={{ color: "#dd0000" }}>
                   {formik.touched.startDate && formik.errors.startDate}
                 </FormHelperText>
               </FormControl>
@@ -276,9 +331,11 @@ function AddInternship({ course, refreshInternship }) {
                   disabled={loading}
                   value={formik.values.endDate}
                   onChange={formik.handleChange}
-                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                  error={
+                    formik.touched.endDate && Boolean(formik.errors.endDate)
+                  }
                 />
-                <FormHelperText sx={{ color: '#dd0000' }}>
+                <FormHelperText sx={{ color: "#dd0000" }}>
                   {formik.touched.endDate && formik.errors.endDate}
                 </FormHelperText>
               </FormControl>
@@ -303,11 +360,9 @@ function AddInternship({ course, refreshInternship }) {
                 disabled={loading}
                 value={formik.values.price}
                 onChange={formik.handleChange}
-                error={
-                  formik.touched.price && Boolean(formik.errors.price)
-                }
+                error={formik.touched.price && Boolean(formik.errors.price)}
               />
-              <FormHelperText sx={{ color: '#dd0000' }}>
+              <FormHelperText sx={{ color: "#dd0000" }}>
                 {formik.touched.price && formik.errors.price}
               </FormHelperText>
             </FormControl>
@@ -316,7 +371,7 @@ function AddInternship({ course, refreshInternship }) {
                 mb: 0,
                 mt: 3,
                 gap: 1.5,
-                display: 'flex',
+                display: "flex",
               }}
             >
               <Button
@@ -335,7 +390,7 @@ function AddInternship({ course, refreshInternship }) {
                 disabled={loading}
                 endIcon={loading ? <CircularProgress size={14} /> : undefined}
               >
-                {loading ? 'Saving...' : 'Save'}
+                {loading ? "Saving..." : "Save"}
               </Button>
             </Box>
           </form>
