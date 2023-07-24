@@ -21,7 +21,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { MdWorkHistory } from "react-icons/md";
-import api, { createEvents , getEventById } from "../../utils/api";
+import api, { createEvents , getEventById ,updateEvent } from "../../utils/api";
 import { logout } from "../../slices/adminAuth";
 import { ToastContext } from "../contexts/ToastContext";
 
@@ -52,18 +52,20 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
 
   useEffect(() => {
     setOpen(mode === "update");
+    if (mode === "update") {
+      setLoading(true);
+      getEventById("internship" , id).then((res) => {
+        setLoading(false);
+        const response = res.data;
+        formik.values.title = response.title;
+        formik.values.description = response.description;
+        formik.values.startDate = response.startDate.slice(0, 10);
+        formik.values.endDate = response.endDate.slice(0, 10);
+        formik.values.price = response.price;
+      });
+    }
   }, [mode]);
 
-  if (mode === "update") {
-    getEventById("internship" , id).then((res) => {
-      const response = res.data;
-      formik.values.title = response.title;
-      formik.values.description = response.description;
-      formik.values.startDate = response.startDate.slice(0, 10);
-      formik.values.endDate = response.endDate.slice(0, 10);
-      formik.values.price = response.price;
-    });
-  }
 
   const initialValues = {
     title: "",
@@ -75,7 +77,6 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
 
   const handleClickOpen = () => {
     setOpen(true);
-    setMode("update")
   };
 
   // const submitBatch = (formData) => api.batch.createBatch(formData).then((res) => res);
@@ -95,6 +96,7 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
         });
         if (response.success === true) {
           setOpen(false);
+          setMode("normal");
           createToast({
             type: "success",
             message: `Created new Internship successfully`,
@@ -104,6 +106,7 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
           setLoading(false);
         } else if (response.status === false) {
           console.log(err);
+          setMode("normal");
           formik.resetForm();
           setLoading(false);
           createToast({
@@ -117,15 +120,15 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
         }
       } else if (mode === "update") {
         console.log("Update mode");
-        const res = await updateEvent(formik.values);
+        const res = await updateEvent(formik.values , id);
         if (res.success === true) {
           setOpen(false);
           createToast({
             type: "success",
             message: `Webinar updated successfully`,
           });
-          refreshWebinars();
-          setMode("update");
+          refreshInternship();
+          setMode("normal");
           formik.resetForm();
           setLoading(false);
         } else if (res.success === false) {

@@ -153,8 +153,8 @@ export function getEventById(everyType,id) {
     });
 }
 
-export function updateEvent(data) {
-  const path = "/webinar/webinar/";
+export function updateEvent(data , id) {
+  const path = "/webinar/webinar/"+id;
   return axiosInstance
     .put(path, data)
     .then((res) => {

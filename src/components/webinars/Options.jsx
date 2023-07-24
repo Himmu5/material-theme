@@ -9,6 +9,7 @@ function Options({ anchorEl, open , setMode , setOpen , id , getDeleteItem}) {
   }
   function editButton(){
     setMode("update");
+    // setOpen(true);
   }
   return (
     <Menu

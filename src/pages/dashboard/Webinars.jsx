@@ -145,7 +145,7 @@ function Webinars() {
               fontWeight={500}
               color="text.secondary"
             >
-              Do you really wish to log out
+              Do you really wish to delete
             </Typography>
           </DialogContent>
           <DialogActions sx={{ mb: 2, mx: 2 }}>

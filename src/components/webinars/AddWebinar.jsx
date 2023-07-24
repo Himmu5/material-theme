@@ -50,8 +50,6 @@ function AddWebinar({
   refreshWebinars,
   mode,
   setMode,
-  oldData,
-  webinars,
   id,
 }) {
   const [open, setOpen] = React.useState(false);
@@ -62,18 +60,20 @@ function AddWebinar({
 
   useEffect(() => {
     setOpen(mode === "update");
+    if(mode === "update") {
+      setLoading(true);
+      getEventById("webinar" ,id).then((res)=>{
+        setLoading(false);
+        const response = res.data;
+        formik.values.title = response.title;
+        formik.values.description = response.description;
+        formik.values.startDate = response.startDate.slice(0 , 10);
+        formik.values.endDate = response.endDate.slice(0 , 10);
+        formik.values.price = response.price;
+      })
+    }
   }, [mode]);
 
-  if(mode === "update") {
-    getEventById("webinar" ,id).then((res)=>{
-      const response = res.data;
-      formik.values.title = response.title;
-      formik.values.description = response.description;
-      formik.values.startDate = response.startDate.slice(0 , 10);
-      formik.values.endDate = response.endDate.slice(0 , 10);
-      formik.values.price = response.price;
-    })
-  }
   
 
   const initialValues = {
@@ -86,7 +86,6 @@ function AddWebinar({
 
   const handleClickOpen = () => {
     setOpen(true);
-    setMode("normal");
   };
 
   // const submitBatch = (formData) =>
@@ -129,7 +128,7 @@ function AddWebinar({
         }
       } else if (mode === "update") {
         console.log("Update mode");
-        const res = await updateEvent(formik.values);
+        const res = await updateEvent(formik.values , id);
         if(res.success === true){
           setOpen(false);
           createToast({
@@ -162,7 +161,7 @@ function AddWebinar({
     setMode("normal");
   };
 
-  return open===true && (
+  return  (
     <>
       <Button
         variant="contained"

@@ -1,46 +1,52 @@
-import { Box, LinearProgress, Typography } from '@mui/material';
-import React, { useState ,useEffect } from 'react';
-import WorkshopList from '../../components/workshops/WorkshopList';
-import AddWorkshop from '../../components/workshops/AddWorkshop';
-import { getEvents } from '../../utils/api';
+import { Box, LinearProgress, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import WorkshopList from "../../components/workshops/WorkshopList";
+import AddWorkshop from "../../components/workshops/AddWorkshop";
+import { getEvents } from "../../utils/api";
 
 function Workshops() {
   const [loading, setLoading] = useState(false);
+  const [deleteId, setId] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const [Workshop , setWorkshop] = useState([]);
-  
-  useEffect(()=>{
-    setLoading(true);
-    getEvents("workshop").then((res)=>{
-      console.log("response : ",res.data.workshops);
-      setWorkshop(res.data.workshops);
-      setLoading(false);
-    }).catch(()=>{
-    })
-  },[])
+  const [mode, setMode] = useState("normal");
+  const [Workshop, setWorkshop] = useState([]);
 
-  function updateWorkShops(){
+  useEffect(() => {
     setLoading(true);
-    getEvents("workshop").then((res)=>{
-      console.log("response : ",res.data.workshops);
-      setWorkshop(res.data.workshops);
-      setLoading(false);
-    }).catch(()=>{
-      setLoading(false);
-    })
+    getEvents("workshop")
+      .then((res) => {
+        console.log("response : ", res.data.workshops);
+        setWorkshop(res.data.workshops);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, []);
+
+  function updateWorkShops() {
+    setLoading(true);
+    getEvents("workshop")
+      .then((res) => {
+        console.log("response : ", res.data.workshops);
+        setWorkshop(res.data.workshops);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   }
 
   return (
     <Box
       sx={{
         flexGrow: 1,
-        height: '100vh',
+        height: "100vh",
       }}
     >
       {loading && (
         <LinearProgress
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
@@ -52,13 +58,13 @@ function Workshops() {
         sx={{
           py: 3,
           px: 5,
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
           gap: 1,
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography typography="h3" fontWeight={600}>
             Workshops
           </Typography>
@@ -66,7 +72,12 @@ function Workshops() {
           <AddWorkshop updateWorkshops={updateWorkShops} />
         </Box>
 
-        <WorkshopList Workshop={Workshop} />
+        <WorkshopList
+          Workshop={Workshop}
+          setDeleteId={setId}
+          setOpen={setOpen}
+          setMode={setMode}
+        />
       </Box>
     </Box>
   );
