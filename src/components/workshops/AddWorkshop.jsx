@@ -44,7 +44,7 @@ const validationSchema = yup.object({
   price: yup.number("Invalid Amount").required("Amount is needed!"),
 });
 
-function AddWorkshop({ course, refreshWorkshops, mode, setMode, id }) {
+function AddWorkshop({ refreshWorkshops, mode, setMode, id }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -52,6 +52,11 @@ function AddWorkshop({ course, refreshWorkshops, mode, setMode, id }) {
   const { createToast } = useContext(ToastContext);
 
   useEffect(() => {
+    formik.values.title = ""
+    formik.values.description =""
+    formik.values.startDate = null;
+    formik.values.endDate = null;
+    formik.values.price = ""
     setOpen(mode === "update");
     if (mode === "update") {
       setLoading(true);
@@ -156,9 +161,9 @@ function AddWorkshop({ course, refreshWorkshops, mode, setMode, id }) {
   });
 
   const handleClose = () => {
-    setOpen(false);
-    formik.resetForm();
     setMode("normal");
+    formik.values = initialValues;
+    setOpen(false);
   };
 
   return (

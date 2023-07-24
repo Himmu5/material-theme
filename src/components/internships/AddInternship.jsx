@@ -51,6 +51,11 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
   const { createToast } = useContext(ToastContext);
 
   useEffect(() => {
+    formik.values.title = ""
+    formik.values.description =""
+    formik.values.startDate = null;
+    formik.values.endDate = null;
+    formik.values.price = ""
     setOpen(mode === "update");
     if (mode === "update") {
       setLoading(true);
