@@ -139,6 +139,7 @@ function AddInternship({ course, refreshInternship, mode , id , setMode }) {
         } else if (res.success === false) {
           console.log(err);
           formik.resetForm();
+          setMode("normal");
           setLoading(false);
           createToast({
             type: "error",

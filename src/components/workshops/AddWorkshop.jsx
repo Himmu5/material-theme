@@ -112,6 +112,7 @@ function AddWorkshop({ refreshWorkshops, mode, setMode, id }) {
             type: "success",
             message: `Workshop created successfully`,
           });
+          setMode("normal");
           refreshWorkshops();
           formik.resetForm();
           setLoading(false);
@@ -135,6 +136,7 @@ function AddWorkshop({ refreshWorkshops, mode, setMode, id }) {
         console.log("Update mode");
         const res = await updateEvent(formik.values, id);
         if (res.success === true) {
+          setMode("normal");
           setOpen(false);
           createToast({
             type: "success",
@@ -144,6 +146,7 @@ function AddWorkshop({ refreshWorkshops, mode, setMode, id }) {
           formik.resetForm();
           setLoading(false);
         } else if (res.success === false) {
+          setMode("normal");
           console.log(err);
           formik.resetForm();
           setLoading(false);

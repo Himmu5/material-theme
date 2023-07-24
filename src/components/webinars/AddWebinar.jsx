@@ -116,6 +116,7 @@ function AddWebinar({
             message: `Created the webinar successfully`,
           });
           refreshWebinars();
+          setMode("normal");
           formik.resetForm();
           setLoading(false);
         } else if (response.success === false) {
@@ -126,6 +127,7 @@ function AddWebinar({
             type: "error",
             message: "Failed to create new webinar, try again!",
           });
+          setMode("normal");
           if (err?.response?.status === 401) {
             dispatch(logout());
             navigate("/admin-login");
@@ -141,12 +143,14 @@ function AddWebinar({
             message: `Webinar updated successfully`,
           });
           refreshWebinars();
+          setMode("normal");
           formik.resetForm();
           setLoading(false);
         } else if (res.success === false) {
           console.log(err);
           formik.resetForm();
           setLoading(false);
+          setMode("normal");
           createToast({
             type: "error",
             message: "Failed to update the webinar, try again!",
