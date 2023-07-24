@@ -14,9 +14,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { FiMoreVertical } from "react-icons/fi";
 import { useState } from "react";
+import { exportEvent } from '../../utils/api'
 
 function WorkshopItem({ row , handleOptionsClick ,setDeleteId }) {
   const [showDetails, setShowDetails] = useState(false);
+
+  function exportFile(){
+    exportEvent("workshop" , row._id)
+  }
   
   return (
     <>
@@ -91,6 +96,7 @@ function WorkshopItem({ row , handleOptionsClick ,setDeleteId }) {
               size="small"
               endIcon={<SiMicrosoftexcel color="#0e733a" />}
               variant="outlined"
+              onClick={exportFile}
             >
               Export
             </Button>

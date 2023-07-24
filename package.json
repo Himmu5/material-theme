@@ -22,6 +22,7 @@
     "esbuild": "0.18.13",
     "formik": "^2.2.9",
     "framer-motion": "^10.12.7",
+    "js-file-download": "^0.4.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",

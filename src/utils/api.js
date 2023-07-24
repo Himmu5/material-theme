@@ -1,6 +1,7 @@
 import axios from "axios";
 import axiosInstance from "./axios";
 import { S3_BUCKET_URL } from "./config";
+import FileDownload from "js-file-download";
 
 const api = {
   users: {
@@ -141,7 +142,7 @@ export function deleteEvent(eventType, eventId) {
     });
 }
 
-export function getEventById(everyType,id) {
+export function getEventById(everyType, id) {
   const path = `/${everyType}/${everyType}/` + id;
   return axiosInstance
     .get(path)
@@ -153,8 +154,8 @@ export function getEventById(everyType,id) {
     });
 }
 
-export function updateEvent(data , id) {
-  const path = "/webinar/webinar/"+id;
+export function updateEvent(data, id) {
+  const path = "/webinar/webinar/" + id;
   return axiosInstance
     .put(path, data)
     .then((res) => {
@@ -163,6 +164,13 @@ export function updateEvent(data , id) {
     .catch(() => {
       return { success: false, err };
     });
+}
+
+export function exportEvent(eventType, id) {
+  const path = `/${eventType}/${eventType}/export/` + id;
+  return axiosInstance.get(path).then((res) => {
+    FileDownload(res.data, `${eventType}.xlsx`);
+  });
 }
 
 export default api;
