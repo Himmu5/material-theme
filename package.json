@@ -29,6 +29,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.0",
     "redux-saga": "^1.2.3",
+    "sitexpert-web": "file:",
     "xlsx": "file:vendor/xlsx-0.19.3.tgz",
     "yup": "^1.1.1"
   },
